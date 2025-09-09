@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://86fhxcwd3ex0"]
+
+[node name="ShapeboxPanel" type="VBoxContainer"]

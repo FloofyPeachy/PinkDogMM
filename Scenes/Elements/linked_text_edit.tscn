@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://c0a24j11tyovu"]
+
+[ext_resource type="Script" uid="uid://qxwgw52584xr" path="res://Scenes/Controls/LinkedTextEdit.cs" id="1_qavw2"]
+
+[node name="LinkedTextEdit" type="TextEdit"]
+size_flags_horizontal = 3
+script = ExtResource("1_qavw2")
+
+[node name="LineEdit" type="TextEdit" parent="."]
+layout_mode = 0
+offset_right = 12.0
+offset_bottom = 9.0

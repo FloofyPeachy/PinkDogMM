@@ -1,0 +1,214 @@
+[gd_scene load_steps=25 format=3 uid="uid://bdym8m3ypmb6y"]
+
+[ext_resource type="Theme" uid="uid://bqumg0v5lmvy1" path="res://Themes/theme.res" id="1_ngb8x"]
+[ext_resource type="PackedScene" uid="uid://by1iknijv05d" path="res://Scenes/title_bar.tscn" id="2_3fw4a"]
+[ext_resource type="Script" uid="uid://dq5p0s8mpwt8f" path="res://Scenes/TreeBit.cs" id="2_wo6m3"]
+[ext_resource type="Script" uid="uid://b6dcvlyew6g8v" path="res://Scenes/MainArea.cs" id="3_wxiud"]
+[ext_resource type="Script" uid="uid://cty34h4m2sr4k" path="res://Scenes/SideTabs.cs" id="4_dnxg1"]
+[ext_resource type="Texture2D" uid="uid://bvqfnpirapx81" path="res://Assets/placeholders/icon_newblock_new.png" id="4_o02ra"]
+[ext_resource type="PackedScene" uid="uid://biwvutiwsrcfv" path="res://Scenes/Elements/PropertiesPanel2.tscn" id="5_1iq4b"]
+[ext_resource type="Texture2D" uid="uid://bla664kunulo0" path="res://Assets/placeholders/icon_mod_tb.png" id="5_6pcg3"]
+[ext_resource type="Texture2D" uid="uid://crporcfv1cu3t" path="res://Assets/placeholders/icon_tools.png" id="5_063ia"]
+[ext_resource type="PackedScene" uid="uid://86fhxcwd3ex0" path="res://Scenes/shapebox_panel.tscn" id="6_063ia"]
+[ext_resource type="PackedScene" uid="uid://cv1kn0lymelmw" path="res://Scenes/history_panel.tscn" id="7_3fw4a"]
+[ext_resource type="Script" uid="uid://c0sxsm8ibyuu5" path="res://Scenes/Elements/ShapeboxPanel.cs" id="7_4chgl"]
+[ext_resource type="Script" uid="uid://d3gaebg0r4w50" path="res://Scenes/PivotXY2.cs" id="7_wkmhc"]
+[ext_resource type="Script" uid="uid://lywd0h120fhi" path="res://Scenes/Elements/button.gd" id="8_1iq4b"]
+[ext_resource type="Texture2D" uid="uid://beexsww2dvrfw" path="res://Assets/pdmmarrow-01.png" id="8_vprs3"]
+[ext_resource type="Script" uid="uid://dbux30vp2ns8p" path="res://Scenes/DebugText.cs" id="8_wkmhc"]
+[ext_resource type="Script" uid="uid://bx542mtyrvqb6" path="res://Scenes/ModelNode.cs" id="9_3fw4a"]
+[ext_resource type="Shader" uid="uid://bw2mkq16g7676" path="res://grid_shader.gdshader" id="9_vprs3"]
+[ext_resource type="Script" uid="uid://br0tnousc8smc" path="res://Scenes/ViewportInteraction.cs" id="14_wxiud"]
+[ext_resource type="Script" uid="uid://cyf3732i68bvq" path="res://Scenes/history_window.gd" id="15_3fw4a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_whg0o"]
+
+[sub_resource type="Environment" id="Environment_ngb8x"]
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vprs3"]
+render_priority = 0
+shader = ExtResource("9_vprs3")
+shader_parameter/line_width = 0.0170000008075
+shader_parameter/grid_size = 1.0000000475
+shader_parameter/line_color = Color(0.33989906, 0.29559326, 0.453125, 1)
+shader_parameter/fill_color = Color(0, 0, 0, 0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_o02ra"]
+material = SubResource("ShaderMaterial_vprs3")
+size = Vector3(500, 1, 500)
+
+[node name="Node2D" type="Node2D"]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_right = 1280.0
+offset_bottom = 728.0
+theme = ExtResource("1_ngb8x")
+theme_override_constants/separation = 0
+
+[node name="TitleBarArea" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_whg0o")
+
+[node name="ColorRect" type="ColorRect" parent="VBoxContainer/TitleBarArea"]
+layout_mode = 2
+mouse_filter = 1
+color = Color(0.2509804, 0.20784314, 0.4, 1)
+
+[node name="TitleBar" parent="VBoxContainer/TitleBarArea" instance=ExtResource("2_3fw4a")]
+layout_mode = 2
+
+[node name="MainArea" type="HSplitContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("3_wxiud")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MainArea"]
+layout_mode = 2
+
+[node name="Panel2" type="PanelContainer" parent="VBoxContainer/MainArea/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_ngb8x")
+
+[node name="VSplitContainer" type="VSplitContainer" parent="VBoxContainer/MainArea/HBoxContainer/Panel2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SideTabArea" type="VBoxContainer" parent="VBoxContainer/MainArea/HBoxContainer/Panel2/VSplitContainer"]
+layout_mode = 2
+
+[node name="SideTabs" type="TabContainer" parent="VBoxContainer/MainArea/HBoxContainer/Panel2/VSplitContainer/SideTabArea"]
+layout_mode = 2
+current_tab = 0
+script = ExtResource("4_dnxg1")
+
+[node name="PropertiesPanel2" parent="VBoxContainer/MainArea/HBoxContainer/Panel2/VSplitContainer/SideTabArea/SideTabs" instance=ExtResource("5_1iq4b")]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="ShapeboxPanel" parent="VBoxContainer/MainArea/HBoxContainer/Panel2/VSplitContainer/SideTabArea/SideTabs" instance=ExtResource("6_063ia")]
+visible = false
+layout_mode = 2
+script = ExtResource("7_4chgl")
+metadata/_tab_index = 1
+
+[node name="TabBar" type="TabBar" parent="VBoxContainer/MainArea/HBoxContainer/Panel2/VSplitContainer/SideTabArea"]
+visible = false
+layout_mode = 2
+theme_override_constants/tab_separation = 0
+theme_override_constants/icon_max_width = 22
+theme_override_font_sizes/font_size = 14
+current_tab = 0
+close_with_middle_mouse = false
+tab_count = 2
+tab_0/tooltip = "Part Properties"
+tab_0/icon = ExtResource("5_063ia")
+tab_1/icon = ExtResource("5_6pcg3")
+
+[node name="Panel" type="PanelContainer" parent="VBoxContainer/MainArea/HBoxContainer/Panel2/VSplitContainer/SideTabArea"]
+visible = false
+layout_mode = 2
+
+[node name="Tree" type="Tree" parent="VBoxContainer/MainArea/HBoxContainer/Panel2/VSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("2_wo6m3")
+
+[node name="RenderArea" type="VBoxContainer" parent="VBoxContainer/MainArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BoxContainer" type="MarginContainer" parent="VBoxContainer/MainArea/RenderArea"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MainArea/RenderArea/BoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="VBoxContainer/MainArea/RenderArea/BoxContainer/MarginContainer"]
+layout_mode = 2
+color = Color(0.11372549, 0.101960786, 0.16470589, 1)
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MainArea/RenderArea/BoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="VBoxContainer/MainArea/RenderArea/BoxContainer"]
+layout_mode = 2
+color = Color(0.16078432, 0.14901961, 0.2, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MainArea/RenderArea/BoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="NewPartButton" type="Button" parent="VBoxContainer/MainArea/RenderArea/BoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("4_o02ra")
+flat = true
+expand_icon = true
+script = ExtResource("8_1iq4b")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="VBoxContainer/MainArea/RenderArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+mouse_target = true
+
+[node name="SubViewport" type="SubViewport" parent="VBoxContainer/MainArea/RenderArea/SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1008, 662)
+render_target_update_mode = 4
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="VBoxContainer/MainArea/RenderArea/SubViewportContainer/SubViewport"]
+environment = SubResource("Environment_ngb8x")
+
+[node name="ModelNode" type="Node3D" parent="VBoxContainer/MainArea/RenderArea/SubViewportContainer/SubViewport/WorldEnvironment"]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0)
+script = ExtResource("9_3fw4a")
+
+[node name="PivotXY2" type="Node3D" parent="VBoxContainer/MainArea/RenderArea/SubViewportContainer/SubViewport/WorldEnvironment"]
+script = ExtResource("7_wkmhc")
+
+[node name="PivotY" type="Node3D" parent="VBoxContainer/MainArea/RenderArea/SubViewportContainer/SubViewport/WorldEnvironment/PivotXY2"]
+
+[node name="PivotX" type="Node3D" parent="VBoxContainer/MainArea/RenderArea/SubViewportContainer/SubViewport/WorldEnvironment/PivotXY2/PivotY"]
+
+[node name="Camera3D" type="Camera3D" parent="VBoxContainer/MainArea/RenderArea/SubViewportContainer/SubViewport/WorldEnvironment/PivotXY2/PivotY/PivotX"]
+current = true
+
+[node name="Arrow" type="Sprite3D" parent="VBoxContainer/MainArea/RenderArea/SubViewportContainer/SubViewport/WorldEnvironment"]
+visible = false
+pixel_size = 0.02
+axis = 1
+texture = ExtResource("8_vprs3")
+
+[node name="Grid" type="MeshInstance3D" parent="VBoxContainer/MainArea/RenderArea/SubViewportContainer/SubViewport/WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
+mesh = SubResource("BoxMesh_o02ra")
+
+[node name="ViewportInteraction" type="Node3D" parent="VBoxContainer/MainArea/RenderArea/SubViewportContainer/SubViewport/WorldEnvironment"]
+script = ExtResource("14_wxiud")
+
+[node name="PopupMenu" type="PopupMenu" parent="VBoxContainer/MainArea/RenderArea/SubViewportContainer/SubViewport/WorldEnvironment/ViewportInteraction"]
+
+[node name="DebugText" type="Label" parent="VBoxContainer/MainArea/RenderArea/SubViewportContainer"]
+layout_mode = 2
+mouse_filter = 1
+script = ExtResource("8_wkmhc")
+
+[node name="HistoryWindow" type="Window" parent="."]
+oversampling_override = 1.0
+title = "History"
+visible = false
+force_native = true
+script = ExtResource("15_3fw4a")
+
+[node name="HistoryPanel" parent="HistoryWindow" instance=ExtResource("7_3fw4a")]
+size_flags_vertical = 3
+
+[connection signal="pressed" from="VBoxContainer/MainArea/RenderArea/BoxContainer/VBoxContainer/NewPartButton" to="VBoxContainer/MainArea/RenderArea/BoxContainer/VBoxContainer/NewPartButton" method="_on_pressed"]

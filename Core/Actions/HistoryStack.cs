@@ -1,0 +1,84 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Godot;
+using PinkDogMM_Gd.Core.Schema;
+
+namespace PinkDogMM_Gd.Core.Commands;
+
+public partial class HistoryStack : Resource
+{
+    private Stack<IAction> undoStack = new Stack<IAction>();
+    private Stack<IAction> redoStack = new Stack<IAction>();
+    
+    public event EventHandler<IAction>? ActionExecuted;
+    public event EventHandler<IAction>? ActionUndone;
+    public event EventHandler<IAction>? ActionRedone;
+    
+    public int Position => undoStack.Count - redoStack.Count;
+    
+    public void Clear()
+    {
+        undoStack.Clear();
+        redoStack.Clear();
+    }
+    
+    public void Undo()
+    {
+        if (undoStack.Count == 0) return;
+        var action = undoStack.Pop();
+        redoStack.Push(action);
+        OnActionUndone(action);
+    }
+    
+    public void Redo()
+    {
+      
+        if (redoStack.Count == 0) return;
+        var action = redoStack.Pop();
+        if (!action.AddToStack) return;
+        undoStack.Push(action);
+        OnActionRedone(action);
+    }
+    
+    public void Execute(IAction action)
+    {
+       
+        action.Execute();
+        OnActionExecuted(action);
+        if (!action.AddToStack) return;
+        undoStack.Push(action);
+        redoStack.Clear();
+    }
+    
+  
+    public TResult Execute<TResult>(IAction<TResult> action)
+    {
+        action.Execute();
+         undoStack.Push(action);
+         redoStack.Clear();
+         return action.Result;
+    }
+    public void UpdateHistory()
+    {
+        undoStack.Clear();
+        redoStack.Clear();
+    }
+    
+    public List<IAction> GetHistory() => undoStack.Concat(redoStack).ToList();
+    
+    protected virtual void OnActionExecuted(IAction e)
+    {
+        ActionExecuted?.Invoke(this, e);
+    }
+
+    protected virtual void OnActionUndone(IAction e)
+    {
+        ActionUndone?.Invoke(this, e);
+    }
+
+    protected virtual void OnActionRedone(IAction e)
+    {
+        ActionRedone?.Invoke(this, e);
+    }
+}

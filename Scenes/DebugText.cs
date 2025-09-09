@@ -1,0 +1,44 @@
+using Godot;
+using System;
+using System.Text;
+using PinkDogMM_Gd.Core;
+
+public partial class DebugText : Label
+{
+	private AppState state;
+	public override void _Ready()
+	{
+		base._Ready();
+		state = GetNode("/root/AppState") as AppState;
+	}
+
+	public override void _Process(double d)
+	{
+		var builder = new StringBuilder().Append("Pink Dog Minecraft Modeller - Alpha\n")
+			.Append(Engine.GetFramesPerSecond())
+			.Append("fps\n");
+		if (state.ActiveModel != null)
+		{
+			builder.Append("Model: " + state.ActiveModel.Name + "\n");
+			builder.Append("Camera: " + state.ActiveModel.State.Camera.ToString());
+			builder.Append("\nFocused corner: " + state.ActiveModel.State.FocusedCorner);
+			builder.Append("\nMode: " + state.ActiveModel.State.Mode);
+			builder.Append("\nSelected: " +  String.Join(", ", state.ActiveModel.State.SelectedParts));
+			builder.Append("\nHovering: " + String.Join(", ", state.ActiveModel.State.Hovering));
+			builder.Append("\nHovered side: " + state.ActiveModel.State.HoveredSide);
+
+			if (state.ActiveEditorState.Mode == EditorMode.ShapeEdit)
+			{
+				builder.Append("\nPress ENTER to exit Shape Edit mode.");
+			}
+		}
+		else
+		{
+			builder.Append("No model loaded");
+		}
+
+		Text = builder.ToString();
+
+
+	}
+}

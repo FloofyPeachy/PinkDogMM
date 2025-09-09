@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://cv1kn0lymelmw"]
+
+[ext_resource type="Script" uid="uid://cpc4gmhxi241d" path="res://Scenes/HistoryPanel.cs" id="1_7baju"]
+
+[node name="HistoryPanel" type="PanelContainer"]
+script = ExtResource("1_7baju")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="UndoButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Undo"
+
+[node name="RedoButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Redo"
+
+[node name="HistoryList" type="ItemList" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/UndoButton" to="." method="UndoButtonPressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/RedoButton" to="." method="RedoButtonPressed"]
