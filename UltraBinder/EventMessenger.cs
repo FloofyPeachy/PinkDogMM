@@ -66,6 +66,20 @@ public partial class EventMessenger : Node
 				_target.PropertyChanged += SelectedOnPropertyChanged;
 				SetInital();
 			};
+			
+			model.State.SelectedObjects.CollectionChanged += (sender, args) =>
+			{
+				//_target?.PropertyChanged -= SelectedOnPropertyChanged;
+				if (model.State.SelectedObjects.Count == 0)
+				{
+					_target = null;
+					return;
+				}
+
+				_target = model.State.SelectedObjects[0];
+				_target.PropertyChanged += SelectedOnPropertyChanged;
+				SetInital();
+			};
 		};
 
 	}

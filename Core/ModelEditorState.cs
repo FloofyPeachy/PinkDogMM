@@ -21,6 +21,8 @@ public enum EditorMode
 public partial class ModelEditorState : Resource
 {
     public ObservableCollection<Part> SelectedParts = new();
+    public ObservableCollection<Renderable> SelectedObjects = new();
+    
     public HistoryStack History = new();
     public Camera Camera = new(); //RotationX, RotationY, Zoom
     public List<(int, Part)> Hovering = new();
@@ -43,6 +45,7 @@ public partial class ModelEditorState : Resource
 
     public EditorMode Mode = EditorMode.Normal;
     public event EventHandler<Part>? PartSelected;
+    public event EventHandler<Renderable>? ObjectSelected;
     public event EventHandler? AllPartsUnselected;
     public event EventHandler<Part>? PartUnselected;
     public event EventHandler<bool>? IsPeekingChanged;
@@ -53,6 +56,8 @@ public partial class ModelEditorState : Resource
     public void SelectPart(Part part)
     {
         SelectedParts.Add(part);
+        SelectedObjects.Add(part);
+        
         part.PropertyChanged += (sender, args) =>
         {
             UpdateCamera();
@@ -61,11 +66,22 @@ public partial class ModelEditorState : Resource
         OnPartSelected(part);
     }
 
+    public void SelectObject(Renderable objec)
+    {
+        SelectedObjects.Add(objec);
+        objec.PropertyChanged += (sender, args) =>
+        {
+            UpdateCamera();
+        };
+        UpdateCamera();
+        OnObjectSelected(objec);
+    }
+
     public void UpdateCamera()
     {
         if (SelectedParts.Count != 0)
         {
-            var pos = PositionOfCorner(SelectedParts.First());
+            var pos = PositionOfCorner(SelectedParts.First() as Part);
             
             Camera.Position.X = pos.X;
             Camera.Position.Y = -pos.Y;
@@ -169,5 +185,10 @@ public partial class ModelEditorState : Resource
     protected virtual void OnFocusedCornerChanged(int e)
     {
         FocusedCornerChanged?.Invoke(this, e);
+    }
+
+    protected virtual void OnObjectSelected(Renderable e)
+    {
+        ObjectSelected?.Invoke(this, e);
     }
 }

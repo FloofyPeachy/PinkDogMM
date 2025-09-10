@@ -16,13 +16,14 @@ public partial class Model
     public delegate void PartChangedEventHandler();
 
     public readonly BubblingObservableDictionary<string, BubblingObservableList<Part>> PartGroups = new();
+    public readonly BubblingObservableList<Renderable> Helpers = new();
     public readonly BubblingObservableDictionary<string, Texture> Textures = new();
 
     public string Name { get; set; } = "Untitled Model";
 
     public ModelEditorState State = new();
 
-    
+  
     public (string, Part)? GetPartById(int id)
     {
         foreach (var group in PartGroups)

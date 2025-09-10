@@ -28,9 +28,8 @@ public partial class ActionRegistry : Node
             GD.Print($"Added action {newName}");
 
             var keyInt =
-                (int)(type.GetProperty("DefaultKeys", BindingFlags.Static | BindingFlags.Public)?.GetValue(null) ??
-                      throw new InvalidOperationException());
-            if (keyInt == -1) return;
+                (int)((type.GetProperty("DefaultKeys", BindingFlags.Static | BindingFlags.Public)?.GetValue(null)) ?? -1);
+            if (keyInt == -1) continue;
 
             var key = new KeyCombo(keyInt);
 
@@ -43,6 +42,7 @@ public partial class ActionRegistry : Node
             };
 
             kevent.SetMeta("Action", newName);
+            InputMap.Singleton.AddAction(newName);
             InputMap.Singleton.ActionAddEvent(newName, kevent);
 
             GD.Print("Added key binding for action: " + kevent);
@@ -121,4 +121,15 @@ public partial class ActionRegistry : Node
     {
         return action.GetType().Name;
     }
+    
+    public override void _UnhandledKeyInput(InputEvent @event)
+    {
+        base._UnhandledKeyInput(@event);
+        if (@event is not InputEventKey action) return;
+        if (action.GetMeta("Action").AsString() != "")
+        {
+            Execute(action.GetMeta("Action").AsString(), new Godot.Collections.Array());
+        }
+
+    } 
 }

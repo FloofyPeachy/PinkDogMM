@@ -68,7 +68,7 @@ public class ToolboxLoader : ModelLoader
         part.Rotation = new Vector3L(float.Parse(line[12]), float.Parse(line[13]), float.Parse(line[14]));
         part.Offset = new Vector3L();    
         
-        part.Texture = new Vector2L(int.Parse(line[18]), int.Parse(line[19]));
+        part.TextureSize = new Vector2L(int.Parse(line[18]), int.Parse(line[19]));
 
         part.Visible = line[98] == "1";
         return part;
@@ -76,6 +76,16 @@ public class ToolboxLoader : ModelLoader
     
     public Shapebox DeserialiseShapebox(string[] line, int index)
     {
+        var sections = new BubblingObservableList<Vector3L>();
+        var shapeboxX = line.Skip(20).Take(8).Select(float.Parse).ToList();
+        var shapeboxY = line.Skip(20).Take(8).Select(float.Parse).ToList();
+        var shapeboxZ = line.Skip(20).Take(8).Select(float.Parse).ToList();
+        
+        
+        for (var i = 0; i < 8; i++)
+        {
+            sections.Add(new Vector3L(shapeboxX[i], shapeboxY[i], shapeboxZ[i]));
+        }
         var part = new Shapebox
         {
             //It's a very complicated and weird thing, but here we go:
@@ -85,12 +95,8 @@ public class ToolboxLoader : ModelLoader
             Size = new Vector3L(int.Parse(line[9]), int.Parse(line[10]), int.Parse(line[11])),
             Rotation = new Vector3L(float.Parse(line[12]), float.Parse(line[13]), float.Parse(line[14])),
             Offset = new Vector3L(),
-            Texture = new Vector2L(int.Parse(line[18]), int.Parse(line[19])),
-            
-            ShapeboxX = new BubblingObservableList<float>(line.Skip(20).Take(8).Select(float.Parse).ToList()),
-            ShapeboxY = new BubblingObservableList<float>(line.Skip(28).Take(8).Select(float.Parse).ToList()),
-            ShapeboxZ = new BubblingObservableList<float>(line.Skip(36).Take(8).Select(float.Parse).ToList()),
-
+            TextureSize = new Vector2L(int.Parse(line[18]), int.Parse(line[19])),
+            Sections = sections,
             Visible = line[98] == "1"
         };
         

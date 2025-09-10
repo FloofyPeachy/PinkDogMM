@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -52,6 +53,11 @@ public partial class ModelNode : Node3D
 				}
 				
 			};
+
+			appState.ActiveModel.Helpers.ItemsChanged += (sender, changed) =>
+			{
+				GetParent().AddChild(new HelpframeNode(changed.Item as Helpframe ?? throw new InvalidOperationException()));
+			};
 			
 			appState.PartSelected += (sender, part) =>
 			{
@@ -99,7 +105,7 @@ public partial class ModelNode : Node3D
 			
 				if (mode == EditorMode.ShapeEdit)
 				{
-					_editedPart = appState.ActiveEditorState.SelectedParts.First();
+					_editedPart = appState.ActiveEditorState.SelectedParts.First() as Part;
 					appState.ActiveEditorState.SelectedParts.Clear();
 					appState.ActiveEditorState.SelectPart(_editedPart);
 					parts[_editedPart].SetBeingEdited(true);

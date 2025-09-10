@@ -7,7 +7,7 @@ namespace PinkDogMM_Gd.Core.Actions.All.TheModel;
 
 public class SelectPartAction(int? id, AppState state) : IAction
 {
-    public int DefaultKeys => -1;
+    public static int DefaultKeys => -1;
 
     public void Execute()
     {

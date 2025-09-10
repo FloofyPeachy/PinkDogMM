@@ -21,5 +21,5 @@ public class DeletePartAction(int id, AppState state) : IAction
     public bool AddToStack { get; }
     public string TextPrefix => "Deleted Part";
     
-    public int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.Delete, Modifiers.None);
+    public static int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.Delete, Modifiers.None);
 }

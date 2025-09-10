@@ -18,6 +18,7 @@ public partial class ViewportInteraction : Node3D
 	private Vector2 CapturedMousePos = Vector2.Zero;
 	private Vector2 CurrentMousePos = Vector2.Zero;
 	private Vector3 InitalSize = Vector3.Zero;
+	private Vector3 InitalPos = Vector3.Zero;
 	public override void _Ready()
 	{
 		camera = GetNode<Camera3D>("../PivotXY2/PivotY/PivotX/Camera3D");
@@ -43,8 +44,32 @@ public partial class ViewportInteraction : Node3D
 						break;
 					case MouseButton.Left:
 
+						var part = GetPartAtMouse();
+						/*if (button.Pressed && part != null)
+						{
+							//Might be dragging? Start it.
+							DraggingPart = part.Value.Item2;
+							var actualPart = appState?.ActiveModel?.GetPartById(DraggingPart)?.Item2;
+							if (actualPart == null) return;
+							CapturedMousePos = button.Position;
+							CurrentMousePos = button.Position;
+							Input.MouseMode = Input.MouseModeEnum.Captured;
+							DragDirection = appState.ActiveEditorState.HoveredSide;
+							GD.Print(DragDirection);
+							InitalSize = actualPart.Size.AsVector3();
+							InitalPos = actualPart.Position.AsVector3();
+						}
+						else
+						{
+							CapturedMousePos = Vector2.Zero;
+							Input.MouseMode = Input.MouseModeEnum.Visible;
+							AmountMoved = Vector3.Zero;
+							CurrentMousePos = Vector2.Zero;
+						}
+						*/
 						
-						if (button.Pressed)
+						
+						if (!button.Pressed)
 						{
 							if (button.IsDoubleClick())
 							{
@@ -63,9 +88,20 @@ public partial class ViewportInteraction : Node3D
 
 							if (appState.ActiveEditorState.Mode != EditorMode.ShapeEdit)
 							{
-								appState.ActiveModel?.State.History.Execute(partAtMouse == null
-									? new SelectPartAction(null, appState)
-									: new SelectPartAction(partAtMouse.Value.Item2, appState));
+								var nodeAtMouse = GetNodeAtMouse();
+								if (partAtMouse != null)
+								{
+									appState.ActiveModel?.State.History.Execute(partAtMouse == null
+										? new SelectPartAction(null, appState)
+										: new SelectPartAction(partAtMouse.Value.Item2, appState));
+									return;
+									
+								}
+								
+								if (nodeAtMouse == null) return;
+								var objec = appState.ActiveModel.Helpers[nodeAtMouse.Value.Item2.GetMeta("ido").AsInt32()];
+								appState.ActiveEditorState.SelectedObjects.Add(objec);
+								
 							}
 							else
 							{
@@ -120,15 +156,40 @@ public partial class ViewportInteraction : Node3D
 
 				if (appState.ActiveEditorState.Mode != EditorMode.ShapeEdit)
 				{
-					var actualPart = appState?.ActiveModel?.GetPartById(DraggingPart)?.Item2;
-					if (actualPart == null) return;
-					CapturedMousePos += motion.Relative;
+					if (partAtMouse == null) return;
+					var part = appState?.ActiveModel?.GetPartById(GetPartAtMouse().Value.Item2)?.Item2;
+					if (part == null) return;
+					CurrentMousePos += motion.Relative;
 					
-					if (WorldPosFromMouse(actualPart, out var result)) return;
-				
-					var newSize = (InitalSize.Round() + (result!.Value * 16).Round());
+					if (!WorldPosFromMouse2(part, out var result,DragDirection)) return;
+					
+					if (result == null) return;
+					var scaledResult = (result!.Value * 16).Round();
+					GD.Print(scaledResult);
 
-					if (Math.Abs(DragDirection.X) == 1f)
+					var final = InitalSize - scaledResult;
+					if (DragDirection == Vector3.Back) // dragging Z− side
+					{
+						var outcome = part.Size.Z + scaledResult.Z;
+						GD.Print(outcome);
+						if (Math.Sign(outcome) == -1)
+						{
+							part.Size.Z+=  scaledResult.Z;
+							part.Position.Z = outcome - 1;
+						}
+						else
+						{
+							part.Size.Z = outcome;
+						}
+					
+					}
+					
+					/*if (appState.ActiveEditorState.HoveredSide == Vector3.Forward ||
+						appState.ActiveEditorState.HoveredSide == Vector3.Back)
+					{
+						actualPart.Size.Z = newSize.Z;
+					}*/
+					/*if (Math.Abs(DragDirection.X) == 1f)
 					{
 						//actualPart.Position = new Vector3L((result.Value * 16));
 						actualPart.Size.X = newSize.X;
@@ -142,7 +203,7 @@ public partial class ViewportInteraction : Node3D
 					if (Math.Abs(DragDirection.Z) == 1f)
 					{
 						actualPart.Size.Z = -newSize.Z;
-					}
+					}*/
 					lastProjection = result.Value;
 				}
 				else
@@ -152,7 +213,7 @@ public partial class ViewportInteraction : Node3D
 					if (appState?.ActiveEditorState.SelectedParts.First() is not Shapebox actualPart) return;
 					CurrentMousePos += motion.Relative;
 					//GD.Print(motion.Relative.Y);
-					if (!WorldPosFromMouse(actualPart, out var result)) return;
+					if (!WorldPosFromMouse(actualPart, out var result, Vector3.Up)) return;
 				
 					
 					actualPart.ShapeboxX[appState.ActiveEditorState.FocusedCorner] =
@@ -272,19 +333,76 @@ public partial class ViewportInteraction : Node3D
 		}
 		*/
 	}
+	void AdjustAlongAxis(ref float pos, ref float size, float newCoord, bool draggingMin)
+	{
+		float oldMin = pos;
+		float oldMax = pos + size;
 
-	private bool WorldPosFromMouse(Part actualPart, out Vector3? result)
+		if (draggingMin)
+		{
+			// Right side stays fixed
+			pos = newCoord;
+			size = oldMax - newCoord;
+		}
+		else
+		{
+			// Left side stays fixed
+			size = newCoord - oldMin;
+		}
+
+		// Prevent negative size
+		if (size < 0)
+		{
+			size = 0;
+		}
+	}
+	private bool WorldPosFromMouse(Part actualPart, out Vector3? result, Vector3 normal)
 	{
 		var rayOrigin = camera.ProjectRayOrigin(CurrentMousePos);
 		var rayDir = camera.ProjectRayNormal(CurrentMousePos);
 		var to = rayOrigin + rayDir * 1000;
+		
+		
+		var plane = new Plane(normal, normal.Dot(actualPart.Position.AsVector3()));
 
-		var plane = new Plane(Vector3.Up, -(actualPart.Position.Y * 0.0625f));
 		result = plane.IntersectsRay(rayOrigin, to);
 		//GD.Print(result);
 		return result != null;
 	}
+	private bool WorldPosFromMouse2(Part actualPart, out Vector3? result, Vector3 axis)
+	{
+		var rayOrigin = camera.ProjectRayOrigin(CurrentMousePos);
+		var rayDir = camera.ProjectRayNormal(CurrentMousePos);
 
+		// Axis line: goes through part position, extends infinitely in both directions
+		var linePoint = actualPart.Position.AsVector3();
+		var lineDir = axis.Normalized();
+
+		// Solve for closest points between ray and line
+		// Formula based on projection
+		var w0 = rayOrigin - linePoint;
+
+		float a = rayDir.Dot(rayDir);
+		float b = rayDir.Dot(lineDir);
+		float c = lineDir.Dot(lineDir);
+		float d = rayDir.Dot(w0);
+		float e = lineDir.Dot(w0);
+
+		float denom = a * c - b * b;
+		if (Mathf.Abs(denom) < 1e-6f)
+		{
+			// Parallel, no intersection
+			result = null;
+			return false;
+		}
+
+		float sc = (b * e - c * d) / denom;
+		// float tc = (a * e - b * d) / denom; // if you need the line param too
+
+		// Closest point on the axis line
+		result = linePoint + lineDir * ((b * sc + e) / c);
+		return true;
+	}
 	private bool GetHovering()
 	{
 		(Vector3, Node3D)? collider = GetNodeAtMouse();
@@ -407,22 +525,12 @@ public partial class ViewportInteraction : Node3D
 		if (result.Count == 0) return null;
 
 		Vector3 hitNormal = result["normal"].AsVector3();
-
-
-		Vector3[] axes =
-		{
-			Vector3.Right,
-			Vector3.Left,
-			Vector3.Up,
-			Vector3.Down,
-			Vector3.Forward,
-			Vector3.Back
-		};
-
 		appState.ActiveEditorState.HoveredSide = hitNormal.Round();
 
 		return (hitNormal.Round(), result["collider"].As<Node3D>());
 	}
+	
+	
 
 	private (int, Node3D)? GetCornerAtMouse()
 	{

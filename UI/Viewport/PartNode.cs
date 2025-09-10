@@ -69,8 +69,7 @@ public partial class PartNode(Part part) : Node3D
             _staticBody = child;
             GD.Print("Rebuilt mesh for " + part.Name + "!");
         }
-        Position = new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f;
-        _outlineMesh.GlobalPosition = new Vector3(part.Position.X, -part.Position.Y, -part.Position.Z) * 0.0625f;
+      
         _outlineMesh.Name = part.Name + " Outline";
         
         GD.Print("Updated mesh for " + part.Name + "!");
@@ -124,6 +123,8 @@ public partial class PartNode(Part part) : Node3D
     public override void _PhysicsProcess(double delta)
     {
         this.Scale = this.Scale.Lerp(Vector3.One * 0.0625f, (float)delta * 16.0f);
+        Position = this.Position.Lerp(new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f, (float)delta * 24.0f);
+        _outlineMesh.GlobalPosition = _outlineMesh.GlobalPosition.Lerp(new Vector3(part.Position.X, -part.Position.Y, part.Position.Z) * 0.0625f, (float)delta * 24.0f);
     }
 
     private void SetMesh()

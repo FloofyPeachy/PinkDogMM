@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using Godot;
+using FileAccess = Godot.FileAccess;
 
 namespace PinkDogMM_Gd.Core;
 
@@ -18,7 +19,43 @@ public class Utils
             return outStream.ToArray();
         }
     }
+    public static Image ImageFromJpgData(Stream data)
+    {
+        using var reader = new StreamReader(data);
+        var imageBytes = ReadAllBytes(reader.BaseStream);
+                
+        var image = new Image();
+
+        image.LoadJpgFromBuffer(imageBytes);
+
+        return image;
+    }
     
+    public static Image ImageFromPngData(Stream data)
+    {
+        using var reader = new StreamReader(data);
+        var imageBytes = ReadAllBytes(reader.BaseStream);
+                
+        var image = new Image();
+
+        image.LoadPngFromBuffer(imageBytes);
+
+        return image;
+    }
+
+    public static Image ImageFromFile(String path)
+    {
+        if (path.EndsWith(".jpg"))
+        {
+            return ImageFromJpgData(new FileAccessStream(path, FileAccess.ModeFlags.Read));
+        }
+        else
+        {
+            return ImageFromPngData(new FileAccessStream(path, FileAccess.ModeFlags.Read));
+        }
+        
+    }
+
     public static bool IsEqualTo(double a, double b)
     {
         return Math.Abs(a - b) < double.Epsilon;

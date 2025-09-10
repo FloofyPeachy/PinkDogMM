@@ -39,3 +39,7 @@ func _on_minimize_button_pressed():
 
 func _on_button_2_pressed() -> void:
 	DisplayServer.beep(); # Replace with function body.
+
+
+func _on_test_helpframe_pressed() -> void:
+	pass # Replace with function body.

@@ -200,8 +200,8 @@ public class MeshGenerator
     public static Vector2[] GenerateCubeUVs(Part part, Vector2 textureSize)
 {
     // We'll follow a typical "cuboid unfolded" layout in the texture atlas
-    int tx = part.Texture.XI;
-    int ty = part.Texture.YI;
+    int tx = part.TextureSize.XI;
+    int ty = part.TextureSize.YI;
     int dx = (int)part.Size.X;
     int dy = (int)part.Size.Y;
     int dz = (int)part.Size.Z;
@@ -307,10 +307,10 @@ public class MeshGenerator
         return new Vector2[]
         {
             //Top face
-            new Vector2(U(part.Texture.XI + part.Size.ZI, (int)textureSize.X), V(part.Texture.YI + part.Size.ZI, (int)textureSize.Y)),
-            new Vector2(U(part.Texture.XI + part.Size.ZI + part.Size.XI, (int)textureSize.X), V(part.Texture.YI + part.Size.ZI, (int)textureSize.Y)),
-            new Vector2(U(part.Texture.XI + part.Size.ZI + part.Size.XI, (int)textureSize.X), V(part.Texture.YI, (int)textureSize.Y)),
-            new Vector2(U(part.Texture.XI + part.Size.ZI, (int)textureSize.X), V(part.Texture.YI, (int)textureSize.Y)),
+            new Vector2(U(part.TextureSize.XI + part.Size.ZI, (int)textureSize.X), V(part.TextureSize.YI + part.Size.ZI, (int)textureSize.Y)),
+            new Vector2(U(part.TextureSize.XI + part.Size.ZI + part.Size.XI, (int)textureSize.X), V(part.TextureSize.YI + part.Size.ZI, (int)textureSize.Y)),
+            new Vector2(U(part.TextureSize.XI + part.Size.ZI + part.Size.XI, (int)textureSize.X), V(part.TextureSize.YI, (int)textureSize.Y)),
+            new Vector2(U(part.TextureSize.XI + part.Size.ZI, (int)textureSize.X), V(part.TextureSize.YI, (int)textureSize.Y)),
             
             
         }.ToList();

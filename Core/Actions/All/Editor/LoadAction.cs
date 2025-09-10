@@ -10,7 +10,7 @@ namespace PinkDogMM_Gd.Core.Actions.All.Editor;
 [Tool]
 public class LoadModelAction(string path) : IAction<Model>
 {
-    static public int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.O, Modifiers.Ctrl);
+    public static int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.O, Modifiers.Ctrl);
 
     public void Execute()
     {

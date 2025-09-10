@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Godot;
 using Godot.Collections;
+using PinkDogMM_Gd.Core.Actions;
 using PinkDogMM_Gd.Core.Actions.All.Editor;
 using PinkDogMM_Gd.Core.Commands;
 using PinkDogMM_Gd.Core.Schema;
@@ -42,6 +43,7 @@ public partial class AppState : Node
 	[Signal] public delegate void ActiveModelChangedEventHandler(int index);
 
 	public event EventHandler<Part>? PartSelected;
+	public event EventHandler<Renderable>? ObjectSelected;
 	public event EventHandler? AllPartsUnselected;
 	public event EventHandler<Part>? PartUnselected;
 	
@@ -75,6 +77,7 @@ public partial class AppState : Node
 		ActiveEditorState.IsPeekingChanged += OnIsPeekingChanged;
 		ActiveEditorState.ModeChanged += OnModeChanged;
 		ActiveEditorState.FocusedCornerChanged += OnFocusedCornerChanged;
+		ActiveEditorState.ObjectSelected += OnObjectSelected;
 
 	}
 	public void ExecuteNewModelAction()
@@ -87,12 +90,7 @@ public partial class AppState : Node
 
 
 
-	public override void _UnhandledKeyInput(InputEvent @event)
-	{
-		base._UnhandledKeyInput(@event);
-		GD.Print(@event.IsAction);
-		GD.Print(@event);
-	}
+	
 
 	protected virtual void OnPartSelected(object? sender, Part e)
 	{
@@ -137,5 +135,10 @@ public partial class AppState : Node
 	protected virtual void OnFocusedCornerChanged(object? sender,int e)
 	{
 		FocusedCornerChanged?.Invoke(this, e);
+	}
+
+	protected virtual void OnObjectSelected(object? sender, Renderable e)
+	{
+		ObjectSelected?.Invoke(this, e);
 	}
 }

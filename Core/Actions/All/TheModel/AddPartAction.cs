@@ -29,5 +29,5 @@ public class AddPartAction(String group, AppState state) : IAction
     public string TextPrefix => "Added Part";
     public bool AddToStack => true;
     
-    public int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.A, Modifiers.Shift);
+    public static int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.A, Modifiers.Shift);
 }

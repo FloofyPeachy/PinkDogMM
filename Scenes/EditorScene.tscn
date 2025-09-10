@@ -152,6 +152,14 @@ flat = true
 expand_icon = true
 script = ExtResource("8_1iq4b")
 
+[node name="TestHelpframe" type="Button" parent="VBoxContainer/MainArea/RenderArea/BoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("4_o02ra")
+flat = true
+expand_icon = true
+script = ExtResource("8_1iq4b")
+
 [node name="SubViewportContainer" type="SubViewportContainer" parent="VBoxContainer/MainArea/RenderArea"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -161,7 +169,7 @@ mouse_target = true
 
 [node name="SubViewport" type="SubViewport" parent="VBoxContainer/MainArea/RenderArea/SubViewportContainer"]
 handle_input_locally = false
-size = Vector2i(1008, 662)
+size = Vector2i(1008, 630)
 render_target_update_mode = 4
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="VBoxContainer/MainArea/RenderArea/SubViewportContainer/SubViewport"]
@@ -212,3 +220,4 @@ script = ExtResource("15_3fw4a")
 size_flags_vertical = 3
 
 [connection signal="pressed" from="VBoxContainer/MainArea/RenderArea/BoxContainer/VBoxContainer/NewPartButton" to="VBoxContainer/MainArea/RenderArea/BoxContainer/VBoxContainer/NewPartButton" method="_on_pressed"]
+[connection signal="pressed" from="VBoxContainer/MainArea/RenderArea/BoxContainer/VBoxContainer/TestHelpframe" to="VBoxContainer/MainArea/RenderArea/BoxContainer/VBoxContainer/NewPartButton" method="_on_test_helpframe_pressed"]
