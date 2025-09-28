@@ -1,3 +1,4 @@
+using Godot;
 using PinkDogMM_Gd.Core;
 
 namespace PinkDogMM_Gd.Render;
@@ -10,6 +11,7 @@ public class Camera
 
     public override string ToString()
     {
-        return $"{nameof(RotationZoom)}: {RotationZoom}, {nameof(Position)}: {Position}";
+        
+        return "";
     }
 }

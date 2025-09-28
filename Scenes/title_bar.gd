@@ -18,7 +18,7 @@ func _on_TitleBar_gui_input(event):
 			elif event.get_button_index() == 2:
 					following = false;
 					print("fgd")
-					DisplayServer.window_show_titlebar_menu();
+					DisplayServer.window_show_system_menu();
 					
 
 

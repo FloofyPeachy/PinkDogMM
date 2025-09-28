@@ -12,7 +12,7 @@ config_version=5
 
 config/name="PDMM"
 run/main_scene="uid://bdym8m3ypmb6y"
-config/features=PackedStringArray("4.5", "C#", "GL Compatibility")
+config/features=PackedStringArray("4.6", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]

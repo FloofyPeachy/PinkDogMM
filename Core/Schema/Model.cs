@@ -9,7 +9,7 @@ using PinkDogMM_Gd.Core;
 
 namespace PinkDogMM_Gd.Core.Schema;
 
-public partial class Model
+public partial class Model : Resource
 {
     public delegate void ChangedEventHandler();
 
@@ -31,8 +31,9 @@ public partial class Model
             var part = group.Value.FirstOrDefault(part => part.Id == id);
             if (part != null) return (group.Key, part);
         }
-        return (string.Empty, null);
-        
+
+        return null;
+
     }
 
     public bool RemovePart(int id)
@@ -47,7 +48,11 @@ public partial class Model
     public int TotalPartCount => PartGroups.Aggregate(0, (current, keyValuePair) => current + keyValuePair.Value.Count);
     
     public List<Part> AllParts => PartGroups.SelectMany(group => group.Value).ToList();
-   
+
+    public static Model Get(Node it)
+    {
+        return it.Owner.GetMeta("model").As<Model>();
+    }
 }
 
 enum ModelType

@@ -16,11 +16,12 @@ public partial class DebugText : Label
 	{
 		var builder = new StringBuilder().Append("Pink Dog Minecraft Modeller - Alpha\n")
 			.Append(Engine.GetFramesPerSecond())
-			.Append("fps\n");
+			.Append("fps\n\n");
 		if (state.ActiveModel != null)
 		{
-			builder.Append("Model: " + state.ActiveModel.Name + "\n");
 			builder.Append("Camera: " + state.ActiveModel.State.Camera.ToString());
+			builder.Append("\nMouse Pos: " + state.ActiveModel.State.WorldMousePosition + "\n");
+			builder.Append("\nModel: " + state.ActiveModel.Name);
 			builder.Append("\nFocused corner: " + state.ActiveModel.State.FocusedCorner);
 			builder.Append("\nMode: " + state.ActiveModel.State.Mode);
 			builder.Append("\nSelected: " +  String.Join(", ", state.ActiveModel.State.SelectedParts));

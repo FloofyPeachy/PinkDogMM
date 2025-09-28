@@ -20,9 +20,10 @@ public partial class AppState : Node
 		get => activeModelIndex;
 		set
 		{
+			var old = activeModelIndex;
 			activeModelIndex = value;
 			ResubscribeToEvents();
-			EmitSignal(nameof(ActiveModelChanged), activeModelIndex);
+			EmitSignal(nameof(ActiveModelChanged2), old, activeModelIndex);
 		}
 	}
 
@@ -41,7 +42,7 @@ public partial class AppState : Node
 	public Part? SelectedPart;
 	
 	[Signal] public delegate void ActiveModelChangedEventHandler(int index);
-
+	[Signal] public delegate void ActiveModelChanged2EventHandler(int from, int to);
 	public event EventHandler<Part>? PartSelected;
 	public event EventHandler<Renderable>? ObjectSelected;
 	public event EventHandler? AllPartsUnselected;
@@ -55,9 +56,10 @@ public partial class AppState : Node
 	public event EventHandler<EditorMode>? ModeChanged;
 	
 	public event EventHandler<int>? FocusedCornerChanged;
+	public Model? addingModel;
 	public void ExecuteLoadSaveAction(string path)
 	{
-		Model model = History.Execute(new LoadModelAction(path));
+		Model model = History.Execute(new LoadModelAction(path, this));
 		Models.Add(model);
 		ActiveModelIndex = Models.Count - 1;
 		
@@ -66,8 +68,8 @@ public partial class AppState : Node
 
 	public void ResubscribeToEvents()
 	{
-		ActiveModel.State.PartSelected += OnPartSelected;
-		ActiveModel.State.PartUnselected += OnPartUnselected;
+	//	ActiveModel.State.PartSelectionChanged += OnPartSelectionChanged;
+	//	ActiveModel.State.PartUnselected += OnPartUnselected;
 		ActiveModel.State.AllPartsUnselected += OnAllPartsUnselected;
 
 		ActiveModel.State.History.ActionExecuted += OnActionExecuted;
@@ -92,7 +94,7 @@ public partial class AppState : Node
 
 	
 
-	protected virtual void OnPartSelected(object? sender, Part e)
+	protected virtual void OnPartSelectionChanged(object? sender, Part e)
 	{
 		PartSelected?.Invoke(this, e);
 	}

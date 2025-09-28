@@ -42,28 +42,41 @@ public class KeyCombo
         set => _key = value;
     }
 
-    public Modifiers Modifiers
+    public KeyModifiers KeyModifiers
     {
-        get => _modifiers;
-        set => _modifiers = value;
+        get => _keyModifiers;
+        set => _keyModifiers = value;
     }
 
     public int _key;
-    Modifiers _modifiers;
+    KeyModifiers _keyModifiers;
 
+    public KeyCombo()
+    {
+        
+    }
     public KeyCombo(int combined)
     {
         this.Key = combined & 0xFFFF;
-        this.Modifiers = (Modifiers)(combined & ~0xFFFF);
+        this.KeyModifiers = (KeyModifiers)(combined & ~0xFFFF);
     }
-    public static int KeyAndModifiers(int keyCode, Modifiers modifiers)
+    public static int KeyAndModifiers(int keyCode, KeyModifiers keyModifiers)
     {
-        return keyCode | (int)modifiers;
+        return keyCode | (int)keyModifiers;
     }
-    
+
+    public static KeyCombo FromInputKeyEvent(InputEventKey keyEvent)
+    {
+        return new KeyCombo()
+        {
+            Key = (int)keyEvent.Keycode,
+            KeyModifiers = keyEvent.AltPressed ? KeyModifiers.Alt : KeyModifiers.None,
+            
+        };
+    }
     int GetKey() => Key & 0xFFFF;
 
-    public Modifiers GetModifiers() => (Modifiers)(Key & ~0xFFFF);
+    public KeyModifiers GetModifiers() => (KeyModifiers)(Key & ~0xFFFF);
     
     
 }

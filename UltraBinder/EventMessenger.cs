@@ -11,7 +11,6 @@ using PinkDogMM_Gd.Core.Schema;
 
 namespace PinkDogMM_Gd.UltraBinder;
 
-
 class PropertyBinding()
 {
 	public string NodeProperty
@@ -29,6 +28,12 @@ class PropertyBinding()
 	private string _nodeProperty;
 	private Node _node;
 }
+public partial class ModelPropertyBinding(Node node, string watchedField, string propertyToUpdate) : Node
+{
+	public Node node;
+	public string watchedField;
+	public string propertyToUpdate;
+}
 
 public partial class EventMessenger : Node
 {
@@ -40,48 +45,43 @@ public partial class EventMessenger : Node
 		ChildEnteredTree += OnChildEnteredTree;
 		typesToProps.Add(typeof(TextEdit), "Text");
 		typesToProps.Add(typeof(SpinBox), "Value");
+		typesToProps.Add(typeof(OptionButton), "Selected");
 	}
 
 	private System.Collections.Generic.Dictionary<Type, string> typesToProps = [];
+
 	public override void _Ready()
 	{
-	  
-		
-		AppState appState = GetNode("/root/AppState") as AppState;
-		
-		appState.ActiveModelChanged += index =>
+		var model = Model.Get(this);
+
+
+		model.State.SelectedParts.CollectionChanged += (sender, args) =>
 		{
-			Model model = appState.ActiveModel;
-
-			model.State.SelectedParts.CollectionChanged += (sender, args) =>
+			//_target?.PropertyChanged -= SelectedOnPropertyChanged;
+			if (model.State.SelectedParts.Count == 0)
 			{
-				//_target?.PropertyChanged -= SelectedOnPropertyChanged;
-				if (model.State.SelectedParts.Count == 0)
-				{
-					_target = null;
-					return;
-				}
+				_target = null;
+				return;
+			}
 
-				_target = model.State.SelectedParts[0];
-				_target.PropertyChanged += SelectedOnPropertyChanged;
-				SetInital();
-			};
-			
-			model.State.SelectedObjects.CollectionChanged += (sender, args) =>
-			{
-				//_target?.PropertyChanged -= SelectedOnPropertyChanged;
-				if (model.State.SelectedObjects.Count == 0)
-				{
-					_target = null;
-					return;
-				}
-
-				_target = model.State.SelectedObjects[0];
-				_target.PropertyChanged += SelectedOnPropertyChanged;
-				SetInital();
-			};
+			_target = model.State.SelectedParts[0];
+			_target.PropertyChanged += SelectedOnPropertyChanged;
+			SetInital();
 		};
 
+		/*model.State.SelectedObjects.CollectionChanged += (sender, args) =>
+		{
+			//_target?.PropertyChanged -= SelectedOnPropertyChanged;
+			if (model.State.SelectedObjects.Count == 0)
+			{
+				_target = null;
+				return;
+			}
+
+			_target = model.State.SelectedObjects[0];
+			_target.PropertyChanged += SelectedOnPropertyChanged;
+			SetInital();
+		};*/
 	}
 
 
@@ -91,9 +91,8 @@ public partial class EventMessenger : Node
 		{
 			var key = keyValuePair.Key;
 			object? value = GetNestedPropertyValue(_target, key);
-		 
-	   
-			
+
+
 			foreach (var binding in keyValuePair.Value)
 			{
 				var controlProp = binding.Node.GetType().GetProperty(binding.NodeProperty);
@@ -107,16 +106,17 @@ public partial class EventMessenger : Node
 			}
 		}
 	}
+
 	private void SelectedOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		if (sender == null) return;
 		foreach (var keyValuePair in listeners)
 		{
 			if (keyValuePair.Key != e.PropertyName) continue;
-			
+
 			var parts = e.PropertyName.Split('.');
 			object? value = sender.GetType().GetProperty(e.PropertyName)?.GetValue(e.PropertyName);
-			
+
 			foreach (var part in parts)
 			{
 				if (int.TryParse(part, out int index))
@@ -131,7 +131,7 @@ public partial class EventMessenger : Node
 					break;
 				}
 			}
-			
+
 			foreach (var binding in keyValuePair.Value)
 			{
 				var controlProp = binding.Node.GetType().GetProperty(binding.NodeProperty);
@@ -162,7 +162,7 @@ public partial class EventMessenger : Node
 			if (int.TryParse(part, out int index))
 			{
 				var list = current as IList;
-			
+
 				if (list != null && list.Count < index)
 					return null;
 
@@ -215,7 +215,7 @@ public partial class EventMessenger : Node
 			{
 				value = Convert.ChangeType(value, current.GetType().GenericTypeArguments[0]);
 			}
-				
+
 			matches[0].SetValue(current, value, [int.Parse(parts.Last())]);
 
 			//list[int.Parse(parts[^1])] = value;
@@ -235,14 +235,14 @@ public partial class EventMessenger : Node
 
 			finalProp.SetValue(current, value);
 		}
-	
 	}
+
 	public void OnChildEnteredTree(Node node)
 	{
 		Array<Node> children = node.GetChildren();
 		if (children.Count == 0) return;
 		//Try to connect things.
-		
+
 		foreach (var child in children)
 		{
 			ConnectNode(child);
@@ -251,28 +251,31 @@ public partial class EventMessenger : Node
 
 	private void UpdateTargetProperty(Node node, string watchedField, string propertyToUpdate)
 	{
-	 
 		SetNestedPropertyValue(_target, watchedField, node.GetType().GetProperty(propertyToUpdate)?.GetValue(node));
-		
 	}
+
 	private void ConnectNode(Node node)
 	{
 		if (node.HasMeta("WatchedField"))
 		{
 			string watchedField = node.GetMeta("WatchedField").AsString();
 			string propertyToUpdate = typesToProps[node.GetType()];
-			
+
 			if (!listeners.ContainsKey(watchedField)) listeners.Add(watchedField, []);
 			//We might have to do some watching.
-			
+
 			listeners[watchedField].Add(new PropertyBinding()
 			{
 				Node = node,
 				NodeProperty = propertyToUpdate
 			});
-			if (node is TextEdit) node.Connect("text_changed", Callable.From(() => UpdateTargetProperty(node, watchedField, propertyToUpdate)));
-			if (node is SpinBox) node.Connect("value_changed", Callable.From((double _) => UpdateTargetProperty(node, watchedField, propertyToUpdate)));
-			
+			if (node is TextEdit)
+				node.Connect("text_changed",
+					Callable.From(() => UpdateTargetProperty(node, watchedField, propertyToUpdate)));
+			if (node is SpinBox)
+				node.Connect("value_changed",
+					Callable.From((double _) => UpdateTargetProperty(node, watchedField, propertyToUpdate)));
+
 			GD.Print(this.GetName() + " bound to " + watchedField);
 		}
 
@@ -281,10 +284,7 @@ public partial class EventMessenger : Node
 		//Try to connect things.
 		foreach (var child in children)
 		{
-			ConnectNode(child); 
+			ConnectNode(child);
 		}
-		
 	}
-
-	
 }

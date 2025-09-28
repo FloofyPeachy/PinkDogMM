@@ -19,105 +19,85 @@ public partial class ModelNode : Node3D
 	private bool _dragging = false;
 	private AppState appState;
 	private Part? _editedPart;
-
+	private Model model;
 	public override void _Ready()
 	{
+		model = Model.Get(this);
 		appState = GetNode("/root/AppState") as AppState;
 		Debug.Assert(appState != null, nameof(appState) + " != null");
-
-		appState.ActiveModelChanged += (index) =>
-		{
-			List<Part> unbuiltParts = appState.ActiveModel!.AllParts.Where((part => !parts.ContainsKey(part))).ToList();
-			
-				//meshes.Where((mesh => appState.ActiveModel.GetPartById(mesh.part.Id) == null)).ToList();
-			foreach (var part in unbuiltParts) {
-				PartNode newOne = new PartNode(part);
-				parts.Add(part, newOne);
-				AddChild(newOne);
-			}
-
-			List<KeyValuePair<Part, PartNode>> deezParts = parts.Where((pair => !appState.ActiveModel.AllParts.Contains(pair.Key))).ToList();
-			foreach (var mesh in parts)
-			{
-				mesh.Value.Visible = appState.ActiveModel.AllParts.Contains(mesh.Key);
-			}
-
-			//appState.ActiveModel.PartGroups.NestedItemChanged += (sender, args) => BuildVisuals();
-			appState.ActiveModel.PartGroups.NestedCollectionChanged += (sender, args) =>
-			{
-				if (args.Item2.Added)
-				{
-					PartNode newOne = new PartNode(args.Item2.Item as Part);
-					parts.Add(args.Item2.Item as Part, newOne);
-					AddChild(newOne);
-				}
-				
-			};
-
-			appState.ActiveModel.Helpers.ItemsChanged += (sender, changed) =>
-			{
-				GetParent().AddChild(new HelpframeNode(changed.Item as Helpframe ?? throw new InvalidOperationException()));
-			};
-			
-			appState.PartSelected += (sender, part) =>
-			{
-				parts[part].SetSelected(true);
-			};
 		
-			appState.PartUnselected += (sender, part) =>
-			{
-				parts[part].SetSelected(false);
-			};
-
-			appState.AllPartsUnselected += (sender, args) =>
-			{
-				foreach (var keyValuePair in parts)
-				{
-					parts[keyValuePair.Key].SetSelected(false);	
-				}
-				
-			};
-
-			appState.IsPeekingChanged += (sender, b) =>
-			{
-				foreach (var keyValuePair in parts)
-				{
-					if (!b)
-					{
-						if (!appState.ActiveEditorState.SelectedParts.Contains(keyValuePair.Key))
-						{
-							parts[keyValuePair.Key].SetVisibility(true);
-							continue;
-						}
-					}
-					
-					if (!appState.ActiveEditorState.SelectedParts.Contains(keyValuePair.Key))
-					{
-						parts[keyValuePair.Key].SetVisibility(!b);
-					}
-					
-					
-				}
-			};
-
-			appState.ModeChanged += (sender, mode) =>
-			{
-			
-				if (mode == EditorMode.ShapeEdit)
-				{
-					_editedPart = appState.ActiveEditorState.SelectedParts.First() as Part;
-					appState.ActiveEditorState.SelectedParts.Clear();
-					appState.ActiveEditorState.SelectPart(_editedPart);
-					parts[_editedPart].SetBeingEdited(true);
-				}
-				else
-				{
-					parts[_editedPart].SetBeingEdited(false);
-				}
-			};
-			//appState.ActiveModel.PartGroups.ItemChanged += (in NotifyCollectionChangedEventArgs<KeyValuePair<string, BubblingObservableList<Part>>> args) => BuildVisuals();
-			//appState.ActiveModel.PartGroups.ItemChanged += i => BuildVisuals();
+		model.Helpers.ItemsChanged += (sender, changed) =>
+		{
+			GetParent().AddChild(new HelpframeNode(changed.Item as Helpframe ?? throw new InvalidOperationException()));
 		};
+		
+		model.PartGroups.NestedCollectionChanged += (sender, args) =>
+
+		{
+			var part = args.Item2.Item as Part;
+			var partNode = new PartNode(part);
+			if (args.Item2.Added)
+			{
+				parts.Add(args.Item2.Item as Part, partNode);
+				AddChild(partNode);
+			}
+			else
+			{
+				parts[part].QueueFree();
+				parts.Remove(part);
+			}
+		};
+
+		model.State.PartSelectionChanged += (sender, tuple) =>
+		{
+			parts[tuple.Item1].SetSelected(tuple.Item2); 
+		};
+			
+		model.State.IsPeekingChanged += (sender, b) =>
+		{
+			foreach (var keyValuePair in parts)
+			{
+				if (!b)
+				{
+					if (!model.State.SelectedParts.Contains(keyValuePair.Key))
+					{
+						parts[keyValuePair.Key].SetVisibility(true);
+						continue;
+					}
+				}
+					
+				if (!model.State.SelectedParts.Contains(keyValuePair.Key))
+				{
+					parts[keyValuePair.Key].SetVisibility(!b);
+				}
+					
+					
+			}
+		};
+		
+		model.State.ModeChanged += (sender, mode) =>
+		{
+			
+			if (mode == EditorMode.ShapeEdit)
+			{
+				_editedPart = model.State.SelectedParts.First() as Part;
+				model.State.SelectedParts.Clear();
+				model.State.SelectPart(_editedPart);
+				parts[_editedPart].SetBeingEdited(true);
+				
+			}
+			else
+			{
+				parts[_editedPart].SetBeingEdited(false);
+			}
+		};
+		
+		foreach (var modelAllPart in model.AllParts)
+		{
+			var newOne = new PartNode(modelAllPart);
+			parts.Add(modelAllPart, newOne);
+			AddChild(newOne);
+		}
 	}
 
 	private void OnButtonPressed()

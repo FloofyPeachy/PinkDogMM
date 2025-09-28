@@ -1,4 +1,4 @@
-using System;
+using System.Linq;
 using Godot;
 using PinkDogMM_Gd.Core.Commands;
 using PinkDogMM_Gd.Core.Configuration;
@@ -6,7 +6,7 @@ using PinkDogMM_Gd.Core.Schema;
 
 namespace PinkDogMM_Gd.Core.Actions.All.TheModel;
 
-public class AddPartAction(String group, AppState state) : IAction
+public class AddPartAtMouseAction(AppState state) : IAction
 {
     
     private Part part;
@@ -15,8 +15,9 @@ public class AddPartAction(String group, AppState state) : IAction
         part = new Shapebox();
         part.Id = state.ActiveModel!.TotalPartCount + 1;
         part.Name = "Part " + (state.ActiveModel!.TotalPartCount + 1);
-        
-        state.ActiveModel!.PartGroups[group].Add(part);
+        var pos = state.ActiveEditorState.WorldMousePosition.Round();
+        part.Position = new Vector3L(pos.X, -pos.Y, -pos.Z);
+        state.ActiveModel!.PartGroups.First().Value.Add(part);
         state.ActiveEditorState?.SelectPart(part);
     }
 
@@ -28,5 +29,5 @@ public class AddPartAction(String group, AppState state) : IAction
     public string TextPrefix => "Added Part";
     public bool AddToStack => true;
     
-    public static int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.A, KeyModifiers.Shift);
+    public static int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.Insert, KeyModifiers.None);
 }

@@ -14,6 +14,7 @@ namespace PinkDogMM_Gd.Core;
 public enum EditorMode
 {
     Normal,
+    Move,
     Resize,
     Rotate,
     ShapeEdit
@@ -26,6 +27,7 @@ public partial class ModelEditorState : Resource
     public HistoryStack History = new();
     public Camera Camera = new(); //RotationX, RotationY, Zoom
     public List<(int, Part)> Hovering = new();
+    public Vector3 WorldMousePosition = Vector3.Zero;
     public string CurrentTexture;
     public Vector3 HoveredSide = Vector3.Zero;
     public bool IsPeeking = false;
@@ -44,10 +46,9 @@ public partial class ModelEditorState : Resource
     }
 
     public EditorMode Mode = EditorMode.Normal;
-    public event EventHandler<Part>? PartSelected;
+    public event EventHandler<(Part, bool)>? PartSelectionChanged;
     public event EventHandler<Renderable>? ObjectSelected;
     public event EventHandler? AllPartsUnselected;
-    public event EventHandler<Part>? PartUnselected;
     public event EventHandler<bool>? IsPeekingChanged;
     public event EventHandler<int>? FocusedCornerChanged;
     
@@ -63,7 +64,8 @@ public partial class ModelEditorState : Resource
             UpdateCamera();
         };
         UpdateCamera();
-        OnPartSelected(part);
+        OnPartSelectionChanged((part, true));
+        OnObjectSelected(part);
     }
 
     public void SelectObject(Renderable objec)
@@ -86,6 +88,9 @@ public partial class ModelEditorState : Resource
             Camera.Position.X = pos.X;
             Camera.Position.Y = -pos.Y;
             Camera.Position.Z = -pos.Z;
+            /*Camera.Position.X = SelectedParts.First().Size.X / 2;
+            Camera.Position.Y = SelectedParts.First().Size.Y / 2;
+            Camera.Position.Z = SelectedParts.First().Size.Z / 2;*/
         }
     }
 
@@ -124,14 +129,15 @@ public partial class ModelEditorState : Resource
     {
         SelectedParts.Remove(part);
         UpdateCamera();
-        
-        OnPartUnselected(part);
+        OnPartSelectionChanged((part, false));
     }
     
     public void UnselectAllParts()
     {
-        SelectedParts.Clear();
-        OnAllPartsUnselected();
+        foreach (var selectedPart in SelectedParts.ToList())
+        {
+            UnselectPart(selectedPart);
+        }
         Camera.Position.X = 0;
         Camera.Position.Y = 0;
         Camera.Position.Z = 0;
@@ -152,21 +158,12 @@ public partial class ModelEditorState : Resource
      
         OnModeChanged(Mode);
     }
-    public void TogglePeek()
+    public void SetPeek(bool peeking)
     {
-        IsPeeking = !IsPeeking;
+        IsPeeking = peeking;
         OnIsPeekingChanged(IsPeeking);
     }
-    protected virtual void OnPartSelected(Part e)
-    {
-        PartSelected?.Invoke(this, e);
-    }
-
-    protected virtual void OnPartUnselected(Part e)
-    {
-        PartUnselected?.Invoke(this, e);
-    }
-    
+   
     protected virtual void OnAllPartsUnselected()
     {
         AllPartsUnselected?.Invoke(this, EventArgs.Empty);
@@ -190,5 +187,10 @@ public partial class ModelEditorState : Resource
     protected virtual void OnObjectSelected(Renderable e)
     {
         ObjectSelected?.Invoke(this, e);
+    }
+
+    protected virtual void OnPartSelectionChanged((Part, bool) e)
+    {
+        PartSelectionChanged?.Invoke(this, e);
     }
 }

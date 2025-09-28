@@ -13,7 +13,6 @@ public partial class PivotXY2 : Node3D
 	private Node3D pivotY;
 	private Node3D pivotX;
 	private Camera3D camera;
-	private AppState? appState;
 	private PopupMenu popupMenu;
 	private const float Sensitivity = 0.5f;
 	private const float ZoomSpeed = 0.1f;
@@ -23,18 +22,19 @@ public partial class PivotXY2 : Node3D
 	private Vector2 ClickPosition = Vector2.Zero;
 	private bool RightButtDown = false;
 	private bool menuUp;
-
+	private ModelEditorState state;
+	
 	public override void _Ready()
 	{
 		pivotY = GetNode<Node3D>("PivotY");
 		popupMenu = GetNode<PopupMenu>("PopupMenu");
 		pivotX = GetNode<Node3D>("PivotY/PivotX");
 		camera = GetNode<Camera3D>("PivotY/PivotX/Camera3D");
-		appState = GetNode("/root/AppState") as AppState;
-		appState.ActiveModelChanged += (index) =>
-		{
-			appState.ActiveEditorState.Camera.Position.PropertyChanged += (sender, args) => { SetTranslation(); };
-		};
+
+		state = Model.Get(this).State;
+		
+		state.Camera.Position.PropertyChanged += (sender, args) => { SetTranslation(); };
+		
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -45,7 +45,7 @@ public partial class PivotXY2 : Node3D
 
 	public void SetTranslation()
 	{
-		ActualPosition = appState.ActiveModel.State.Camera.Position.AsVector3() * 0.0625f;
+		ActualPosition = state.Camera.Position.AsVector3() * 0.0625f;
 	}
 
 	public override void _Input(InputEvent @event)
@@ -79,6 +79,9 @@ public partial class PivotXY2 : Node3D
 
 // Vertical (around local X)
 		pivotX.Rotate(pivotX.Transform.Basis.X, -motion.Relative.Y * Mathf.DegToRad(Sensitivity));
+		state.Camera.RotationZoom.X = pivotX.Rotation.X;
+		state.Camera.RotationZoom.Y = pivotY.Rotation.Y;
+		
 		GetViewport().SetInputAsHandled();
 	}
 

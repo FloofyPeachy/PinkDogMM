@@ -28,5 +28,5 @@ public class NewModelAction : IAction<Model>
     public string Id { get; }
     public Model Result => model;
     
-    public static int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.N, Modifiers.Ctrl);
+    public static int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.N, KeyModifiers.Ctrl);
 }

@@ -11,74 +11,40 @@ public partial class TreeBit : Tree
 {
 	private List<int> selected = [];
 	private List<TreeItem> items = [];
+	private Model model;
 	public override void _Ready()
 	{
-		AppState appState = GetNode("/root/AppState") as AppState;
-		Debug.Assert(appState != null, nameof(appState) + " != null");
-		appState.ActiveModelChanged += (index) =>
-		{
-			HandleModel();
-			UpdateEverything();
-		};
-		appState.PartSelected += (sender, part) =>
-		{
-			selected.Add(part.Id);
-		};
-		
-		appState.PartUnselected += (sender, part) =>
-		{
-			selected.Remove(part.Id);
-		};
 
-		appState.AllPartsUnselected += (sender, args) =>
-		{
-			selected.Clear();
-		};
-
-	}
-
-	public void HandleModel()
-	{
-		AppState appState = GetNode("/root/AppState") as AppState;
-		Model? model = appState.ActiveModel;
-		if (model == null) return;
+		model = Model.Get(this);
+		model.PartGroups.NestedCollectionChanged += (sender, args) => PopulateTree();
+		model.PartGroups.ItemsChanged += (sender, args) => PopulateTree();
 		model.PartGroups.ItemChanged += (sender, args) =>
 		{
-			PopulateTree(model);
+			PopulateTree();
 		};
-
-		model.PartGroups.ItemsChanged += (sender, args) => PopulateTree(model);
-		/*model.State.SelectedParts.Changed += () =>
+		
+		model.State.PartSelectionChanged += (sender, tuple) =>
+		{
+			if (tuple.Item2)
+			{
+				selected.Add(tuple.Item1.Id);
+			}
+			else
+			{
+				selected.Remove(tuple.Item1.Id);
+			}
+			
+		};
+		
+		model.State.AllPartsUnselected += (sender, args) =>
 		{
 			selected.Clear();
-			foreach (var i in model.State.SelectedParts)
-			{
-				selected.Add(i.Id);
-			}
-
-			PopulateTree(model);
-
 		};
-
-		model.PartGroups.ItemChanged += index =>
-		{
-			GD.Print("item changed!!");
-			UpdateEverything();
-		};
-
-		foreach (var modelPartGroup in model.PartGroups)
-		{
-			modelPartGroup.Value.Changed += UpdateEverything;
-		}*/
+		PopulateTree();
 	}
 
-	public void UpdateEverything()
-	{
-		AppState appState = GetNode("/root/AppState") as AppState;
-		PopulateTree(appState.ActiveModel);
-	}
 
-	private void PopulateTree(Model model)
+	private void PopulateTree()
 	{
 		this.Clear();
 		var tree = this;

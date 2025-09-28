@@ -8,9 +8,9 @@ using PinkDogMM_Gd.Core.Schema;
 namespace PinkDogMM_Gd.Core.Actions.All.Editor;
 
 [Tool]
-public class LoadModelAction(string path) : IAction<Model>
+public class LoadModelAction(string path, AppState state) : IAction<Model>
 {
-    public static int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.O, Modifiers.Ctrl);
+    public static int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.O, KeyModifiers.Ctrl);
 
     public void Execute()
     {

@@ -7,7 +7,7 @@ public interface IKeybindSettings
     IEnumerable<IKeybind> Parts { get; }
 }
 
-public enum Modifiers
+public enum KeyModifiers
 {
     None  = 0,
     Shift = 1 << 16,
@@ -21,13 +21,13 @@ public interface IKeybind
     int Key { get; set; }
     string Action { get; set; }
     
-    int KeyAndModifiers(int keyCode, Modifiers modifiers)
+    int KeyAndModifiers(int keyCode, KeyModifiers keyModifiers)
     {
-        return keyCode | (int)modifiers;
+        return keyCode | (int)keyModifiers;
     }
     
     int GetKey() => Key & 0xFFFF;
     
-    Modifiers GetModifiers() => (Modifiers)(Key & ~0xFFFF);
+    KeyModifiers GetModifiers() => (KeyModifiers)(Key & ~0xFFFF);
     
 }

@@ -29,12 +29,13 @@ public partial class PartNode(Part part) : Node3D
         
        
         SetMesh();
-        
+        Scale = new Vector3(0.001f, 0.001f, 0.0001f);
     }
 
     public void SetSelected(bool selected)
     {
         this._selected = selected;
+        
         ((_outlineMesh.MaterialOverride as StandardMaterial3D)!).AlbedoColor = selected ? Colors.Yellow : Colors.Gray;
         
     }
@@ -124,7 +125,7 @@ public partial class PartNode(Part part) : Node3D
     {
         this.Scale = this.Scale.Lerp(Vector3.One * 0.0625f, (float)delta * 16.0f);
         Position = this.Position.Lerp(new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f, (float)delta * 24.0f);
-        _outlineMesh.GlobalPosition = _outlineMesh.GlobalPosition.Lerp(new Vector3(part.Position.X, -part.Position.Y, part.Position.Z) * 0.0625f, (float)delta * 24.0f);
+        _outlineMesh.Position = _outlineMesh.GlobalPosition.Lerp(new Vector3(part.Position.X, -part.Position.Y, part.Position.Z) * 0.0625f, (float)delta * 24.0f);
     }
 
     private void SetMesh()
@@ -158,7 +159,7 @@ public partial class PartNode(Part part) : Node3D
        
         _outlineMesh.Name = part.Name + "Outline";
         _outlineMesh.Mesh = MeshGenerator.OutlineMeshFromPart(part);
-        _outlineMesh.Position = new Vector3(part.Position.X, -part.Position.Y, part.Position.Z) * 0.0625f;
+        _outlineMesh.Position = new Vector3(part.Position.X, -part.Position.Y, -part.Position.Z) * 0.0625f;
         _outlineMesh.Scale = Vector3.One;
         _outlineMesh.MaterialOverride = new StandardMaterial3D()
         {

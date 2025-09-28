@@ -23,10 +23,6 @@ script = ExtResource("3_gfrwf")
 layout_mode = 2
 alignment = 2
 
-[node name="Button" type="Button" parent="HBoxContainer"]
-layout_mode = 2
-text = "X"
-
 [node name="Button2" type="Button" parent="HBoxContainer"]
 layout_mode = 2
 text = "M"
@@ -34,5 +30,9 @@ text = "M"
 [node name="Button3" type="Button" parent="HBoxContainer"]
 layout_mode = 2
 text = "M"
+
+[node name="Button" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+text = "X"
 
 [connection signal="gui_input" from="." to="." method="_on_TitleBar_gui_input"]

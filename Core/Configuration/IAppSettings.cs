@@ -5,5 +5,5 @@ namespace PinkDogMM_Gd.Core.Configuration;
 public interface IAppSettings : INotifyPropertyChanged
 {
     IGeneralSettings General { get; set; }
-    
+    IViewportSettings Viewport { get; set; }
 }

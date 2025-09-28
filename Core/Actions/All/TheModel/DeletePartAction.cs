@@ -5,12 +5,24 @@ using PinkDogMM_Gd.Core.Schema;
 
 namespace PinkDogMM_Gd.Core.Actions.All.TheModel;
 
-public class DeletePartAction(int id, AppState state) : IAction
+public class DeletePartAction(AppState state) : IAction
 {
-    
+    private int id = -1;
     public void Execute()
     {
-        var part = state.ActiveModel!.GetPartById(id);
+        
+        if (id != -1)
+        {
+            var part = state.ActiveModel!.GetPartById(id);
+        }
+        else
+        {
+            foreach (var selectedPart in state.ActiveEditorState.SelectedParts)
+            {
+                state.ActiveModel.RemovePart(selectedPart.Id);
+            }
+        }
+      
     }
 
     public void Undo()
@@ -21,5 +33,11 @@ public class DeletePartAction(int id, AppState state) : IAction
     public bool AddToStack { get; }
     public string TextPrefix => "Deleted Part";
     
-    public static int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.Delete, Modifiers.None);
+    public static int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.Delete, KeyModifiers.None);
+
+    public DeletePartAction(int id, AppState state) : this(state)
+    {
+        this.id = id;
+    }
+  
 }
