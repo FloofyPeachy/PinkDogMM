@@ -23,6 +23,7 @@ public partial class ModelNode : Node3D
 	public override void _Ready()
 	{
 		model = Model.Get(this);
+		SetMeta("model", model);
 		appState = GetNode("/root/AppState") as AppState;
 		Debug.Assert(appState != null, nameof(appState) + " != null");
 		
@@ -74,6 +75,14 @@ public partial class ModelNode : Node3D
 					
 			}
 		};
+
+		model.State.ObjectHoveringChanged += (sender, renderable) =>
+		{
+			foreach (var keyValuePair in parts)
+			{
+				keyValuePair.Value.SetHovering(keyValuePair.Key == renderable);
+			}
+		};
 		
 		model.State.ModeChanged += (sender, mode) =>
 		{
@@ -88,7 +97,7 @@ public partial class ModelNode : Node3D
 			}
 			else
 			{
-				parts[_editedPart].SetBeingEdited(false);
+				//parts[_editedPart].SetBeingEdited(false);
 			}
 		};
 		
@@ -97,9 +106,32 @@ public partial class ModelNode : Node3D
 			var newOne = new PartNode(modelAllPart);
 			parts.Add(modelAllPart, newOne);
 			AddChild(newOne);
+			newOne.Owner = this;
 		}
 	}
 
+	public void RebuildAll()
+	{
+		foreach (var keyValuePair in parts)
+		{
+			keyValuePair.Value.QueueFree();
+		}
+		parts.Clear();
+		
+		foreach (var modelAllPart in model.AllParts)
+		{
+			var newOne = new PartNode(modelAllPart);
+			parts.Add(modelAllPart, newOne);
+			AddChild(newOne);
+		}
+	}
+	public void RefreshAll()
+	{
+		foreach (var keyValuePair in parts)
+		{
+			keyValuePair.Value.UpdateMesh(true);
+		}
+	}
 	private void OnButtonPressed()
 	{
 		foreach (var findChild in this.GetChildren())

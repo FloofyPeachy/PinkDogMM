@@ -9,11 +9,17 @@ public interface IAction
     public string TextPrefix { get; }
     public static int DefaultKeys { get; }
     void Execute();
+    
     void Undo();
     
     public bool AddToStack { get; }
     
     
+}
+
+public interface IStagedAction : IAction
+{
+    void Update();
 }
 
 public class ActionResult

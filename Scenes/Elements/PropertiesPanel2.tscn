@@ -113,12 +113,16 @@ label_settings = SubResource("LabelSettings_c6cty")
 [node name="PosX" type="SpinBox" parent="VBoxContainer/Position"]
 layout_mode = 2
 size_flags_horizontal = 3
+allow_greater = true
+allow_lesser = true
 metadata/WatchedField = "Position.X"
 metadata/PropertyToUpdate = "Value"
 
 [node name="PosY" type="SpinBox" parent="VBoxContainer/Position"]
 layout_mode = 2
 size_flags_horizontal = 3
+allow_greater = true
+allow_lesser = true
 metadata/WatchedField = "Position.Y"
 
 [node name="PosZ" type="SpinBox" parent="VBoxContainer/Position"]
@@ -126,31 +130,68 @@ layout_mode = 2
 size_flags_horizontal = 3
 min_value = -1000.0
 max_value = 1000.0
+allow_greater = true
+allow_lesser = true
 metadata/WatchedField = "Position.Z"
 
-[node name="Position2" type="HBoxContainer" parent="VBoxContainer"]
+[node name="Offset" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/Position2"]
+[node name="Label" type="Label" parent="VBoxContainer/Offset"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Offset"
 label_settings = SubResource("LabelSettings_c6cty")
 
-[node name="PosX" type="SpinBox" parent="VBoxContainer/Position2"]
+[node name="PosX" type="SpinBox" parent="VBoxContainer/Offset"]
 layout_mode = 2
 size_flags_horizontal = 3
 metadata/WatchedField = "Position.X"
 metadata/PropertyToUpdate = "Value"
 
-[node name="PosY" type="SpinBox" parent="VBoxContainer/Position2"]
+[node name="PosY" type="SpinBox" parent="VBoxContainer/Offset"]
 layout_mode = 2
 size_flags_horizontal = 3
 metadata/WatchedField = "Position.Y"
 
-[node name="PosZ" type="SpinBox" parent="VBoxContainer/Position2"]
+[node name="PosZ" type="SpinBox" parent="VBoxContainer/Offset"]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = -1000.0
 max_value = 1000.0
 metadata/WatchedField = "Position.Z"
+
+[node name="Rotation" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Rotation"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Rotation"
+label_settings = SubResource("LabelSettings_c6cty")
+
+[node name="PosX" type="SpinBox" parent="VBoxContainer/Rotation"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -180.0
+max_value = 180.0
+allow_greater = true
+allow_lesser = true
+metadata/WatchedField = "Rotation.X"
+metadata/PropertyToUpdate = "Value"
+
+[node name="PosY" type="SpinBox" parent="VBoxContainer/Rotation"]
+layout_mode = 2
+size_flags_horizontal = 3
+allow_greater = true
+allow_lesser = true
+metadata/WatchedField = "Rotation.Y"
+
+[node name="PosZ" type="SpinBox" parent="VBoxContainer/Rotation"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -1000.0
+max_value = 1000.0
+allow_greater = true
+allow_lesser = true
+metadata/WatchedField = "Rotation.Z"

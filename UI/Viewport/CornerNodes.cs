@@ -27,7 +27,7 @@ public partial class CornerNodes(Part part) : Node3D
                 PositionCorners();
             }
         };
-        GetNode<AppState>("/root/AppState").FocusedCornerChanged += (sender, i) => { SetFocusedAll(i); };
+        //GetNode<AppState>("/root/AppState").FocusedCornerChanged += (sender, i) => { SetFocusedAll(i); };
         
         PositionCorners();
         VisibilityChanged += () =>

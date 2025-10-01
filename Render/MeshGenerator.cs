@@ -35,7 +35,7 @@ public class MeshGenerator
             {
                 (Vector3, Vector2)[] side = enumerator.Current;
                
-               // GD.Print(side.Length);
+               // PL.I.Info(side.Length);
                List<(Vector3, Vector2)> tri1 = [side[0], side[1], side[2]];
                List<(Vector3, Vector2)> tri2 = [side[0], side[2], side[3]];
                     
@@ -184,15 +184,11 @@ public class MeshGenerator
         st.Begin(Mesh.PrimitiveType.Lines);
         st.SetSmoothGroup(UInt32.MaxValue);
         List<Vector3> vectors = CreatePartVectors(part);
+        
         foreach (var vector3 in vectors)
         {
             st.AddVertex(vector3);
-            st.AddVertex(vector3);
-            st.AddVertex(vector3);
-            st.AddVertex(vector3);
-            st.AddVertex(vector3);
-            st.AddVertex(vector3);
-            st.AddVertex(vector3);
+
             
         }
         return st.Commit();
@@ -316,6 +312,8 @@ public class MeshGenerator
         }.ToList();
     }
 
+    /*static float U(int x, float textureWidth) => (float)x / textureWidth;
+    static float V(int y, float textureHeight) => (float)y / textureHeight;*/
     static float U(int x, float textureWidth) => (float)x / textureWidth;
     static float V(int y, float textureHeight) => (float)y / textureHeight;
     public static List<Vector3> CreatePartVectors(Part part)
@@ -405,37 +403,37 @@ public class MeshGenerator
     
     public static List<Vector3>  CreateShapeboxVectors(Shapebox part)
     {
-        float z1 = part.Offset.X - part.ShapeboxX[0];
-        float y1 = part.Offset.Y + part.ShapeboxY[0];
-        float x1 = part.Offset.Z - part.ShapeboxZ[0];
+        float z1 = part.Offset.X - part.Sections[0].X;
+        float y1 = part.Offset.Y + part.Sections[0].Y;
+        float x1 = part.Offset.Z - part.Sections[0].Z;
 
-        float z2 = part.Size.X + part.Offset.X + part.ShapeboxX[1];
-        float y2 = part.Offset.Y + part.ShapeboxY[1];
-        float x2 = part.Offset.Z - part.ShapeboxZ[1];
+        float z2 = part.Size.X + part.Offset.X + part.Sections[1].X;
+        float y2 = part.Offset.Y + part.Sections[1].Y;
+        float x2 = part.Offset.Z - part.Sections[1].Z;
 
-        float z3 = part.Size.X + part.Offset.X + part.ShapeboxX[2];
-        float y3 = part.Offset.Y + part.ShapeboxY[2];
-        float x3 = part.Size.Z + part.Offset.Z + part.ShapeboxZ[2];
+        float z3 = part.Size.X + part.Offset.X + part.Sections[2].X;
+        float y3 = part.Offset.Y + part.Sections[2].Y;
+        float x3 = part.Size.Z + part.Offset.Z + part.Sections[2].Z;
 
-        float z4 = part.Offset.X - part.ShapeboxX[3];
-        float y4 = part.Offset.Y + part.ShapeboxY[3];
-        float x4 = part.Size.Z + part.Offset.Z + part.ShapeboxZ[3];
+        float z4 = part.Offset.X - part.Sections[3].X;
+        float y4 = part.Offset.Y + part.Sections[3].Y;
+        float x4 = part.Size.Z + part.Offset.Z + part.Sections[3].Z;
 
-        float z5 = part.Offset.X - part.ShapeboxX[4];
-        float y5 = (-part.Size.Y) - part.Offset.Y - part.ShapeboxY[4];
-        float x5 = part.Offset.Z - part.ShapeboxZ[4];
+        float z5 = part.Offset.X - part.Sections[4].X;
+        float y5 = (-part.Size.Y) - part.Offset.Y - part.Sections[4].Y;
+        float x5 = part.Offset.Z - part.Sections[4].Z;
 
-        float z6 = part.Size.X + part.Offset.X + part.ShapeboxX[5];
-        float y6 = (-part.Size.Y) - part.Offset.Y - part.ShapeboxY[5];
-        float x6 = part.Offset.Z - part.ShapeboxZ[5];
+        float z6 = part.Size.X + part.Offset.X + part.Sections[5].X;
+        float y6 = (-part.Size.Y) - part.Offset.Y - part.Sections[5].Y;
+        float x6 = part.Offset.Z - part.Sections[5].Z;
 
-        float z7 = part.Size.X + part.Offset.X + part.ShapeboxX[6];
-        float y7 = (-part.Size.Y) - part.Offset.Y - part.ShapeboxY[6];
-        float x7 = part.Size.Z + part.Offset.Z + part.ShapeboxZ[6];
+        float z7 = part.Size.X + part.Offset.X + part.Sections[6].X;
+        float y7 = (-part.Size.Y) - part.Offset.Y - part.Sections[6].Y;
+        float x7 = part.Size.Z + part.Offset.Z + part.Sections[6].Z;
 
-        float z8 = part.Offset.X - part.ShapeboxX[7];
-        float y8 = (-part.Size.Y) - part.Offset.Y - part.ShapeboxY[7];
-        float x8 = part.Size.Z + part.Offset.Z + part.ShapeboxZ[7];
+        float z8 = part.Offset.X - part.Sections[7].X;
+        float y8 = (-part.Size.Y) - part.Offset.Y - part.Sections[7].Y;
+        float x8 = part.Size.Z + part.Offset.Z + part.Sections[7].Z;
     
         float[] colorData = new float[108];
         

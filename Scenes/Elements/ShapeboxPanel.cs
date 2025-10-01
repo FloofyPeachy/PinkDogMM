@@ -30,7 +30,7 @@ public partial class ShapeboxPanel : EventMessenger
 			});
 			hbox.GuiInput += @event =>
 			{
-				GD.Print(@event);
+				PL.I.Info(@event);
 			};
 
 			var rect = new ColorRect();

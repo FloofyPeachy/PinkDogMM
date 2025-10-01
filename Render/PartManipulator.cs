@@ -1,5 +1,6 @@
 using Godot;
 using Godot.Collections;
+using PinkDogMM_Gd.Core;
 using PinkDogMM_Gd.Core.Schema;
 
 namespace PinkDogMM_Gd.Render;
@@ -11,7 +12,7 @@ public partial class PartManipulator(PartMesh mesh) : Node3D
     public override void _Ready()
     {
         base._Ready();
-        GD.Print("Readuy!!");
+        PL.I.Info("Readuy!!");
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -23,7 +24,7 @@ public partial class PartManipulator(PartMesh mesh) : Node3D
            
             if (DragDirection == Vector3.Up || DragDirection == Vector3.Down)
             {
-                /*//GD.Print(vector3.Value);
+                /*//PL.I.Info(vector3.Value);
                 mesh.part.Size.Y = mesh.part.Size.Y + motion.Relative.Y *  0.01f;
                 /*if (motion.Relative.Y * 2f > 0)
                 {
@@ -38,14 +39,14 @@ public partial class PartManipulator(PartMesh mesh) : Node3D
             {
                 mesh.part.Size.X += motion.Relative.X * 0.001f;
                 //mesh.part.Size.X = Mathf.RoundToInt(mesh.part.Size.X);
-                GD.Print(Mathf.RoundToInt(mesh.part.Size.X));
+                PL.I.Info(Mathf.RoundToInt(mesh.part.Size.X));
                 //mesh.part.Size.X = Mathf.Round(mesh.part.Size.X);
-                /*GD.Print(motion.Relative.X );
+                /*PL.I.Info(motion.Relative.X );
                 mesh.part.Size.X += Mathf.Round(motion.Relative.X * 0.01f);
                 motion.Relative.Length*/
                 var cam = GetParent().GetParent().GetNode("../PivotXY2/PivotY/PivotX/Camera3D") as Camera3D;
-               // GD.Print(cam.ProjectRayNormal(motion.Position));
-                /*GD.Print(DeltaOnAxis(motion.Position, DragDirection, motion.Relative.Length()));
+               // PL.I.Info(cam.ProjectRayNormal(motion.Position));
+                /*PL.I.Info(DeltaOnAxis(motion.Position, DragDirection, motion.Relative.Length()));
                 mesh.part.Size.X += DeltaOnAxis(motion.Position, DragDirection, motion.Relative.Length());*/
 
             } else if (DragDirection == Vector3.Forward || DragDirection == Vector3.Back)
@@ -71,7 +72,7 @@ public partial class PartManipulator(PartMesh mesh) : Node3D
 
                     if (vector3.Key == Vector3.Up || vector3.Key == Vector3.Down)
                     {
-                        GD.Print(vector3.Value);
+                        PL.I.Info(vector3.Value);
                         mesh.part.Size.Y += motion.Relative.Y;
                     }
                 }
@@ -87,13 +88,13 @@ public partial class PartManipulator(PartMesh mesh) : Node3D
                 if (normal != null)
                 {
                     DragDirection = normal.Value;
-                    GD.Print("Dragging now!" + DragDirection);
+                    PL.I.Info("Dragging now!" + DragDirection);
                 }
             }
             else
             {
                 DragDirection = Vector3.Zero;
-                  GD.Print("Not dragging now!");
+                  PL.I.Info("Not dragging now!");
             }
         }
     }

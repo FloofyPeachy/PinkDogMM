@@ -117,13 +117,13 @@ public partial class PartMesh(Part part) : MeshInstance3D
             var child = GetChildren().Last() as StaticBody3D;
             child!.SetMeta("id", part.Id);
             staticBody = child;
-            GD.Print("Rebuilt mesh for " + part.Name + "!");
+            PL.I.Info("Rebuilt mesh for " + part.Name + "!");
         }
         Position = new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f;
         outlineMesh.GlobalPosition = new Vector3(part.Position.X, -part.Position.Y, -part.Position.Z) * 0.0625f;
         outlineMesh.Name = part.Name + " Outline";
         
-        GD.Print("Updated mesh for " + part.Name + "!");
+        PL.I.Info("Updated mesh for " + part.Name + "!");
     }
     /*
     private void CreateMesh()
@@ -178,7 +178,7 @@ public partial class PartMesh(Part part) : MeshInstance3D
 
     private void SetMesh()
     {
-        GD.Print("Generated mesh for " + part.Name + "!");
+        PL.I.Info("Generated mesh for " + part.Name + "!");
         Mesh = MeshGenerator.MeshFromPart(part, new Vector2(512, 512));
         
         Position = new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f;
@@ -187,10 +187,11 @@ public partial class PartMesh(Part part) : MeshInstance3D
         var child = GetChild<StaticBody3D>(0);
         child.SetMeta("id", part.Id);
         child.InputRayPickable = true;
+        
         /*child.CollisionLayer = 0;
         child.InputEvent += (camera, @event, position, normal, idx) =>
         {
-            GD.Print("clicked!!");
+            PL.I.Info("clicked!!");
         };*/
         
         MaterialOverride = new StandardMaterial3D()
@@ -214,10 +215,7 @@ public partial class PartMesh(Part part) : MeshInstance3D
             ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
             VertexColorUseAsAlbedo = true,
         };
-
         
-      
-
         AddChild(outlineMesh);
         this.Scale = new Vector3(0.1f, 0.1f, 0.1f);
         

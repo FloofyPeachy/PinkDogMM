@@ -25,7 +25,7 @@ public partial class DebugText : Label
 			builder.Append("\nFocused corner: " + state.ActiveModel.State.FocusedCorner);
 			builder.Append("\nMode: " + state.ActiveModel.State.Mode);
 			builder.Append("\nSelected: " +  String.Join(", ", state.ActiveModel.State.SelectedParts));
-			builder.Append("\nHovering: " + String.Join(", ", state.ActiveModel.State.Hovering));
+			builder.Append("\nHovering: " + state.ActiveModel.State.Hovering);
 			builder.Append("\nHovered side: " + state.ActiveModel.State.HoveredSide);
 
 			if (state.ActiveEditorState.Mode == EditorMode.ShapeEdit)

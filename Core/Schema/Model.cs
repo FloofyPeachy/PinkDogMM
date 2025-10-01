@@ -35,7 +35,17 @@ public partial class Model : Resource
         return null;
 
     }
+    public (string, Renderable)? GetObjectById(int id)
+    {
+        foreach (var group in PartGroups)
+        {
+            var part = group.Value.FirstOrDefault(part => part.Id == id);
+            if (part != null) return (group.Key, part);
+        }
 
+        return null;
+
+    }
     public bool RemovePart(int id)
     {
         var part = GetPartById(id);
@@ -51,7 +61,7 @@ public partial class Model : Resource
 
     public static Model Get(Node it)
     {
-        return it.Owner.GetMeta("model").As<Model>();
+        return it.Owner != null ? it.Owner.GetMeta("model").As<Model>() : it.GetParent().GetMeta("model").As<Model>();
     }
 }
 

@@ -28,7 +28,7 @@ public partial class ActionRegistry : Node
             if (type.FullName == null || !type.FullName.StartsWith("PinkDogMM_Gd.Core.Actions.All")) continue;
             var newName = type.FullName.Substring(30).Replace(".", "/").Replace("Action", "");
             actions.Add(newName, type);
-            GD.Print($"Added action {newName}");
+            PL.I.Info($"Added action {newName}");
 
             var keyInt =
                 (int)((type.GetProperty("DefaultKeys", BindingFlags.Static | BindingFlags.Public)?.GetValue(null)) ??
@@ -52,7 +52,7 @@ public partial class ActionRegistry : Node
             /*InputMap.Singleton.AddAction(newName);
             InputMap.Singleton.ActionAddEvent(newName, kevent);*/
 
-            GD.Print("Added key binding for action: " + kevent);
+            PL.I.Info("Added key binding for action: " + kevent);
         }
     }
 

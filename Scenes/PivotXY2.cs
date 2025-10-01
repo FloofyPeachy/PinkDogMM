@@ -15,7 +15,7 @@ public partial class PivotXY2 : Node3D
 	private Camera3D camera;
 	private PopupMenu popupMenu;
 	private const float Sensitivity = 0.5f;
-	private const float ZoomSpeed = 0.1f;
+	private const float ZoomSpeed = 0.2f;
 	private Vector3 ActualPosition;
 	private const float RayLength = 1000.0f;
 	private const float DragThreshold = 2f;

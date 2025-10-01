@@ -20,10 +20,10 @@ public class Renderable : INotifyPropertyChanged
     
     public Renderable()
     {
-        Position.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Position));
-        Size.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Size));
-        Rotation.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Rotation));
-        TextureSize.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(TextureSize));
+        Position.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Position) + "." + args.PropertyName);
+        Size.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Size) + "." + args.PropertyName);
+        Rotation.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Rotation) + "." + args.PropertyName);
+        TextureSize.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(TextureSize) + "." + args.PropertyName);
     }
     
     

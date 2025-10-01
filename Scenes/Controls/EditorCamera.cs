@@ -1,4 +1,5 @@
 using Godot;
+using PinkDogMM_Gd.Core;
 
 namespace PinkDogMM_Gd.Scenes.Controls;
 
@@ -21,7 +22,7 @@ public partial class EditorCamera : Camera3D
 		_camera = this;
 		UpdateCameraPosition();
 		var model = GetNode<ModelNode>("../TheModel");
-		GD.Print("g");
+		PL.I.Info("g");
 		Target = model;
 		Fov = 30.0f; //
 	}

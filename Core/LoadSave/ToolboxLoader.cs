@@ -78,8 +78,8 @@ public class ToolboxLoader : ModelLoader
     {
         var sections = new BubblingObservableList<Vector3L>();
         var shapeboxX = line.Skip(20).Take(8).Select(float.Parse).ToList();
-        var shapeboxY = line.Skip(20).Take(8).Select(float.Parse).ToList();
-        var shapeboxZ = line.Skip(20).Take(8).Select(float.Parse).ToList();
+        var shapeboxY = line.Skip(28).Take(8).Select(float.Parse).ToList();
+        var shapeboxZ = line.Skip(36).Take(8).Select(float.Parse).ToList();
         
         
         for (var i = 0; i < 8; i++)

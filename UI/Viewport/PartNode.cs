@@ -13,13 +13,11 @@ public partial class PartNode(Part part) : Node3D
     private MeshInstance3D? _outlineMesh;
     private StaticBody3D? _staticBody;
     private CornerNodes _cornerNodes;
-    private AppState _appState = null!;
+    private Model model;
     private bool _selected;
     private bool _beingEdited;
         public override void _Ready()
     {
-        _appState = (GetNode("/root/AppState") as AppState)!;
-        
         Name = part.Name;
         Scale = new Vector3(0.0625f, 0.0625f, 0.0625f);
         part.PropertyChanged += (sender, args) =>
@@ -27,7 +25,8 @@ public partial class PartNode(Part part) : Node3D
             UpdateMesh(args.PropertyName == "Size" || args.PropertyName.Contains("Shapebox"));
         };
         
-       
+        model = Model.Get(this);
+        
         SetMesh();
         Scale = new Vector3(0.001f, 0.001f, 0.0001f);
     }
@@ -39,7 +38,12 @@ public partial class PartNode(Part part) : Node3D
         ((_outlineMesh.MaterialOverride as StandardMaterial3D)!).AlbedoColor = selected ? Colors.Yellow : Colors.Gray;
         
     }
-
+    public void SetHovering(bool selected)
+    {
+        if (_selected) return;
+        ((_outlineMesh.MaterialOverride as StandardMaterial3D)!).AlbedoColor = selected ? Colors.Orange : Colors.Gray;
+        
+    }
     public void SetBeingEdited(bool edited)
     {
         this._beingEdited = edited;
@@ -55,7 +59,7 @@ public partial class PartNode(Part part) : Node3D
         
         _partMesh.Visible = visible;
     }
-    private void UpdateMesh(bool rebuildMesh)
+    public void UpdateMesh(bool rebuildMesh)
     {
         if (rebuildMesh)
         {
@@ -68,12 +72,12 @@ public partial class PartNode(Part part) : Node3D
             var child = _partMesh.GetChildren().Last() as StaticBody3D;
             child!.SetMeta("id", part.Id);
             _staticBody = child;
-            GD.Print("Rebuilt mesh for " + part.Name + "!");
+            PL.I.Info("Rebuilt mesh for " + part.Name + "!");
         }
       
         _outlineMesh.Name = part.Name + " Outline";
         
-        GD.Print("Updated mesh for " + part.Name + "!");
+        PL.I.Info("Updated mesh for " + part.Name + "!");
     }
     /*
     private void CreateMesh()
@@ -123,9 +127,11 @@ public partial class PartNode(Part part) : Node3D
 
     public override void _PhysicsProcess(double delta)
     {
-        this.Scale = this.Scale.Lerp(Vector3.One * 0.0625f, (float)delta * 16.0f);
+    
         Position = this.Position.Lerp(new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f, (float)delta * 24.0f);
-        _outlineMesh.Position = _outlineMesh.GlobalPosition.Lerp(new Vector3(part.Position.X, -part.Position.Y, part.Position.Z) * 0.0625f, (float)delta * 24.0f);
+       // RotationDegrees = this.RotationDegrees.Lerp(new Vector3(0,0,0), (float)delta * 24.0f);
+        this.Scale = this.Scale.Lerp(Vector3.One * 0.0625f, (float)delta * 16.0f);
+        _outlineMesh.GlobalPosition = _outlineMesh.GlobalPosition.Lerp(new Vector3(part.Position.X, -part.Position.Y, -part.Position.Z) * 0.0625f, (float)delta * 24.0f);
     }
 
     private void SetMesh()
@@ -144,14 +150,17 @@ public partial class PartNode(Part part) : Node3D
         var child = _partMesh.GetChild<StaticBody3D>(0);
         child.SetMeta("id", part.Id);
         child.InputRayPickable = true;
-       
+        child.InputEvent += (camera, @event, position, normal, idx) =>
+        {
+            PL.I.Info("inptu!!!");
+        };
         _partMesh.MaterialOverride = new StandardMaterial3D()
         {
             ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
-            AlbedoTexture = _appState.ActiveModel.HasTextures
-                ? _appState.ActiveModel.Textures["Default"].Image
+            AlbedoTexture = model.HasTextures
+                ? model.Textures["Default"].Image
                 : null,
-            VertexColorUseAsAlbedo = !_appState.ActiveModel.HasTextures,
+            VertexColorUseAsAlbedo = !model.HasTextures,
             TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest,
             CullMode = BaseMaterial3D.CullModeEnum.Disabled,
         };
@@ -159,7 +168,7 @@ public partial class PartNode(Part part) : Node3D
        
         _outlineMesh.Name = part.Name + "Outline";
         _outlineMesh.Mesh = MeshGenerator.OutlineMeshFromPart(part);
-        _outlineMesh.Position = new Vector3(part.Position.X, -part.Position.Y, -part.Position.Z) * 0.0625f;
+        _outlineMesh.Position = new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f;
         _outlineMesh.Scale = Vector3.One;
         _outlineMesh.MaterialOverride = new StandardMaterial3D()
         {
@@ -172,6 +181,6 @@ public partial class PartNode(Part part) : Node3D
         AddChild(_outlineMesh);
         
         Scale = new Vector3(0.0625f, 0.0625f, 0.0625f);
-        GD.Print("Generated mesh for " + part.Name + "!");
+        PL.I.Info("Generated mesh for " + part.Name + "!");
     }
 }

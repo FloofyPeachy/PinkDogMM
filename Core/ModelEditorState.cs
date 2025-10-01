@@ -19,19 +19,30 @@ public enum EditorMode
     Rotate,
     ShapeEdit
 }
+
+public enum Axis {
+    X,
+    Y,
+    Z,
+    All
+}
+
+
 public partial class ModelEditorState : Resource
 {
     public ObservableCollection<Part> SelectedParts = new();
     public ObservableCollection<Renderable> SelectedObjects = new();
     
+    
     public HistoryStack History = new();
     public Camera Camera = new(); //RotationX, RotationY, Zoom
-    public List<(int, Part)> Hovering = new();
+    public Renderable? Hovering = new();
     public Vector3 WorldMousePosition = Vector3.Zero;
     public string CurrentTexture;
     public Vector3 HoveredSide = Vector3.Zero;
+    public Axis ActiveAxis = Axis.All;
     public bool IsPeeking = false;
-
+    
     public int _focusedCorner = 0;
 
     public int FocusedCorner
@@ -46,9 +57,12 @@ public partial class ModelEditorState : Resource
     }
 
     public EditorMode Mode = EditorMode.Normal;
+    
     public event EventHandler<(Part, bool)>? PartSelectionChanged;
+    public event EventHandler<(Renderable, bool)>? ObjectSelectionChanged;
     public event EventHandler<Renderable>? ObjectSelected;
     public event EventHandler? AllPartsUnselected;
+    public event EventHandler<Renderable?>? ObjectHoveringChanged;
     public event EventHandler<bool>? IsPeekingChanged;
     public event EventHandler<int>? FocusedCornerChanged;
     
@@ -61,10 +75,11 @@ public partial class ModelEditorState : Resource
         
         part.PropertyChanged += (sender, args) =>
         {
-            UpdateCamera();
+            //UpdateCamera();
         };
         UpdateCamera();
         OnPartSelectionChanged((part, true));
+        OnObjectSelectionChanged((part, true));
         OnObjectSelected(part);
     }
 
@@ -128,9 +143,21 @@ public partial class ModelEditorState : Resource
     public void UnselectPart(Part part)
     {
         SelectedParts.Remove(part);
+        SelectedObjects.Remove(part);
         UpdateCamera();
         OnPartSelectionChanged((part, false));
+        OnObjectSelectionChanged((part, false));
     }
+    
+    public void HoverOverObject(Renderable? obj)
+    {
+        if (Hovering != obj)
+        {
+            Hovering = obj;
+            OnObjectHoveringChanged(obj);
+        }
+    }
+    
     
     public void UnselectAllParts()
     {
@@ -143,21 +170,13 @@ public partial class ModelEditorState : Resource
         Camera.Position.Z = 0;
     }
 
-    public void ToggleShapeEditMode()
+    public void ChangeMode(EditorMode mode)
     {
-        if (Mode != EditorMode.ShapeEdit)
-        {
-            Mode = EditorMode.ShapeEdit;
-           
-        }
-        else
-        {
-            Mode =  EditorMode.Normal;
-            FocusedCorner = 0; 
-        }
-     
+        Mode = mode;
         OnModeChanged(Mode);
+        FocusedCorner = 0; 
     }
+    
     public void SetPeek(bool peeking)
     {
         IsPeeking = peeking;
@@ -192,5 +211,15 @@ public partial class ModelEditorState : Resource
     protected virtual void OnPartSelectionChanged((Part, bool) e)
     {
         PartSelectionChanged?.Invoke(this, e);
+    }
+    
+    protected virtual void OnObjectSelectionChanged((Renderable, bool) e)
+    {
+        ObjectSelectionChanged?.Invoke(this, e);
+    }
+
+    protected virtual void OnObjectHoveringChanged(Renderable? e)
+    {
+        ObjectHoveringChanged?.Invoke(this, e);
     }
 }

@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 using PinkDogMM_Gd.Core.Commands;
 using PinkDogMM_Gd.Core.Configuration;
@@ -17,9 +18,10 @@ public class DeletePartAction(AppState state) : IAction
         }
         else
         {
-            foreach (var selectedPart in state.ActiveEditorState.SelectedParts)
+            foreach (var selectedPart in state.ActiveEditorState.SelectedParts.ToList())
             {
                 state.ActiveModel.RemovePart(selectedPart.Id);
+                state.ActiveEditorState.SelectedParts.Remove(selectedPart);
             }
         }
       

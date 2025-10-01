@@ -27,7 +27,7 @@ public partial class EditorViewport : Node3D
 		{
 			if (Input.IsMouseButtonPressed(MouseButton.Left))
 			{
-				appState.ActiveModel?.State.History.Execute(new SelectPartAction(partAtMouse, appState));
+				//appState.ActiveModel?.State.History.Execute(new SelectPartAction(partAtMouse, model));
 			}
 			if (partAtMouse != null)
 			{
@@ -35,7 +35,7 @@ public partial class EditorViewport : Node3D
 			}
 			else
 			{
-				appState.ActiveModel?.State.Hovering.Clear();
+				
 			}
 		}
 		if (@event is InputEventMouseButton button)
@@ -45,7 +45,7 @@ public partial class EditorViewport : Node3D
 			{
 				case MouseButton.Left:
 					//Select part!!
-					appState.ActiveModel?.State.History.Execute(new SelectPartAction(partAtMouse, appState));
+					//appState.ActiveModel?.State.History.Execute(new SelectPartAction(partAtMouse, appState));
 
 					break;
 				case MouseButton.Right:
@@ -121,8 +121,8 @@ public partial class EditorViewport : Node3D
 
 			var result = spaceState.IntersectRay(query);
 			if (result.Count == 0) return;
-			GD.Print(result);
-			GD.Print("Clicked on: " + result["collider"]);
+			PL.I.Info(result);
+			PL.I.Info("Clicked on: " + result["collider"]);
 		}*/
 	}
 
@@ -167,7 +167,7 @@ public partial class EditorViewport : Node3D
 				if (angle > 90 && angle < 180)
 				{
 					side = faceIndex;
-					//GD.Print(side);
+					//PL.I.Info(side);
 				}
 			}
 

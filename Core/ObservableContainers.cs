@@ -111,7 +111,7 @@ public class BubblingObservableDictionary<TKey, TValue> : ObservableDictionary<T
         {
             observable.ItemChanged += (sender, args) =>
             {
-                GD.Print("Listening to inner 2!!");
+                PL.I.Info("Listening to inner 2!!");
                 OnItemChanged(sender, args);
             };
             
@@ -145,7 +145,7 @@ public class BubblingObservableDictionary<TKey, TValue> : ObservableDictionary<T
         {
             changable.PropertyChanged += (sender, args) =>
             {
-                GD.Print("Listening to inner!!");
+                PL.I.Info("Listening to inner!!");
                 OnItemChanged(sender, 0, args);
             };
         }
@@ -238,7 +238,7 @@ public sealed class BubblingObservableList<T> : ObservableCollection<T>, IBubbli
             var index2 = index;
             changable.PropertyChanged += (sender, args) =>
             {
-                //GD.Print("Inner updated!!");
+                //PL.I.Info("Inner updated!!");
                 InvokeItemChanged(new CollectionItemUpdatedArgs()
                 {
                     Index = index2,

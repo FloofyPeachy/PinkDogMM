@@ -23,7 +23,7 @@ public class KeyBindings
             };
             kevent.SetMeta("Action", partKeybind.Action);
             InputMap.Singleton.ActionAddEvent(partKeybind.Action, kevent);
-            GD.Print("Added binding: " + partKeybind.Action);
+            PL.I.Info("Added binding: " + partKeybind.Action);
         }*/
     }
 

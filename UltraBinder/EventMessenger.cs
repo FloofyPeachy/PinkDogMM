@@ -35,7 +35,7 @@ public partial class ModelPropertyBinding(Node node, string watchedField, string
 	public string propertyToUpdate;
 }
 
-public partial class EventMessenger : Node
+public partial class EventMessenger : Control
 {
 	private System.Collections.Generic.Dictionary<string, List<PropertyBinding>> listeners = [];
 	private INotifyPropertyChanged _target = null!;
@@ -63,11 +63,13 @@ public partial class EventMessenger : Node
 				_target = null;
 				return;
 			}
-
+			GD.Print("aa!!");
 			_target = model.State.SelectedParts[0];
 			_target.PropertyChanged += SelectedOnPropertyChanged;
 			SetInital();
 		};
+		
+	
 
 		/*model.State.SelectedObjects.CollectionChanged += (sender, args) =>
 		{
@@ -98,7 +100,7 @@ public partial class EventMessenger : Node
 				var controlProp = binding.Node.GetType().GetProperty(binding.NodeProperty);
 				if (controlProp == null)
 				{
-					GD.Print("Couldn't update property.");
+					PL.I.Info("Couldn't update property.");
 					return;
 				}
 
@@ -116,7 +118,12 @@ public partial class EventMessenger : Node
 
 			var parts = e.PropertyName.Split('.');
 			object? value = sender.GetType().GetProperty(e.PropertyName)?.GetValue(e.PropertyName);
-
+			if (value == null)
+			{
+				//Try again..differently
+				value = sender.GetType().GetProperty(parts[0])?.GetValue(sender)?.GetType().GetProperty(parts[1])
+					?.GetValue(sender.GetType().GetProperty(parts[0])?.GetValue(sender));
+			}
 			foreach (var part in parts)
 			{
 				if (int.TryParse(part, out int index))
@@ -137,7 +144,7 @@ public partial class EventMessenger : Node
 				var controlProp = binding.Node.GetType().GetProperty(binding.NodeProperty);
 				if (controlProp == null || value == null)
 				{
-					GD.Print("Couldn't update property.");
+					PL.I.Info("Couldn't update property.");
 					return;
 				}
 
@@ -276,7 +283,7 @@ public partial class EventMessenger : Node
 				node.Connect("value_changed",
 					Callable.From((double _) => UpdateTargetProperty(node, watchedField, propertyToUpdate)));
 
-			GD.Print(this.GetName() + " bound to " + watchedField);
+			PL.I.Info(this.GetName() + " bound to " + watchedField);
 		}
 
 		Array<Node> children = node.GetChildren();
