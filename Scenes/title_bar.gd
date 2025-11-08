@@ -43,3 +43,7 @@ func _on_button_2_pressed() -> void:
 
 func _on_test_helpframe_pressed() -> void:
 	pass # Replace with function body.
+
+
+func _on_gui_input(event: InputEvent) -> void:
+	pass # Replace with function body.

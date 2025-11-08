@@ -24,8 +24,13 @@ font = SubResource("FontVariation_rstxf")
 font_size = 14
 
 [node name="PropertiesPanel2" type="MarginContainer"]
-offset_right = 260.0
-offset_bottom = 103.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_gfs58")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]

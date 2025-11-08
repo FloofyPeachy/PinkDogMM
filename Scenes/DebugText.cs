@@ -24,10 +24,10 @@ public partial class DebugText : Label
 			builder.Append("\nModel: " + state.ActiveModel.Name);
 			builder.Append("\nFocused corner: " + state.ActiveModel.State.FocusedCorner);
 			builder.Append("\nMode: " + state.ActiveModel.State.Mode);
-			builder.Append("\nSelected: " +  String.Join(", ", state.ActiveModel.State.SelectedParts));
+			builder.Append("\nSelected: " +  String.Join(", ", state.ActiveModel.State.SelectedObjects));
 			builder.Append("\nHovering: " + state.ActiveModel.State.Hovering);
 			builder.Append("\nHovered side: " + state.ActiveModel.State.HoveredSide);
-
+			builder.Append("\nHovered axis: " + state.ActiveModel.State.HoveredAxis);
 			if (state.ActiveEditorState.Mode == EditorMode.ShapeEdit)
 			{
 				builder.Append("\nPress ENTER to exit Shape Edit mode.");

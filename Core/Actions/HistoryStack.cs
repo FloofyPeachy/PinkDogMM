@@ -27,6 +27,7 @@ public partial class HistoryStack : Resource
     {
         if (undoStack.Count == 0) return;
         var action = undoStack.Pop();
+        action.Undo();
         redoStack.Push(action);
         OnActionUndone(action);
     }
@@ -34,11 +35,18 @@ public partial class HistoryStack : Resource
     public void Redo()
     {
       
-        if (redoStack.Count == 0) return;
+        if (redoStack.Count == 0)
+            return;
+
         var action = redoStack.Pop();
-        if (!action.AddToStack) return;
-        undoStack.Push(action);
+
+        // Execute the action first
+        action.Execute();
         OnActionRedone(action);
+
+        // Only push it if it should be tracked for undo
+        if (action.AddToStack)
+            undoStack.Push(action);
     }
     
     public void Execute(IAction action)

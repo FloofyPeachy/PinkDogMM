@@ -56,7 +56,10 @@ public partial class AppState : Node
 	public Model? addingModel;
 	public void ExecuteLoadSaveAction(string path)
 	{
-		Model model = History.Execute(new LoadModelAction(path, this));
+		var loadModelAction = new LoadModelAction();
+		loadModelAction.SetArguments(new Dictionary(){ { "path", path } });
+		
+		Model model = History.Execute(loadModelAction);
 		Models.Add(model);
 		ActiveModelIndex = Models.Count - 1;
 		
@@ -76,7 +79,7 @@ public partial class AppState : Node
 	}
 	public void ExecuteNewModelAction()
 	{
-		Model model = History.Execute(new NewModelAction());
+		Model model = History.Execute(new NewAction());
 		Models.Add(model);
 		ActiveModelIndex = Models.Count - 1;
 	}

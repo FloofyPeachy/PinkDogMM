@@ -5,7 +5,7 @@ using PinkDogMM_Gd.Core.Schema;
 
 namespace PinkDogMM_Gd.Scenes;
 
-public partial class ModelArea : HSplitContainer
+public partial class ModelArea : MarginContainer
 {
 	public override void _EnterTree()
 	{
@@ -22,7 +22,8 @@ public partial class ModelArea : HSplitContainer
 	{
 		VisibilityChanged += () =>
 		{
-			GetNode<SubViewport>("RenderArea/SubViewportContainer/SubViewport").SetUpdateMode(Visible ? SubViewport.UpdateMode.Always : SubViewport.UpdateMode.Disabled);
+			GetNode<SubViewport>("VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport").SetUpdateMode(Visible ? SubViewport.UpdateMode.Always : SubViewport.UpdateMode.Disabled);
+			
 		};
 	}
 }

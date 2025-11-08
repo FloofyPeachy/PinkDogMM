@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Godot;
+using Godot.Collections;
 using PinkDogMM_Gd.Core.Actions;
 
 namespace PinkDogMM_Gd.Core.Commands;
@@ -9,6 +11,7 @@ public interface IAction
     public string TextPrefix { get; }
     public static int DefaultKeys { get; }
     void Execute();
+    void SetArguments(Dictionary arguments);
     
     void Undo();
     

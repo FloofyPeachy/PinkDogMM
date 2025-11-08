@@ -119,8 +119,9 @@ public partial class PartMesh(Part part) : MeshInstance3D
             staticBody = child;
             PL.I.Info("Rebuilt mesh for " + part.Name + "!");
         }
-        Position = new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f;
-        outlineMesh.GlobalPosition = new Vector3(part.Position.X, -part.Position.Y, -part.Position.Z) * 0.0625f;
+        
+        //Position = new Vector3(part.Position.X, part.Position.Y, part.Position.Z) * 0.0625f;
+        outlineMesh.GlobalPosition = new Vector3(part.Position.X, part.Position.Y, part.Position.Z) * 0.0625f;
         outlineMesh.Name = part.Name + " Outline";
         
         PL.I.Info("Updated mesh for " + part.Name + "!");
@@ -181,7 +182,7 @@ public partial class PartMesh(Part part) : MeshInstance3D
         PL.I.Info("Generated mesh for " + part.Name + "!");
         Mesh = MeshGenerator.MeshFromPart(part, new Vector2(512, 512));
         
-        Position = new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f;
+        Position = new Vector3(part.Position.X, -part.Position.Y, part.Position.Z) * 0.0625f;
         CreateConvexCollision();
         
         var child = GetChild<StaticBody3D>(0);
@@ -198,7 +199,7 @@ public partial class PartMesh(Part part) : MeshInstance3D
         {
             ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
             AlbedoTexture = appState.ActiveModel.HasTextures
-                ? appState.ActiveModel.Textures["Default"].Image
+                ? appState.ActiveModel.Textures.First().Image
                 : null,
             VertexColorUseAsAlbedo = !appState.ActiveModel.HasTextures,
             TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest,
@@ -208,7 +209,7 @@ public partial class PartMesh(Part part) : MeshInstance3D
         outlineMesh = new MeshInstance3D();
         outlineMesh.Name = part.Name + "Outline";
         outlineMesh.Mesh = MeshGenerator.OutlineMeshFromPart(part);
-        outlineMesh.Position = new Vector3(part.Position.X, -part.Position.Y, part.Position.Z) * 0.0625f;
+        outlineMesh.Position = new Vector3(part.Position.X, part.Position.Y, part.Position.Z) * 0.0625f;
         outlineMesh.Scale = Vector3.One;
         outlineMesh.MaterialOverride = new StandardMaterial3D()
         {

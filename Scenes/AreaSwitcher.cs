@@ -10,7 +10,7 @@ using PinkDogMM_Gd.Scenes;
 public partial class AreaSwitcher : MarginContainer
 {
 	private AppState? appState;
-	private List<HSplitContainer> areas = [];
+	private List<MarginContainer> areas = [];
 	public override void _Ready()
 	{
 		appState = GetNode("/root/AppState") as AppState;
@@ -34,7 +34,8 @@ public partial class AreaSwitcher : MarginContainer
 			appState.addingModel = model;
 			PackedScene sceneToLoad = GD.Load<PackedScene>("res://Scenes/ModelArea.tscn");
 		
-			var modelArea = sceneToLoad.Instantiate<HSplitContainer>();
+			var modelArea = sceneToLoad.Instantiate<MarginContainer>();
+			modelArea.SetMeta("model", model);
 			AddChild(modelArea);
 			areas.Add(modelArea);
 			PL.I.Info("Added " + model.Name + " ModelArea");

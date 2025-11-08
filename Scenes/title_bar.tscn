@@ -1,38 +1,53 @@
-[gd_scene load_steps=4 format=3 uid="uid://by1iknijv05d"]
+[gd_scene load_steps=5 format=3 uid="uid://by1iknijv05d"]
 
-[ext_resource type="Script" uid="uid://cf86j07rgrbys" path="res://Scenes/title_bar.gd" id="1_tkai0"]
 [ext_resource type="PackedScene" uid="uid://bb3y874g16k2f" path="res://Scenes/Elements/Toolbar.tscn" id="2_gfrwf"]
 [ext_resource type="Script" uid="uid://ykj4jdud56kr" path="res://Scenes/ModelTabs.cs" id="3_gfrwf"]
+[ext_resource type="Script" uid="uid://bp7inv2gr223t" path="res://Scenes/system_buttons.gd" id="3_j0e4q"]
 
-[node name="TitleBar" type="HBoxContainer"]
-offset_right = 36.0
-offset_bottom = 30.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gfrwf"]
+bg_color = Color(0.25490198, 0.20392157, 0.36862746, 1)
+
+[node name="TitleBar" type="PanelContainer"]
+offset_right = 325.0
+offset_bottom = 38.0
 size_flags_horizontal = 3
-script = ExtResource("1_tkai0")
+theme_override_styles/panel = SubResource("StyleBoxFlat_gfrwf")
 
-[node name="Toolbar" parent="." instance=ExtResource("2_gfrwf")]
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="TabBar" type="TabBar" parent="."]
+[node name="Toolbar" parent="HBoxContainer2" instance=ExtResource("2_gfrwf")]
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 0
+
+[node name="TabBar" type="TabBar" parent="HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
+drag_to_rearrange_enabled = true
 script = ExtResource("3_gfrwf")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="SystemButtons" type="HBoxContainer" parent="."]
 layout_mode = 2
+size_flags_horizontal = 8
+mouse_filter = 0
 alignment = 2
+script = ExtResource("3_j0e4q")
 
-[node name="Button2" type="Button" parent="HBoxContainer"]
+[node name="Minimize" type="Button" parent="SystemButtons"]
 layout_mode = 2
-text = "M"
+text = "🗕
+"
 
-[node name="Button3" type="Button" parent="HBoxContainer"]
+[node name="Maximize" type="Button" parent="SystemButtons"]
 layout_mode = 2
-text = "M"
+text = "🗖"
 
-[node name="Button" type="Button" parent="HBoxContainer"]
+[node name="Close" type="Button" parent="SystemButtons"]
 layout_mode = 2
-text = "X"
+text = "✕"
 
-[connection signal="gui_input" from="." to="." method="_on_TitleBar_gui_input"]
+[connection signal="pressed" from="SystemButtons/Minimize" to="SystemButtons" method="_on_minimize_pressed"]
+[connection signal="pressed" from="SystemButtons/Maximize" to="SystemButtons" method="_on_maximize_pressed"]
+[connection signal="pressed" from="SystemButtons/Close" to="SystemButtons" method="_on_close_pressed"]

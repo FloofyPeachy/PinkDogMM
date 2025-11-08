@@ -13,7 +13,7 @@ namespace PinkDogMM_Gd.Core.Actions;
 public partial class ActionRegistry : Node
 {
     private readonly Dictionary<string, Type> actions = new Dictionary<string, Type>();
-    
+
     private readonly Dictionary<int, int> keys = new Dictionary<int, int>();
 
     public ActionRegistry()
@@ -38,7 +38,7 @@ public partial class ActionRegistry : Node
             var key = new KeyCombo(keyInt);
 
             keys.Add(keyInt, actions.Values.ToList().IndexOf(type));
-            
+
             var kevent = new InputEventKey()
             {
                 Keycode = (Key)key.Key,
@@ -60,16 +60,32 @@ public partial class ActionRegistry : Node
     {
     }
 
-    public void Execute(string key, Godot.Collections.Array arguments)
+    public void Redo()
     {
         var appState = GetNode("/root/AppState") as AppState;
-        if (appState == null) return;
-        arguments.Add(appState);
+        appState!.ActiveEditorState.History.Redo();
+    }
 
+    public void Undo()
+    {
+        var appState = GetNode("/root/AppState") as AppState;
+        appState!.ActiveEditorState.History.Undo();
+    }
+
+    public void Execute(string key, Godot.Collections.Dictionary arguments)
+    {
+        var appState = GetNode("/root/AppState") as AppState;
+        arguments.Add("appState", appState);
 
         if (actions.TryGetValue(key, out var actionType))
         {
-            ParameterInfo[] parameters = [];
+            if (typeof(IAction).IsAssignableFrom(actionType))
+            {
+                var actInstance = (IAction)Activator.CreateInstance(actionType, null)!;
+                actInstance.SetArguments(arguments);
+                appState!.ActiveEditorState.History.Execute(actInstance);
+            }
+            /*ParameterInfo[] parameters = [];
             ConstructorInfo? theConstructor;
             // Ensure the type implements IAction
             if (typeof(IAction).IsAssignableFrom(actionType))
@@ -81,7 +97,7 @@ public partial class ActionRegistry : Node
 
                 if (arguments.Count == 1)
                 {
-                    trueArguments.Add(appState);
+                   // trueArguments.Add(appState);
                 }
                 else
                 {
@@ -110,7 +126,7 @@ public partial class ActionRegistry : Node
                         if (!match) throw new ArgumentException("Invalid arguments for action");
                     }
 
-              
+
                     for (var i = 0; i < arguments.Count; i++)
                     {
                         Godot.Variant variant = arguments[i];
@@ -118,8 +134,8 @@ public partial class ActionRegistry : Node
                             .Invoke(variant, null));
                     }
                 }
-                
-              
+
+
                 // Create an instance at runtime
                 var actionInstance = (IAction)Activator.CreateInstance(actionType, trueArguments.ToArray())!;
                 appState!.ActiveEditorState.History.Execute(actionInstance);
@@ -127,7 +143,7 @@ public partial class ActionRegistry : Node
             else
             {
                 throw new InvalidOperationException($"{actionType.Name} does not implement IAction.");
-            }
+            }*/
         }
         else
         {
@@ -139,25 +155,32 @@ public partial class ActionRegistry : Node
     {
         return action.GetType().Name;
     }
-    
+
     public override void _UnhandledKeyInput(InputEvent @event)
     {
         base._UnhandledKeyInput(@event);
         if (@event is not InputEventKey action) return;
         if (action is { Echo: false, Pressed: true })
-        if (action.HasMeta("Action") && action.GetMeta("Action").AsString() != "")
         {
-           
-                Execute(action.GetMeta("Action").AsString(), new Godot.Collections.Array());
-            
-         
+            if (action.HasMeta("Action") && action.GetMeta("Action").AsString() != "")
+            {
+                GD.Print("fgdfdg");
+                //Execute(action.GetMeta("Action").AsString(), new Godot.Collections.Array());
+                return;
+            }
+
+            if (action is { Keycode: Key.Z, CtrlPressed: true, Echo: false, ShiftPressed: false }) Undo();
+            if (action is { Keycode: Key.Y, CtrlPressed: true, Echo: false }) Redo();
+            if (action is { Keycode: Key.Z, CtrlPressed: true, Echo: false, ShiftPressed: true }) Redo();
         }
+
 
         if (keys.ContainsKey((int)action.Keycode))
         {
             var index = keys[(int)action.Keycode];
-            Execute(actions.Keys.ToList()[index], new Godot.Collections.Array());
+            var appState = GetNode("/root/AppState") as AppState;
+            
+            Execute(actions.Keys.ToList()[index], new Godot.Collections.Dictionary() {{"model", appState.ActiveModel}, {"byKey" , "true"}});
         }
-
-    } 
+    }
 }

@@ -1,5 +1,7 @@
 using System;
 using System.Reflection;
+using Godot;
+using Godot.Collections;
 using PinkDogMM_Gd.Core.Commands;
 
 namespace PinkDogMM_Gd.Core.Actions;
@@ -16,6 +18,21 @@ public class PropertyAction<T>(object target, string propertyName, T oldValue, T
     public void Execute()
     {
         propertyInfo.SetValue(target, newValue);
+    }
+
+    public void SetArguments(Dictionary arguments)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetArguments(System.Collections.Generic.Dictionary<string, Variant> arguments)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetArguments(System.Collections.Generic.Dictionary<string, object> arguments)
+    {
+        throw new NotImplementedException();
     }
 
     public void Undo()

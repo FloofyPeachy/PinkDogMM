@@ -20,38 +20,49 @@ public partial class ModelNode : Node3D
 	private AppState appState;
 	private Part? _editedPart;
 	private Model model;
-	public override void _Ready()
+
+	public override void _PhysicsProcess(double delta)
 	{
+		
+	}
+	
+
+	public override void _Ready()
+	{ 
 		model = Model.Get(this);
 		SetMeta("model", model);
 		appState = GetNode("/root/AppState") as AppState;
 		Debug.Assert(appState != null, nameof(appState) + " != null");
-		
+	
 		model.Helpers.ItemsChanged += (sender, changed) =>
 		{
 			GetParent().AddChild(new HelpframeNode(changed.Item as Helpframe ?? throw new InvalidOperationException()));
 		};
 		
-		model.PartGroups.NestedCollectionChanged += (sender, args) =>
+		model.Items.CollectionChanged += (sender, args) =>
 
 		{
-			var part = args.Item2.Item as Part;
-			var partNode = new PartNode(part);
-			if (args.Item2.Added)
+			if (args.Item2.Value is Part part)
 			{
-				parts.Add(args.Item2.Item as Part, partNode);
-				AddChild(partNode);
+				var partNode = new PartNode(part);
+				if (args.Item1)
+				{
+					parts.Add(part, partNode);
+					AddChild(partNode);
+				}
+				else
+				{
+					parts[part].QueueFree();
+					parts.Remove(part);
+				}
 			}
-			else
-			{
-				parts[part].QueueFree();
-				parts.Remove(part);
-			}
+			
 		};
 
-		model.State.PartSelectionChanged += (sender, tuple) =>
+		model.State.ObjectSelectionChanged += (sender, tuple) =>
 		{
-			parts[tuple.Item1].SetSelected(tuple.Item2); 
+			//if (tuple.Item1 is Part part) parts[part].SetSelected(tuple.Item2); 
+			
 		};
 			
 		model.State.IsPeekingChanged += (sender, b) =>
@@ -60,14 +71,14 @@ public partial class ModelNode : Node3D
 			{
 				if (!b)
 				{
-					if (!model.State.SelectedParts.Contains(keyValuePair.Key))
+					if (!model.State.SelectedObjects.Contains(keyValuePair.Key))
 					{
 						parts[keyValuePair.Key].SetVisibility(true);
 						continue;
 					}
 				}
 					
-				if (!model.State.SelectedParts.Contains(keyValuePair.Key))
+				if (!model.State.SelectedObjects.Contains(keyValuePair.Key))
 				{
 					parts[keyValuePair.Key].SetVisibility(!b);
 				}
@@ -76,21 +87,21 @@ public partial class ModelNode : Node3D
 			}
 		};
 
-		model.State.ObjectHoveringChanged += (sender, renderable) =>
+		/*model.State.ObjectHoveringChanged += (sender, renderable) =>
 		{
 			foreach (var keyValuePair in parts)
 			{
 				keyValuePair.Value.SetHovering(keyValuePair.Key == renderable);
 			}
-		};
+		};*/
 		
 		model.State.ModeChanged += (sender, mode) =>
 		{
 			
 			if (mode == EditorMode.ShapeEdit)
 			{
-				_editedPart = model.State.SelectedParts.First() as Part;
-				model.State.SelectedParts.Clear();
+				_editedPart = model.State.SelectedObjects.First() as Part;
+				model.State.SelectedObjects.Clear();
 				model.State.SelectPart(_editedPart);
 				parts[_editedPart].SetBeingEdited(true);
 				
@@ -103,10 +114,16 @@ public partial class ModelNode : Node3D
 		
 		foreach (var modelAllPart in model.AllParts)
 		{
-			var newOne = new PartNode(modelAllPart);
-			parts.Add(modelAllPart, newOne);
-			AddChild(newOne);
-			newOne.Owner = this;
+			var newOne = new PartNode(modelAllPart.Value as Part);
+			parts.Add(modelAllPart.Value as Part, newOne);
+			
+			Callable.From(() =>
+			{
+				AddChild(newOne); 
+				newOne.Owner = this;
+			}).CallDeferred();
+			
+			
 		}
 	}
 
@@ -120,9 +137,9 @@ public partial class ModelNode : Node3D
 		
 		foreach (var modelAllPart in model.AllParts)
 		{
-			var newOne = new PartNode(modelAllPart);
+			/*var newOne = new PartNode(modelAllPart);
 			parts.Add(modelAllPart, newOne);
-			AddChild(newOne);
+			AddChild(newOne);*/
 		}
 	}
 	public void RefreshAll()
@@ -132,6 +149,8 @@ public partial class ModelNode : Node3D
 			keyValuePair.Value.UpdateMesh(true);
 		}
 	}
+
+	
 	private void OnButtonPressed()
 	{
 		foreach (var findChild in this.GetChildren())

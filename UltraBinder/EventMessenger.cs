@@ -55,16 +55,16 @@ public partial class EventMessenger : Control
 		var model = Model.Get(this);
 
 
-		model.State.SelectedParts.CollectionChanged += (sender, args) =>
+		model.State.SelectedObjects.CollectionChanged += (sender, args) =>
 		{
 			//_target?.PropertyChanged -= SelectedOnPropertyChanged;
-			if (model.State.SelectedParts.Count == 0)
+			if (model.State.SelectedObjects.Count == 0)
 			{
 				_target = null;
 				return;
 			}
-			GD.Print("aa!!");
-			_target = model.State.SelectedParts[0];
+		
+			_target = model.State.SelectedObjects[0];
 			_target.PropertyChanged += SelectedOnPropertyChanged;
 			SetInital();
 		};

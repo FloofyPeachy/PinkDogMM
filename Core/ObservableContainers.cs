@@ -483,6 +483,11 @@ public class Vector2L(Vector2 initialVector) : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
+    public override string ToString()
+    {
+        return $"{nameof(X)}: {X}, {nameof(Y)}: {Y}";
+    }
 }
 
 

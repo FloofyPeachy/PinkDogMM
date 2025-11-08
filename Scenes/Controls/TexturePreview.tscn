@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://d33yakiv48jwa"]
+
+[ext_resource type="Script" uid="uid://oe6rdqfnydll" path="res://Scenes/Controls/TexturePreview.cs" id="1_woxgs"]
+
+[node name="TexturePreview" type="VBoxContainer"]
+offset_right = 101.0
+offset_bottom = 32.0
+script = ExtResource("1_woxgs")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Texture Name"
+horizontal_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 2

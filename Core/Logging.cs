@@ -27,6 +27,10 @@ public class PL
         GD.PrintRich(BuildHeader("info", "blue") + data);
     }
    
+    public void Debug(object data)
+    {
+        GD.PrintRich(BuildHeader("debug", "gray") + data);
+    }
 
     const string DefaultForegroundColor = "\x1B[39m\x1B[22m";
     const string DefaultBackgroundColor = "\x1B[49m";

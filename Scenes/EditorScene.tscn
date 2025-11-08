@@ -1,44 +1,62 @@
-[gd_scene load_steps=7 format=3 uid="uid://bdym8m3ypmb6y"]
+[gd_scene load_steps=8 format=3 uid="uid://bdym8m3ypmb6y"]
 
-[ext_resource type="Theme" uid="uid://bqumg0v5lmvy1" path="res://Themes/theme.res" id="1_ngb8x"]
+[ext_resource type="Script" uid="uid://cf86j07rgrbys" path="res://Scenes/title_bar.gd" id="1_w62uy"]
 [ext_resource type="PackedScene" uid="uid://by1iknijv05d" path="res://Scenes/title_bar.tscn" id="2_3fw4a"]
 [ext_resource type="Script" uid="uid://c1j2cwv76v4tk" path="res://Scenes/AreaSwitcher.cs" id="3_w62uy"]
+[ext_resource type="Script" uid="uid://442tlr272u8w" path="res://Scenes/DragDropTarget.cs" id="6_w62uy"]
 [ext_resource type="PackedScene" uid="uid://cv1kn0lymelmw" path="res://Scenes/history_panel.tscn" id="7_3fw4a"]
 [ext_resource type="Script" uid="uid://cyf3732i68bvq" path="res://Scenes/history_window.gd" id="15_3fw4a"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_whg0o"]
 
-[node name="Node2D" type="Node2D"]
+[node name="Node2D" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_behavior_recursive = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-offset_right = 1280.0
-offset_bottom = 728.0
-theme = ExtResource("1_ngb8x")
-theme_override_constants/separation = 0
-
-[node name="TitleBarArea" type="PanelContainer" parent="VBoxContainer"]
+[node name="Panel" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_whg0o")
+theme_override_constants/margin_left = 1
+theme_override_constants/margin_top = 1
+theme_override_constants/margin_right = 1
+theme_override_constants/margin_bottom = 1
 
-[node name="ColorRect" type="ColorRect" parent="VBoxContainer/TitleBarArea"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="TitleBarArea" type="PanelContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
 mouse_filter = 1
-color = Color(0.2509804, 0.20784314, 0.4, 1)
+theme_override_styles/panel = SubResource("StyleBoxEmpty_whg0o")
+script = ExtResource("1_w62uy")
 
-[node name="TitleBar" parent="VBoxContainer/TitleBarArea" instance=ExtResource("2_3fw4a")]
+[node name="TitleBar" parent="Panel/VBoxContainer/TitleBarArea" instance=ExtResource("2_3fw4a")]
 layout_mode = 2
+mouse_filter = 2
 
-[node name="AreaSwitcher" type="MarginContainer" parent="VBoxContainer"]
+[node name="AreaSwitcher" type="MarginContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("3_w62uy")
 
-[node name="HistoryWindow" type="Window" parent="."]
+[node name="DragDropTarget" type="Control" parent="Panel"]
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("6_w62uy")
+
+[node name="HistoryWindow" type="Window" parent="Panel"]
 oversampling_override = 1.0
 title = "History"
 visible = false
 force_native = true
 script = ExtResource("15_3fw4a")
 
-[node name="HistoryPanel" parent="HistoryWindow" instance=ExtResource("7_3fw4a")]
+[node name="HistoryPanel" parent="Panel/HistoryWindow" instance=ExtResource("7_3fw4a")]
 size_flags_vertical = 3
+
+[connection signal="gui_input" from="Panel/VBoxContainer/TitleBarArea" to="Panel/VBoxContainer/TitleBarArea" method="_on_TitleBar_gui_input"]

@@ -19,7 +19,12 @@ public partial class ModelTabs : TabBar
 			{
 				Model? model = args.NewItems?[0] as Model;
 				AddTab(model.Name);
+				SetTabCloseDisplayPolicy(CloseButtonDisplayPolicy.ShowActiveOnly);
 			}
+		};
+		TabClosePressed += tab =>
+		{
+			GD.Print("Attempting to close!!");
 		};
 		_appState.ActiveModelChanged += index =>
 		{
@@ -32,6 +37,5 @@ public partial class ModelTabs : TabBar
 
 	}
 
-	
 	
 }

@@ -15,13 +15,13 @@ public class ToolboxLoader : ModelLoader
     public new Model Load(string path)
     {
         Model model = new Model();
-        model.PartGroups.Add("Import", new BubblingObservableList<Part>());
         using ZipArchive archive = ZipFile.OpenRead(path);
         foreach (var entry in archive.Entries)
         {
             //this is it! 
             if (entry.Name.EndsWith("Model.txt"))
             {
+                int partCount = 0;
                 StreamReader reader = new StreamReader(entry.Open());
                 string text = reader.ReadToEnd().Replace(",", "."); //Replace the punctuation cuz German is dumb.
 
@@ -33,8 +33,9 @@ public class ToolboxLoader : ModelLoader
                     if (lineSplit[0] == "ModelClassName") model.Name = line.Split("|")[1].ReplaceLineEndings("");
 
                     if (!line.StartsWith("Element")) continue;
-                    model.PartGroups["Import"].Add(
-                        lineSplit[5] == "Shapebox" ? DeserialiseShapebox(lineSplit, index) : DeserialisePart(lineSplit, index));
+                    model.Items.Add(
+                        lineSplit[5] == "Shapebox" ? DeserialiseShapebox(lineSplit, partCount) : DeserialisePart(lineSplit, partCount), lineSplit[3]);
+                    partCount++;
                 }
             } else if (entry.Name.EndsWith("Model.png"))
             {
@@ -44,7 +45,7 @@ public class ToolboxLoader : ModelLoader
                 var image = new Image();
 
                 image.LoadPngFromBuffer(imageBytes);
-                model.Textures.Add("Default", new Texture(new Vector2(image.GetWidth(), image.GetHeight()), ImageTexture.CreateFromImage(image)));
+                model.Textures.Add(new Texture(new Vector2(image.GetWidth(), image.GetHeight()), "Default", ImageTexture.CreateFromImage(image)));
             }
             else
             {

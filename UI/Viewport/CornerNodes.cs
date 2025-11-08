@@ -70,10 +70,9 @@ public partial class CornerNodes(Part part) : Node3D
             for (var index = 0; index < corners.Count; index++)
             {
                 var node = corners[index];
-                var corner = shapebox.GetCornerPosition(index);
-                //node.Position = new Vector3(shapebox.Size.X + shapebox.ShapeboxX[index], shapebox.Size.Y + shapebox.ShapeboxY[index], shapebox.Size.Z +  shapebox.ShapeboxZ[index]);
+                var corner = /*shapebox.GetCornerPosition(index)*/ shapebox.Size.AsVector3() / 2;
                 node.Position = new Vector3(corner.Z, corner.Y, corner.X);
-                //rotate so looks like diamond
+                
             }
         }
     } 

@@ -20,132 +20,124 @@ public enum EditorMode
     ShapeEdit
 }
 
+
 public enum Axis {
-    X,
-    Y,
-    Z,
-    All
+    X =0,
+    Y = 1,
+    Z = 2,
+    All =3
 }
 
-
+[GlobalClass]
 public partial class ModelEditorState : Resource
 {
-    public ObservableCollection<Part> SelectedParts = new();
     public ObservableCollection<Renderable> SelectedObjects = new();
-    
-    
     public HistoryStack History = new();
-    public Camera Camera = new(); //RotationX, RotationY, Zoom
+    public Model model;
+    public Camera Camera; //RotationX, RotationY, Zoom
     public Renderable? Hovering = new();
     public Vector3 WorldMousePosition = Vector3.Zero;
-    public string CurrentTexture;
+    public int CurrentTexture = -1;
     public Vector3 HoveredSide = Vector3.Zero;
     public Axis ActiveAxis = Axis.All;
+    public Axis HoveredAxis = Axis.All;
     public bool IsPeeking = false;
+    public bool IsMoving = false;
+    public string BottomText = "Welcome to PDMM!";
+    public int _focusedCorner = -1;
     
-    public int _focusedCorner = 0;
-
+    
     public int FocusedCorner
     {
         get => _focusedCorner;
         set
         {
             _focusedCorner = value;
-            UpdateCamera();
+            ;
             OnFocusedCornerChanged(_focusedCorner);
         }
     }
 
     public EditorMode Mode = EditorMode.Normal;
     
-    public event EventHandler<(Part, bool)>? PartSelectionChanged;
+    [Signal]
+    public delegate void EditorEventHappenedEventHandler(string eventText);
+    [Signal]
+    public delegate void MovingObjectEventHandler(bool moving);
     public event EventHandler<(Renderable, bool)>? ObjectSelectionChanged;
+    public event EventHandler<string>? BottomTextChanged;
     public event EventHandler<Renderable>? ObjectSelected;
     public event EventHandler? AllPartsUnselected;
     public event EventHandler<Renderable?>? ObjectHoveringChanged;
     public event EventHandler<bool>? IsPeekingChanged;
     public event EventHandler<int>? FocusedCornerChanged;
+    public event EventHandler<int> TextureChanged;
     
     public event EventHandler<EditorMode>? ModeChanged;
     
+    public ModelEditorState(Model model)
+    {
+        Camera = new(this);
+        this.model = model;
+    }
+
+    public void SwitchTexture(int idx)
+    {
+        CurrentTexture = idx;
+        OnTextureChanged(idx);
+    }
     public void SelectPart(Part part)
     {
-        SelectedParts.Add(part);
         SelectedObjects.Add(part);
         
-        part.PropertyChanged += (sender, args) =>
-        {
-            //UpdateCamera();
-        };
-        UpdateCamera();
-        OnPartSelectionChanged((part, true));
         OnObjectSelectionChanged((part, true));
         OnObjectSelected(part);
     }
 
-    public void SelectObject(Renderable objec)
+    public void SetMoving(bool moving)
     {
+        if (this.IsMoving == moving) return;
+        this.IsMoving = moving;
+        EmitSignalMovingObject(moving);
+    }
+    public void SelectObject(int id)
+    {
+        var objec = model!.GetItemById(id)!.Value;
         SelectedObjects.Add(objec);
         objec.PropertyChanged += (sender, args) =>
         {
-            UpdateCamera();
+            ;
         };
-        UpdateCamera();
-        OnObjectSelected(objec);
-    }
-
-    public void UpdateCamera()
-    {
-        if (SelectedParts.Count != 0)
-        {
-            var pos = PositionOfCorner(SelectedParts.First() as Part);
-            
-            Camera.Position.X = pos.X;
-            Camera.Position.Y = -pos.Y;
-            Camera.Position.Z = -pos.Z;
-            /*Camera.Position.X = SelectedParts.First().Size.X / 2;
-            Camera.Position.Y = SelectedParts.First().Size.Y / 2;
-            Camera.Position.Z = SelectedParts.First().Size.Z / 2;*/
-        }
-    }
-
-    public Vector3 PositionOfCorner(Part part)
-    {
-        var extra = Vector3.Zero;
+        ;
         
-        int index = _focusedCorner;
+        OnObjectSelectionChanged((objec, true));
+    }
 
-        double GetComponent(double pos, double dim, double offset, float[]? shapeArray, bool addDim)
-        {
-            double shapeValue = 0;
-            if (shapeArray != null && index >= 0 && index < shapeArray.Length)
-                shapeValue = shapeArray[index];
+   
 
-            return addDim ? pos + dim + shapeValue + offset
-                : pos - shapeValue + offset;
-        }
+    public void ShowEventText(string text)
+    {
+        OnEditorEventHappened(text);
+    }
 
-        bool addDimX = _focusedCorner is 1 or 2 or 5 or 6;
+    public void SwitchCameraMode()
+    {
+        Camera.SetMode(Camera.Mode == CameraMode.Orbit ? CameraMode.Free : CameraMode.Orbit, Camera.Projection);
+        ShowEventText(Camera.Mode.ToString());
+        ;
+    }
 
-        bool addDimY = _focusedCorner is >= 4 and <= 7; 
-
-        bool addDimZ = _focusedCorner is 2 or 3 or 6 or 7;
-
-        Vector3 result = new Vector3(
-            (float)GetComponent(part.Position.X, part.Size.X, part.Offset.X, (part is Shapebox shapebox ? shapebox.ShapeboxX.ToArray() : null), addDimX),
-            (float)GetComponent(part.Position.Y, part.Size.Y, part.Offset.Y, (part is Shapebox shapebox1 ? shapebox1.ShapeboxY.ToArray() : null), addDimY),
-            (float)GetComponent(part.Position.Z, part.Size.Z, part.Offset.Z, (part is Shapebox shapebox2 ? shapebox2.ShapeboxZ.ToArray(): null), addDimZ)
-        );
-
-        return result;
+    public void SwitchCameraProjection()
+    {
+        Camera.SetMode(Camera.Mode, Camera.Projection == CameraProjection.Perspective ? CameraProjection.Orthogonal : CameraProjection.Perspective);
+        ShowEventText(Camera.Projection.ToString());
+        ;
     }
     
-    public void UnselectPart(Part part)
+    public void UnselectObject(Renderable part)
     {
-        SelectedParts.Remove(part);
         SelectedObjects.Remove(part);
-        UpdateCamera();
-        OnPartSelectionChanged((part, false));
+        
         OnObjectSelectionChanged((part, false));
     }
     
@@ -159,15 +151,13 @@ public partial class ModelEditorState : Resource
     }
     
     
-    public void UnselectAllParts()
+    public void UnselectAll()
     {
-        foreach (var selectedPart in SelectedParts.ToList())
+        foreach (var selectedPart in SelectedObjects.ToList())
         {
-            UnselectPart(selectedPart);
+            UnselectObject(selectedPart);
         }
-        Camera.Position.X = 0;
-        Camera.Position.Y = 0;
-        Camera.Position.Z = 0;
+        ;
     }
 
     public void ChangeMode(EditorMode mode)
@@ -175,6 +165,7 @@ public partial class ModelEditorState : Resource
         Mode = mode;
         OnModeChanged(Mode);
         FocusedCorner = 0; 
+        
     }
     
     public void SetPeek(bool peeking)
@@ -208,11 +199,12 @@ public partial class ModelEditorState : Resource
         ObjectSelected?.Invoke(this, e);
     }
 
-    protected virtual void OnPartSelectionChanged((Part, bool) e)
+
+    public void SetBottomText(String text)
     {
-        PartSelectionChanged?.Invoke(this, e);
+        this.BottomText = text;
+        OnBottomTextChanged(text);
     }
-    
     protected virtual void OnObjectSelectionChanged((Renderable, bool) e)
     {
         ObjectSelectionChanged?.Invoke(this, e);
@@ -221,5 +213,20 @@ public partial class ModelEditorState : Resource
     protected virtual void OnObjectHoveringChanged(Renderable? e)
     {
         ObjectHoveringChanged?.Invoke(this, e);
+    }
+
+    protected virtual void OnEditorEventHappened(string e)
+    {
+        EmitSignalEditorEventHappened(e);
+    }
+
+    protected virtual void OnBottomTextChanged(string e)
+    {
+        BottomTextChanged?.Invoke(this, e);
+    }
+
+    protected virtual void OnTextureChanged(int e)
+    {
+        TextureChanged?.Invoke(this, e);
     }
 }

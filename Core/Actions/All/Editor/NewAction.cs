@@ -1,14 +1,13 @@
-
 using Godot;
+using Godot.Collections;
 using PinkDogMM_Gd.Core.Commands;
 using PinkDogMM_Gd.Core.Configuration;
 using PinkDogMM_Gd.Core.Schema;
 
 namespace PinkDogMM_Gd.Core.Actions.All.Editor;
 
-public class NewModelAction : IAction<Model>
+public class NewAction : IAction<Model>
 {
-    
     
     private Model model;
     public string TextPrefix => "Created Model";
@@ -16,8 +15,19 @@ public class NewModelAction : IAction<Model>
     public void Execute()
     {
         model = new Model();
-        model.PartGroups.Add("Default", new BubblingObservableList<Part>());
+        //model.PartGroups.Add("Default", new BubblingObservableList<Part>());
     }
+
+    public void SetArguments(Dictionary arguments)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void SetArguments(System.Collections.Generic.Dictionary<string, Variant> arguments)
+    {
+        
+    }
+    
 
     public void Undo()
     {

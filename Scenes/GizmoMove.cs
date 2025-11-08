@@ -8,8 +8,16 @@ public partial class GizmoMove : Node3D
 	private MeshInstance3D xGizmo;
 	private MeshInstance3D yGizmo;
 	private MeshInstance3D zGizmo;
+
+	private StaticBody3D xBody;
+	private StaticBody3D yBody;
+	private StaticBody3D zBody;
 	private AppState appState;
 	private Model model;
+
+	private Color xColor = Color.Color8(58, 179, 218, 1);
+	private Color yColor = Color.Color8(128,199,47, 1);
+	private Color zColor = Color.Color8(176, 45, 36, 1);
 	public override void _Ready()
 	{
 		xGizmo = GetNode<MeshInstance3D>("X");
@@ -21,18 +29,82 @@ public partial class GizmoMove : Node3D
 		xGizmo.CreateConvexCollision();
 		yGizmo.CreateConvexCollision();
 		zGizmo.CreateConvexCollision();
-		Scale = new Vector3(0.0625f, 0.0625f, 0.0625f);
 		
-		model.State.ObjectSelected += (sender, renderable) =>
+		xBody = xGizmo.GetChild<StaticBody3D>(0);
+		yBody = yGizmo.GetChild<StaticBody3D>(0);
+		zBody = zGizmo.GetChild<StaticBody3D>(0);
+
+		/*xBody.SetMeta("axis", 0);
+		yBody.SetMeta("axis", 1);
+		zBody.SetMeta("axis", 2);*/
+		/*xGizmo.GetChild(0).SetMeta("axis", 0);
+		yGizmo.CreateConvexCollision();
+		yGizmo.GetChild(0).SetMeta("axis", 1);
+		zGizmo.CreateConvexCollision();
+		zGizmo.GetChild(0).SetMeta("axis", 2);*/
+		
+		
+		Scale = new Vector3(0.0625f, 0.0625f, 0.0625f);
+		model.State.ObjectSelectionChanged += (sender, renderable) =>
 		{
-			this.Position = renderable.Position.AsVector3() * new Vector3(0.0625f, -0.0625f, 0.0625f);
+			if (renderable.Item2)
+			{
+				this.Position = ((renderable.Item1.Position.AsVector3().LHS() + (renderable.Item1.Size.AsVector3().LHS() / 2)));
+				this.Visible = true;
+			}
+			else
+			{
+				this.Visible = false;
+			}
+			
 		};
 
-		xGizmo.GetChild<StaticBody3D>(0).InputEvent += (camera, @event, position, normal, idx) =>
-		{
-			PL.I.Info("x hover!!");
-		};
+		xBody.MouseEntered += () => { MouseInOutAxis(Axis.X, true);};
+		xBody.MouseExited += () => { MouseInOutAxis(Axis.X, false);};
+		xBody.InputEvent += (camera, @event, position, normal, idx) => { MouseEventOnAxis(Axis.X, @event); };
+		
+		yBody.MouseEntered += () => { MouseInOutAxis(Axis.Y, true);};
+		yBody.MouseExited += () => { MouseInOutAxis(Axis.Y, false);};
+		yBody.InputEvent += (camera, @event, position, normal, idx) => { MouseEventOnAxis(Axis.Y, @event); };
+		
+		zBody.MouseEntered += () => { MouseInOutAxis(Axis.Z, true);};
+		zBody.MouseExited += () => { MouseInOutAxis(Axis.Z, false);};
+		zBody.InputEvent += (camera, @event, position, normal, idx) => { MouseEventOnAxis(Axis.Z, @event); };
+		
 	}
-	
 
+	private void MouseEventOnAxis(Axis axis, InputEvent evento)
+	{
+		if (evento is not InputEventMouseButton mouse) return;
+		if (mouse.ButtonIndex == MouseButton.Left)
+		{
+			model.State.ChangeMode(mouse.Pressed ? EditorMode.Resize : EditorMode.Normal);
+		}
+	}
+	private void MouseInOutAxis(Axis axis, bool entered)
+	{
+		model.State.HoveredAxis = entered ? axis : Axis.All;
+		GD.Print(axis + ":" + entered);
+	}
+	public override void _PhysicsProcess(double delta)
+	{
+		//this.Position = appState.ActiveEditorState.WorldMousePosition;
+		base._PhysicsProcess(delta);
+		
+		this.Scale = this.Scale.Lerp((model.State.SelectedObjects.Count != 0
+			? new Vector3(model.State.Camera.Zoom,
+				model.State.Camera.Zoom, model.State.Camera.Zoom)
+			: Vector3.One) / 1.5f, (float)delta * 24.0f);
+		((StandardMaterial3D)xGizmo.Mesh.SurfaceGetMaterial(0)).
+			AlbedoColor = 	((StandardMaterial3D)xGizmo.Mesh.SurfaceGetMaterial(0)).
+			AlbedoColor.Lerp(model.State.HoveredAxis == Axis.X ? xColor.Lightened(0.3f) : xColor, (float)delta * 24.0f);
+		
+		((StandardMaterial3D)yGizmo.Mesh.SurfaceGetMaterial(0)).
+			AlbedoColor = 	((StandardMaterial3D)yGizmo.Mesh.SurfaceGetMaterial(0)).
+			AlbedoColor.Lerp(model.State.HoveredAxis == Axis.Y ? yColor.Lightened(0.3f) : yColor, (float)delta * 24.0f);
+		
+		((StandardMaterial3D)zGizmo.Mesh.SurfaceGetMaterial(0)).
+			AlbedoColor = 	((StandardMaterial3D)zGizmo.Mesh.SurfaceGetMaterial(0)).
+			AlbedoColor.Lerp(model.State.HoveredAxis == Axis.Z ? zColor.Lightened(0.3f) : zColor, (float)delta * 24.0f);
+	}
 }

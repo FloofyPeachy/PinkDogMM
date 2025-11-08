@@ -53,9 +53,9 @@ public partial class EditorViewport : Node3D
 
 					if (partAtMouse != null)
 					{
-						Part partObj = appState.ActiveModel?.GetPartById(partAtMouse.Value).Value.Item2!;
+						//Part partObj = appState.ActiveModel?.GetPartById(partAtMouse.Value).Value.Item2!;
 
-						menu.AddItem(partObj.Name);
+						//menu.AddItem(partObj.Name);
 					}
 					else
 					{
