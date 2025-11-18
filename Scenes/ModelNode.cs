@@ -111,6 +111,11 @@ public partial class ModelNode : Node3D
 				//parts[_editedPart].SetBeingEdited(false);
 			}
 		};
+
+		model.State.ModelReloaded += (sender, b) =>
+		{
+			RebuildAll();
+		};
 		
 		foreach (var modelAllPart in model.AllParts)
 		{
@@ -137,9 +142,16 @@ public partial class ModelNode : Node3D
 		
 		foreach (var modelAllPart in model.AllParts)
 		{
-			/*var newOne = new PartNode(modelAllPart);
-			parts.Add(modelAllPart, newOne);
-			AddChild(newOne);*/
+			var newOne = new PartNode(modelAllPart.Value as Part);
+			parts.Add(modelAllPart.Value as Part, newOne);
+			
+			Callable.From(() =>
+			{
+				AddChild(newOne); 
+				newOne.Owner = this;
+			}).CallDeferred();
+			
+			
 		}
 	}
 	public void RefreshAll()

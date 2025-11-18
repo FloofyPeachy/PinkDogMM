@@ -28,6 +28,7 @@ public partial class DebugText : Label
 			builder.Append("\nHovering: " + state.ActiveModel.State.Hovering);
 			builder.Append("\nHovered side: " + state.ActiveModel.State.HoveredSide);
 			builder.Append("\nHovered axis: " + state.ActiveModel.State.HoveredAxis);
+			builder.Append("Texture: " + state.ActiveModel.State.CurrentTexture);
 			if (state.ActiveEditorState.Mode == EditorMode.ShapeEdit)
 			{
 				builder.Append("\nPress ENTER to exit Shape Edit mode.");

@@ -36,6 +36,7 @@ public class ToolboxLoader : ModelLoader
                     model.Items.Add(
                         lineSplit[5] == "Shapebox" ? DeserialiseShapebox(lineSplit, partCount) : DeserialisePart(lineSplit, partCount), lineSplit[3]);
                     partCount++;
+                    PL.I.Debug(PartJson.PartToJson(DeserialiseShapebox(lineSplit, partCount)));
                 }
             } else if (entry.Name.EndsWith("Model.png"))
             {
@@ -45,6 +46,7 @@ public class ToolboxLoader : ModelLoader
                 var image = new Image();
 
                 image.LoadPngFromBuffer(imageBytes);
+            
                 model.Textures.Add(new Texture(new Vector2(image.GetWidth(), image.GetHeight()), "Default", ImageTexture.CreateFromImage(image)));
             }
             else

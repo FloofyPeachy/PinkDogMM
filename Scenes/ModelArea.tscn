@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3 uid="uid://blyq6ctodibnd"]
+[gd_scene load_steps=40 format=3 uid="uid://blyq6ctodibnd"]
 
 [ext_resource type="Script" uid="uid://c1kaiyhwrhlwn" path="res://Scenes/ModelArea.cs" id="1_llaap"]
 [ext_resource type="Theme" uid="uid://bqumg0v5lmvy1" path="res://Themes/theme.res" id="2_3wcq2"]
@@ -16,6 +16,7 @@
 [ext_resource type="Script" uid="uid://lywd0h120fhi" path="res://Scenes/Elements/button.gd" id="11_pgaso"]
 [ext_resource type="Script" uid="uid://bx542mtyrvqb6" path="res://Scenes/ModelNode.cs" id="12_p4o42"]
 [ext_resource type="Script" uid="uid://d3gaebg0r4w50" path="res://Scenes/PivotXY2.cs" id="13_pgiwo"]
+[ext_resource type="Texture2D" uid="uid://d4i4h3uqlkvo1" path="res://Assets/placeholders/icon_pipette.png" id="13_xp4iq"]
 [ext_resource type="Texture2D" uid="uid://beexsww2dvrfw" path="res://Assets/pdmmarrow-01.png" id="14_r1lqq"]
 [ext_resource type="Script" uid="uid://bd311ilp2ri3i" path="res://Scenes/world_root.gd" id="15_o8ysw"]
 [ext_resource type="Shader" uid="uid://bw2mkq16g7676" path="res://grid_shader.gdshader" id="15_r0gdq"]
@@ -26,34 +27,12 @@
 [ext_resource type="Script" uid="uid://cci1fqhbg87v5" path="res://Scenes/TexturePanelPopup.cs" id="20_7msfe"]
 [ext_resource type="Script" uid="uid://bs1gf7wfydipg" path="res://Scenes/event_popup.gd" id="20_yo4xu"]
 [ext_resource type="Script" uid="uid://bjj2avsv6rcyr" path="res://Scenes/Controls/ViewportExternal.cs" id="21_ohojw"]
-[ext_resource type="Script" uid="uid://bek1pndipt8ha" path="res://Scenes/SelectionBox.cs" id="24_xp4iq"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_s0p6w"]
 
 [sub_resource type="Environment" id="Environment_ngb8x"]
 ambient_light_source = 3
 ambient_light_color = Color(1, 1, 1, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tqb6h"]
-albedo_color = Color(0.22745098, 0.7019608, 0.85490197, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_tqb6h"]
-material = SubResource("StandardMaterial3D_tqb6h")
-size = Vector3(1, 0.032, 0.032)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yo4xu"]
-albedo_color = Color(0.5019608, 0.78039217, 0.18431373, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_s0p6w"]
-material = SubResource("StandardMaterial3D_yo4xu")
-size = Vector3(0.032, 1, 0.032)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ohojw"]
-albedo_color = Color(0.6901961, 0.18039216, 0.14901961, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_gy4qg"]
-material = SubResource("StandardMaterial3D_ohojw")
-size = Vector3(0.032, 0.032, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vprs3"]
 render_priority = 0
@@ -127,9 +106,10 @@ rotation = -1.5707964
 theme_override_font_sizes/font_size = 14
 current_tab = 0
 tab_alignment = 2
-tab_count = 2
-tab_0/title = "Textures"
-tab_1/title = "Properties"
+tab_count = 3
+tab_0/title = "Painting"
+tab_1/title = "Textures"
+tab_2/title = "Properties"
 
 [node name="TabContainer" type="PanelContainer" parent="VBoxContainer/HSplitContainer/TabsArea"]
 layout_mode = 2
@@ -137,7 +117,20 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("2_3wcq2")
 
+[node name="TexturesTab" type="PanelContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer"]
+visible = false
+layout_mode = 2
+script = ExtResource("4_ms2l4")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/TexturesTab"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/TexturesTab/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="PropertiesTab" type="VSplitContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -195,16 +188,37 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("9_viecs")
 
-[node name="TexturesTab" type="PanelContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer"]
-layout_mode = 2
-script = ExtResource("4_ms2l4")
-
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/TexturesTab"]
+[node name="PaintingTab" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/TexturesTab/ScrollContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/PaintingTab"]
+layout_mode = 2
+alignment = 1
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/PaintingTab/HBoxContainer2"]
+layout_mode = 2
+text = "Cddf"
+flat = true
+color = Color(1, 1, 1, 1)
+
+[node name="Button" type="Button" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/PaintingTab/HBoxContainer2"]
+layout_mode = 2
+icon = ExtResource("13_xp4iq")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/PaintingTab"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/PaintingTab/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+text = "Pen Size"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/PaintingTab/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+value = 1.0
+rounded = true
 
 [node name="RenderArea" type="VBoxContainer" parent="VBoxContainer/HSplitContainer"]
 layout_mode = 2
@@ -251,6 +265,9 @@ flat = true
 expand_icon = true
 script = ExtResource("11_pgaso")
 
+[node name="Modes" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
+layout_mode = 2
+
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HSplitContainer/RenderArea"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -270,7 +287,7 @@ mouse_target = true
 own_world_3d = true
 handle_input_locally = false
 physics_object_picking = true
-size = Vector2i(969, 648)
+size = Vector2i(1101, 648)
 render_target_update_mode = 4
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport"]
@@ -279,24 +296,28 @@ environment = SubResource("Environment_ngb8x")
 [node name="WorldRoot" type="Node3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment"]
 script = ExtResource("15_o8ysw")
 
-[node name="GizmoMove" type="Node3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"]
+[node name="Gizmo" type="Node3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"]
 script = ExtResource("17_s0p6w")
-
-[node name="X" type="MeshInstance3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot/GizmoMove"]
-mesh = SubResource("BoxMesh_tqb6h")
-
-[node name="Y" type="MeshInstance3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot/GizmoMove"]
-mesh = SubResource("BoxMesh_s0p6w")
-skeleton = NodePath("../X")
-
-[node name="Z" type="MeshInstance3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot/GizmoMove"]
-mesh = SubResource("BoxMesh_gy4qg")
-skeleton = NodePath("../X")
 
 [node name="ModelNode" type="Node3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"]
 script = ExtResource("12_p4o42")
 
+[node name="ViewportInteraction" type="Control" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+script = ExtResource("16_wchy0")
+
+[node name="PopupMenu" type="PopupMenu" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot/ViewportInteraction"]
+
 [node name="PivotXY2" type="Node3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"]
+visible = false
 script = ExtResource("13_pgiwo")
 
 [node name="PivotY" type="Node3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot/PivotXY2"]
@@ -319,11 +340,6 @@ texture = ExtResource("14_r1lqq")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03878951, -1.395234, -0.06745005)
 mesh = SubResource("BoxMesh_o02ra")
 skeleton = NodePath("../..")
-
-[node name="ViewportInteraction" type="Node3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"]
-script = ExtResource("16_wchy0")
-
-[node name="PopupMenu" type="PopupMenu" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot/ViewportInteraction"]
 
 [node name="DebugText" type="Label" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer"]
 layout_mode = 2
@@ -362,10 +378,6 @@ far = 3998.25
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/RotationView/SubViewport/WorldEnvironment"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.2614386)
 light_energy = 9.333
-
-[node name="SelectionBox" type="Control" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer"]
-layout_mode = 2
-script = ExtResource("24_xp4iq")
 
 [node name="StatusBar" type="PanelContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 32)

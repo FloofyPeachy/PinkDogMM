@@ -75,7 +75,10 @@ public partial class PartNode(Part part) : Node3D
             _outlineMesh.Mesh = MeshGenerator.OutlineMeshFromPart(part);
             
             _partMesh.RemoveChild(_staticBody);
-            _partMesh.CreateConvexCollision();
+
+
+
+            MakeMeshCollision();
 
             var child = _partMesh.GetChildren().Last() as StaticBody3D;
             child!.SetMeta("id", part.Id);
@@ -147,7 +150,7 @@ public partial class PartNode(Part part) : Node3D
     public override void _PhysicsProcess(double delta)
     {
     
-        Position = this.Position.Lerp(new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f, (float)delta * 16.0f);
+        Position = model.State.Mode != EditorMode.Normal ? Position.Lerp(new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f, (float)delta * 16.0f) : new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f;
         /*if (Input.IsMouseButtonPressed(MouseButton.Left))
         {
             Position = new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f;
@@ -158,13 +161,37 @@ public partial class PartNode(Part part) : Node3D
                 (float)delta * 24.0f);#1#
         }*/
         //Position = new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f/*this.Position.Lerp(new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f, (float)delta * 24.0f)*/;
-       RotationDegrees = this.RotationDegrees.Lerp(new Vector3(0,0,0), (float)delta * 24.0f);
-       this.RotationOrder = EulerOrder.Zyx;
-        this.Scale = this.Scale.Lerp(Vector3.One * 0.0625f, (float)delta * 16.0f);
+       RotationDegrees = RotationDegrees.Lerp(new Vector3(part.Rotation.Z, -part.Rotation.Y, part.Rotation.X), (float)delta * 24.0f);
+       RotationOrder = EulerOrder.Zyx;
+        Scale = Scale.Lerp(Vector3.One * 0.0625f, (float)delta * 16.0f);
         _outlineMesh.GlobalPosition = _outlineMesh.GlobalPosition.Lerp(part.Position.AsVector3().LHS(), (float)delta * 24.0f);
         
     }
 
+    private void MakeMeshCollision()
+    {
+        var meshFromPart = MeshGenerator.MeshFromPart(part, new Vector2(512, 512));
+        var collision = new ConvexPolygonShape3D();
+       
+        if (_partMesh != null) _partMesh.Mesh = meshFromPart;
+        _partMesh.CreateConvexCollision(false);
+        
+        var child = _partMesh.GetChild<StaticBody3D>(0);
+        child.SetMeta("id", part.Id);
+        
+        child.InputRayPickable = true;
+
+        child.MouseEntered += () =>
+        {
+            model.State.Hovering = part;
+            ((_outlineMesh.MaterialOverride as StandardMaterial3D)!).AlbedoColor = model.State.SelectedObjects.Contains(part) ? Colors.Yellow : Colors.Orange;
+        };
+        child.MouseExited += () =>
+        {
+            model.State.Hovering = null;
+            ((_outlineMesh.MaterialOverride as StandardMaterial3D)!).AlbedoColor = model.State.SelectedObjects.Contains(part) ? Colors.Yellow : Colors.White;
+        };
+    }
     private void SetMesh()
     {
         _partMesh = new MeshInstance3D();
@@ -173,25 +200,8 @@ public partial class PartNode(Part part) : Node3D
         {
             Visible = false
         };
-        _partMesh.Mesh = MeshGenerator.MeshFromPart(part, new Vector2(512, 512));
         
-        _partMesh.CreateConvexCollision();
-        
-        var child = _partMesh.GetChild<StaticBody3D>(0);
-        child.SetMeta("id", part.Id);
-        child.InputRayPickable = true;
-
-        child.MouseEntered += () =>
-        {
-            model.State.Hovering = part;
-            ((_outlineMesh.MaterialOverride as StandardMaterial3D)!).AlbedoColor = Colors.Orange;
-        };
-        child.MouseExited += () =>
-        {
-            model.State.Hovering = null;
-            ((_outlineMesh.MaterialOverride as StandardMaterial3D)!).AlbedoColor = Colors.White;
-        };
-        child.InputEvent += ChildOnInputEvent;
+        MakeMeshCollision();
         
         _partMesh.MaterialOverride = new StandardMaterial3D()
         {
@@ -224,12 +234,6 @@ public partial class PartNode(Part part) : Node3D
 
     private void ChildOnInputEvent(Node camera, InputEvent @event, Vector3 eventPosition, Vector3 normal, long shapeIdx)
     {
-        if (@event is InputEventMouseButton click && click.ButtonIndex == MouseButton.Left && !click.Pressed)
-        {
-            GD.Print(part.Id);
-            actionRegistry.Execute("TheModel/SelectPart",
-                new Dictionary { { "model", model }, { "id", part.Id} });
-            GetViewport().SetInputAsHandled();
-        } 
+      
     }
 }

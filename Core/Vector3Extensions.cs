@@ -24,9 +24,9 @@ public static class Vector3Extensions
         return vec;
     }
     
-    public static Vector3 FZ(this Vector3 vec)
+    public static Vector3 FXZ(this Vector3 vec)
     {
-       
+        (vec.X, vec.Y, vec.Z) = (vec.Z, vec.Y, vec.X);
         return vec;
     }
     

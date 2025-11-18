@@ -20,6 +20,10 @@ public partial class TreeBit : Tree
 		{
 			PopulateTree();
 		};
+		this.ItemSelected += () =>
+		{
+			
+		};
 		/*model.PartGroups.NestedCollectionChanged += (sender, args) => PopulateTree();
 		model.PartGroups.ItemsChanged += (sender, args) => PopulateTree();
 		model.PartGroups.ItemChanged += (sender, args) =>

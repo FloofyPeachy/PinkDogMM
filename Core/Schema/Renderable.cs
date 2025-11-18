@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Godot;
 
 namespace PinkDogMM_Gd.Core.Schema;
 
@@ -12,6 +13,14 @@ public class Renderable : INotifyPropertyChanged
     private Vector3L _position = new Vector3L();
     private Vector3L _size = new Vector3L(1,1,1);
     private Vector3L _rotation = new Vector3L();
+    private Aabb? _bounding = null; //This is a little scary. It's null until its rendered. Be careful!!
+
+    public Aabb? Bounding
+    {
+        get => _bounding;
+        set => _bounding = value;
+    }
+
     private bool _visible;
     
     private Vector2L textureSizeSize = new Vector2L(0,0);
@@ -43,7 +52,7 @@ public class Renderable : INotifyPropertyChanged
         Rotation.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Rotation) + "." + args.PropertyName);
         TextureSize.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(TextureSize) + "." + args.PropertyName);
     }
-    
+
     
     public int Id
     {

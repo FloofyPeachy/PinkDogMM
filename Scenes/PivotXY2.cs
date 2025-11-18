@@ -240,7 +240,7 @@ public partial class PivotXY2 : Node3D
         
         
 
-        if (motion.Position.DistanceTo(ClickPosition) < DragThreshold) return;
+        /*if (motion.Position.DistanceTo(ClickPosition) < DragThreshold) return;*/
 
         if (!Input.IsMouseButtonPressed(MouseButton.Middle) && Input.IsMouseButtonPressed(MouseButton.Right))
         {

@@ -17,7 +17,8 @@ public enum EditorMode
     Move,
     Resize,
     Rotate,
-    ShapeEdit
+    ShapeEdit,
+    Paint
 }
 
 
@@ -37,7 +38,7 @@ public partial class ModelEditorState : Resource
     public Camera Camera; //RotationX, RotationY, Zoom
     public Renderable? Hovering = new();
     public Vector3 WorldMousePosition = Vector3.Zero;
-    public int CurrentTexture = -1;
+    public int CurrentTexture = 0;
     public Vector3 HoveredSide = Vector3.Zero;
     public Axis ActiveAxis = Axis.All;
     public Axis HoveredAxis = Axis.All;
@@ -72,7 +73,7 @@ public partial class ModelEditorState : Resource
     public event EventHandler<bool>? IsPeekingChanged;
     public event EventHandler<int>? FocusedCornerChanged;
     public event EventHandler<int> TextureChanged;
-    
+    public event EventHandler<bool> ModelReloaded;
     public event EventHandler<EditorMode>? ModeChanged;
     
     public ModelEditorState(Model model)
@@ -103,7 +104,14 @@ public partial class ModelEditorState : Resource
     public void SelectObject(int id)
     {
         var objec = model!.GetItemById(id)!.Value;
-        SelectedObjects.Add(objec);
+        if (SelectedObjects.Contains(objec))
+        {
+            SelectedObjects.Remove(objec);
+        }
+        else
+        {
+            SelectedObjects.Add(objec);
+        }
         objec.PropertyChanged += (sender, args) =>
         {
             ;
@@ -167,6 +175,11 @@ public partial class ModelEditorState : Resource
         FocusedCorner = 0; 
         
     }
+
+    public void ReloadModel(bool full)
+    {
+        OnModelReloaded(full);
+    }
     
     public void SetPeek(bool peeking)
     {
@@ -228,5 +241,10 @@ public partial class ModelEditorState : Resource
     protected virtual void OnTextureChanged(int e)
     {
         TextureChanged?.Invoke(this, e);
+    }
+
+    protected virtual void OnModelReloaded(bool e)
+    {
+        ModelReloaded?.Invoke(this, e);
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using PinkDogMM_Gd.Core;
 using PinkDogMM_Gd.Core.Configuration;
 using PinkDogMM_Gd.Core.Schema;
 
@@ -19,14 +20,16 @@ public class MeshGenerator
     //blue 2 (36, 36, 143)
     public static ArrayMesh MeshFromPart(Part part, Vector2 textureSize)
     {
-        List<Color> colors = [
-          PDMMTheme.Front,
-          PDMMTheme.Back,
-          PDMMTheme.Top,
-          PDMMTheme.Bottom,
-          PDMMTheme.Left,
-          PDMMTheme.Right
+        List<Color> colors =
+        [
+            PDMMTheme.Front,
+            PDMMTheme.Back,
+            PDMMTheme.Top,
+            PDMMTheme.Bottom,
+            PDMMTheme.Left,
+            PDMMTheme.Right
         ];
+        textureSize = new Vector2(512, 512);
         List<Vector3> vectors = CreatePartVectors(part);
         List<Vector2> uvs = GenerateCubeUVs(part, textureSize).ToList();
         List<(Vector3, Vector2)> vertexes = [];
@@ -44,33 +47,47 @@ public class MeshGenerator
 
 
         var enumerator = vertexes.Chunk(4).GetEnumerator();
+        var min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+        var max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
         using (enumerator)
         {
             int sideIdx = -1;
             while (enumerator.MoveNext())
             {
                 sideIdx++;
+                Vector2[] uvFlip =
+                [
+                    new Vector2(1.0f, 1.0f),
+                    new Vector2(1.0f, 1.0f),
+                    new Vector2(-1.0f, -1.0f),
+                    new Vector2(1.0f, 1.0f),
+                    new Vector2(1.0f, 1.0f),
+                    new Vector2(1.0f, 1.0f),
+                ];
                 (Vector3, Vector2)[] side = enumerator.Current;
 
-                // PL.I.Info(side.Length);
+                PL.I.Info(sideIdx);
                 List<(Vector3, Vector2)> tri1 = [side[0], side[1], side[2]];
                 List<(Vector3, Vector2)> tri2 = [side[0], side[2], side[3]];
 
-                foreach (var vector3 in tri1)
+                foreach (var vector3 in tri1.Concat(tri2))
                 {
                     st.SetColor(colors[sideIdx]);
-                    st.SetUV(vector3.Item2);
+                    var uv = vector3.Item2;
+                    var realUv = sideIdx switch
+                    {
+                        2 => new Vector2(uv.X, uv.Y),
+                        /*1 => new Vector2(1f - uv.X, 1f - uv.Y),
+                        2 => new Vector2(1f - uv.Y, uv.X),*/
+                        _ => uv,
+                    };
+                    st.SetUV(realUv);
                     st.AddVertex(vector3.Item1);
+                    var globalV = part.Position.AsVector3() * vector3.Item1;
+                    min = min.Min(globalV);
+                    max = max.Max(globalV);
                 }
-
-                foreach (var vector3 in tri2)
-                {
-                    st.SetColor(colors[sideIdx]);
-                    st.SetUV(vector3.Item2);
-                    
-                    
-                    st.AddVertex(vector3.Item1);
-                }
+                
             }
         }
 
@@ -83,9 +100,10 @@ public class MeshGenerator
             st.AddVertex(vector3);
 
         }*/
+        part.Bounding = new Aabb(min, max - min);
 
         st.GenerateNormals();
-        
+
         // st.GenerateTangents();
 
         return st.Commit();
@@ -207,7 +225,7 @@ public class MeshGenerator
         {
             st.AddVertex(vector3);
         }
-        
+
 
         return st.Commit();
     }
@@ -218,7 +236,7 @@ public class MeshGenerator
         int tx = part.TextureSize.XI;
         int ty = part.TextureSize.YI;
         int dx = (int)part.Size.X;
-        
+
         int dy = (int)part.Size.Y;
         int dz = (int)part.Size.Z;
 
@@ -288,50 +306,6 @@ public class MeshGenerator
         uvs[23] = new Vector2(U(tx + dz + dx, textureSize.X), V(ty + dz + dy, textureSize.Y));
 
         return uvs;
-    }
-
-    private static List<Vector2> CreatePartUVs(Part part, Vector2 textureSize)
-    {
-        var uvMaps = new List<Vector2>();
-
-
-        /*Vector3[] vertexData = new Vector3[]
-        {
-            new (x1, y1, z1), new (x2, y2, z2), new(x3, y3, z3), new(x4, y4, z4),
-
-// Top face
-            new(x5, y5, z5),
-            new(x6, y6, z6), new(x7, y7, z7), new(x8, y8, z8),
-
-// Front face
-            new(x1, y1, z1),
-            new(x5, y5, z5), new(x6, y6, z6), new(x2, y2, z2),
-
-// Back face
-            new(x4, y4, z4),
-            new(x8, y8, z8), new(x7, y7, z7), new(x3, y3, z3),
-
-// Left face
-            new(x1, y1, z1),
-            new(x4, y4, z4),new(x8, y8, z8), new(x5, y5, z5),
-
-// Right face
-            new(x2, y2, z2),
-            new(x3, y3, z3), new(x7, y7, z7), new(x6, y6, z6)
-        };*/
-
-        return new Vector2[]
-        {
-            //Top face
-            new Vector2(U(part.TextureSize.XI + part.Size.ZI, (int)textureSize.X),
-                V(part.TextureSize.YI + part.Size.ZI, (int)textureSize.Y)),
-            new Vector2(U(part.TextureSize.XI + part.Size.ZI + part.Size.XI, (int)textureSize.X),
-                V(part.TextureSize.YI + part.Size.ZI, (int)textureSize.Y)),
-            new Vector2(U(part.TextureSize.XI + part.Size.ZI + part.Size.XI, (int)textureSize.X),
-                V(part.TextureSize.YI, (int)textureSize.Y)),
-            new Vector2(U(part.TextureSize.XI + part.Size.ZI, (int)textureSize.X),
-                V(part.TextureSize.YI, (int)textureSize.Y)),
-        }.ToList();
     }
 
     /*static float U(int x, float textureWidth) => (float)x / textureWidth;

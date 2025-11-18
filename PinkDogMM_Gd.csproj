@@ -21,7 +21,4 @@
     <ItemGroup>
 
     </ItemGroup>
-    <ItemGroup>
-        <Folder Include="Render\Ables\"/>
-    </ItemGroup>
 </Project>
