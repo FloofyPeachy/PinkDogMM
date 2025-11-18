@@ -21,8 +21,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-AppState="*res://Core/AppState.cs"
 ActionRegistry="*res://Core/Actions/ActionRegistry.cs"
+AppState="*res://Core/State/AppState.cs"
 
 [debug_draw_3d]
 
