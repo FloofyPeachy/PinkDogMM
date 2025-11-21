@@ -1,0 +1,12 @@
+[gd_scene load_steps=0 format=3 uid="uid://c7wefso6y31wo"]
+
+[node name="ShapeEditor" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]

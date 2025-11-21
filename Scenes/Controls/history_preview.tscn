@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://cr02vg2jytmof"]
+
+[ext_resource type="Script" uid="uid://jp7nleksgm8f" path="res://Scenes/Controls/HistoryPreview.cs" id="1_rjgis"]
+
+[node name="HistoryPreview" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rjgis")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2

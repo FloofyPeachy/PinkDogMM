@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Godot.Collections;
+using PinkDogMM_Gd._3D;
 using PinkDogMM_Gd.Core;
 using PinkDogMM_Gd.Core.Actions;
 using PinkDogMM_Gd.Core.Schema;
@@ -34,8 +35,8 @@ public partial class ViewportInteraction : Control
         {
             if (mode == EditorMode.Resize)
             {
-                Input.SetMouseMode(Input.MouseModeEnum.Captured);
                 CapturedMousePos = GetViewport().GetMousePosition();
+                Input.SetMouseMode(Input.MouseModeEnum.Captured);
                 InitalVec3 = model.State.SelectedObjects.First().Size.AsVector3();
             }
             else
@@ -44,6 +45,7 @@ public partial class ViewportInteraction : Control
                 InitialWorldPos = Vector3.Zero;
                 InitalVec3 = Vector3.Zero;
                 model.State.ActiveAxis = Axis.All;
+           
                 Input.SetMouseMode(Input.MouseModeEnum.Visible);
             }
         };
@@ -101,10 +103,27 @@ public partial class ViewportInteraction : Control
                         }
                         if (!button.Pressed)
                         {
+                            if (model.State.Mode == EditorMode.ShapeEdit) return;
                             Input.SetDefaultCursorShape(Input.CursorShape.Arrow);
-                            model.State.ChangeMode(EditorMode.Normal);
+                            actionRegistry.Execute("Editor/SwitchMode",
+                                new Dictionary { { "model", model }, { "mode", (int)EditorMode.Normal} });
                             DragStart = Vector2.Zero;
                             QueueRedraw();
+                        }
+                        else
+                        {
+                            if (button.DoubleClick)
+                            {
+                                var part = GetObjectAtMouse();
+                                if (part != null && model.GetItemById(part.Value.Item2) != null )
+                                {
+                                    actionRegistry.Execute("TheModel/SelectPart",
+                                        new Dictionary { { "model", model }, { "id", part.Value.Item2} });
+                                    actionRegistry.Execute("Editor/SwitchMode",
+                                        new Dictionary { { "model", model }, { "mode", (int)EditorMode.ShapeEdit} });
+                                }
+                               
+                            }
                         }
 
 
@@ -293,9 +312,8 @@ public partial class ViewportInteraction : Control
                         Input.SetDefaultCursorShape(Input.CursorShape.Move);
                         model.State.ChangeMode(EditorMode.Move);
 
-                        /*
-                    actionRegistry.Execute("TheModel/SelectPart",
-                        new Dictionary { { "model", model }, { "id", objectAtMouse.Value.Item2 } });*/
+                    actionRegistry.Start("TheModel/MovePart",
+                        new Dictionary { { "model", model }});
                     }
                     else
                     {
@@ -512,9 +530,12 @@ public partial class ViewportInteraction : Control
                             model.State.ActiveAxis = Axis.X;
                             break;
                         case Key.Y:
+                           
+
                             model.State.ActiveAxis = Axis.Y;
                             break;
                         case Key.Z:
+                           
                             model.State.ActiveAxis = Axis.Z;
                             break;
                         case Key.F5:
@@ -545,6 +566,9 @@ public partial class ViewportInteraction : Control
 
                             break;
                         }
+
+                      
+                        
                         /*case Key.D:
                         if (model.State.Mode != EditorMode.ShapeEdit) break;
                         model.State.FocusedCorner =
@@ -568,8 +592,12 @@ public partial class ViewportInteraction : Control
                                 .GetTexture().GetImage().SavePng("deeznuts2.png");
                             model.State.ShowEventText("Screenshot taken!");
                             break;
+                        case Key.F3:
+                            List<Part> parts = [];
+                            parts.AddRange(model.AllParts.Select(modelAllPart => modelAllPart.Value as Part));
 
-
+                            Texturerer.DrawTexture(parts);
+                            break;
                         default:
                             break;
                     }
@@ -723,14 +751,23 @@ public partial class ViewportInteraction : Control
                     {
                         if (InitialWorldPos == Vector3.Zero) InitialWorldPos = model.State.WorldMousePosition;
                         Vector3 distance = InitialWorldPos - model.State.WorldMousePosition;
-
-                        var v = (InitalVec3 + distance).Clamp(-128, 128).Round().FXZ();
+                        GD.Print("d:" + distance);
+                        /*if (InitialWorldPos == model.State.WorldMousePosition && Math.Sign(distance.X) == 1)
+                        {
+                            distance.X = -1;
+                        }
+                        else
+                        {
+                            distance.X = 1;
+                        }*/
+                        if (distance == Vector3.Zero);
+                        var v = (distance).Clamp(-128, 128).Round();
 
                         GD.Print("v:" + v);
                         if (model.State.ActiveAxis is Axis.X or Axis.All)
                         {
                             part.Size.X = Math.Abs(v.X);
-                            part.Position.X = InitalVec3.X + Math.Min(v.X, 0);
+                            part.Position.X = InitalVec3.X + v.X;
                         }
 
                         if (model.State.ActiveAxis is Axis.Y or Axis.All)
@@ -768,25 +805,30 @@ public partial class ViewportInteraction : Control
 
             case InputEventMouseMotion motion:
             {
-                var pos = model.State.WorldMousePosition.Round();
+                var pos = model.State.WorldMousePosition.Round().LH();
+                var positions = new Godot.Collections.Dictionary();
+                
                 foreach (var renderable in model.State.SelectedObjects)
                 {
+                    var newPos = Vector3.Zero;
                     if (model.State.ActiveAxis is Axis.X or Axis.All)
                     {
-                        renderable.Position.X = pos.X;
+                        newPos.X = pos.X;
                     }
 
                     if (model.State.ActiveAxis is Axis.Y or Axis.All)
                     {
-                        renderable.Position.Y = pos.Y;
+                        newPos.Y = pos.Y;
                     }
 
                     if (model.State.ActiveAxis is Axis.Z or Axis.All)
                     {
-                        renderable.Position.Z = pos.Z;
+                        newPos.Z = pos.Z;
                     }
+                    
+                    positions.Add(renderable.Id, newPos);
                 }
-
+                actionRegistry.Tick(positions);
                 break;
             }
         }

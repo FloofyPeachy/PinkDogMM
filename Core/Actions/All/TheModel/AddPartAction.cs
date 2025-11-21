@@ -17,9 +17,11 @@ public class AddPartAction : IAction
     
     public void Execute()
     {
-        part = new Shapebox();
-        part.Id = model.TotalPartCount + 1;
-        part.Name = "Part " + (model.TotalPartCount + 1);
+        part = new Shapebox()
+        {
+            Id = model.TotalPartCount,
+            Name = "Part " + (model.TotalPartCount + 1)
+        };
         if (byKey)
         {
             var pos = model.State.WorldMousePosition.Round();
@@ -40,7 +42,7 @@ public class AddPartAction : IAction
         model.Items.Remove(part);
     }
 
-    public string TextPrefix => "Added Part";
+    public string Icon => "icon_newblock_new";
     public bool AddToStack => true;
     
     public static int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.Insert, KeyModifiers.None);

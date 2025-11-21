@@ -52,7 +52,8 @@ public partial class ModelNode : Node3D
 				}
 				else
 				{
-					parts[part].QueueFree();
+				
+					parts[part].Free();
 					parts.Remove(part);
 				}
 			}
@@ -95,7 +96,7 @@ public partial class ModelNode : Node3D
 			}
 		};*/
 		
-		model.State.ModeChanged += (sender, mode) =>
+		/*model.State.ModeChanged += (sender, mode) =>
 		{
 			
 			if (mode == EditorMode.ShapeEdit)
@@ -103,14 +104,13 @@ public partial class ModelNode : Node3D
 				_editedPart = model.State.SelectedObjects.First() as Part;
 				model.State.SelectedObjects.Clear();
 				model.State.SelectPart(_editedPart);
-				parts[_editedPart].SetBeingEdited(true);
 				
 			}
 			else
 			{
 				//parts[_editedPart].SetBeingEdited(false);
 			}
-		};
+		};*/
 
 		model.State.ModelReloaded += (sender, b) =>
 		{

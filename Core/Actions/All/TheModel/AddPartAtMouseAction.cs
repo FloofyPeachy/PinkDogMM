@@ -37,7 +37,7 @@ public class AddPartAtMouseAction : IAction
         throw new System.NotImplementedException();
     }
 
-    public string TextPrefix => "Added Part";
+    public string Icon => "Added Part";
     public bool AddToStack => true;
     
     public static int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.Asciitilde, KeyModifiers.None);

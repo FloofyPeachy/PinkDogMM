@@ -28,7 +28,7 @@ public partial class HistoryPanel : PanelContainer
 		historyList.Clear();
 		foreach (var action in appState.ActiveModel?.State.History.GetHistory() ?? throw new InvalidOperationException())
 		{
-			historyList.AddItem(action.TextPrefix);
+			historyList.AddItem(action.Icon);
 		}
 	}
 	public void UndoButtonPressed()

@@ -31,7 +31,6 @@ public class ToolboxLoader : ModelLoader
                     var line = split[index];
                     string[] lineSplit = line.Split("|");
                     if (lineSplit[0] == "ModelClassName") model.Name = line.Split("|")[1].ReplaceLineEndings("");
-
                     if (!line.StartsWith("Element")) continue;
                     model.Items.Add(
                         lineSplit[5] == "Shapebox" ? DeserialiseShapebox(lineSplit, partCount) : DeserialisePart(lineSplit, partCount), lineSplit[3]);

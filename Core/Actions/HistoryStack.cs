@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using Godot.Collections;
 using PinkDogMM_Gd.Core.Schema;
 
 namespace PinkDogMM_Gd.Core.Commands;
@@ -10,7 +11,7 @@ public partial class HistoryStack : Resource
 {
     private Stack<IAction> undoStack = new Stack<IAction>();
     private Stack<IAction> redoStack = new Stack<IAction>();
-    
+    private IStagedAction? activeAction;
     public event EventHandler<IAction>? ActionExecuted;
     public event EventHandler<IAction>? ActionUndone;
     public event EventHandler<IAction>? ActionRedone;
@@ -31,7 +32,23 @@ public partial class HistoryStack : Resource
         redoStack.Push(action);
         OnActionUndone(action);
     }
-    
+
+    public void Start(IStagedAction action)
+    {
+        activeAction = action;
+        activeAction.Start();
+    }
+
+    public void Tick(Dictionary arguments)
+    {
+        activeAction?.Tick(arguments);
+    }
+
+    public void Finish()
+    {
+        if (activeAction != null) Execute(activeAction);
+        activeAction = null;
+    }
     public void Redo()
     {
       
@@ -53,10 +70,11 @@ public partial class HistoryStack : Resource
     {
        
         action.Execute();
-        OnActionExecuted(action);
+        
         if (!action.AddToStack) return;
         undoStack.Push(action);
         redoStack.Clear();
+        OnActionExecuted(action);
     }
     
   

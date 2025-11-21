@@ -9,33 +9,45 @@ public partial class CornerNode(int cornerIndex) : Node3D
 {
    
 
-    public MeshInstance3D CornerMesh;
+    public MeshInstance3D cornerMesh;
     public Label3D Label;
-
+    public bool hovering = false;
+    public Color color;
+    
     public override void _Ready()
     {
         base._Ready();
-        CornerMesh = new MeshInstance3D();
-        CornerMesh.Mesh = new BoxMesh()
+        color = Consts.cornerToColor[cornerIndex];
+        cornerMesh = new MeshInstance3D();
+        cornerMesh.Mesh = new BoxMesh()
         {
-            Size = new Vector3(0.2f, 0.2f, 0.2f)
+            Size = new Vector3(0.02f, 0.02f, 0.02f)
         };
-        CornerMesh.MaterialOverride = new StandardMaterial3D()
+        cornerMesh.MaterialOverride = new StandardMaterial3D()
         {
-            AlbedoColor = Consts.cornerToColor[cornerIndex]
+            AlbedoColor = color
         };
-        CornerMesh.CreateConvexCollision();
-        CornerMesh.GetChildren().Last().SetMeta("corner", cornerIndex);
-        CornerMesh.Rotation = new Vector3(0, 0, 90);
+        cornerMesh.CreateConvexCollision();
+        cornerMesh.GetChildren().Last().SetMeta("corner", cornerIndex);
+        (cornerMesh.GetChildren().Last() as StaticBody3D).MouseEntered += () => { hovering = true; };
+        (cornerMesh.GetChildren().Last() as StaticBody3D).MouseExited += () => { hovering = false;};
+        cornerMesh.Rotation = new Vector3(0, 0, 90);
 
         Label = new Label3D();
         Label.Text = (cornerIndex + 1).ToString();
-        Label.FontSize = 128;
+        Label.FontSize = 32;
 
-        Label.Modulate = Consts.cornerToColor[cornerIndex];
+        Label.Modulate = color;
         //Label.Rotation = new Vector3(0, -90, 0);
         AddChild(Label);
-        AddChild(CornerMesh);
+        AddChild(cornerMesh);
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        ((StandardMaterial3D)cornerMesh.MaterialOverride).AlbedoColor =
+            ((StandardMaterial3D)cornerMesh.MaterialOverride).AlbedoColor.Lerp(
+             hovering ? color.Lightened(0.3f) : color, (float)delta * 24.0f);
     }
 
     public void SetFocused(bool focused)
@@ -44,14 +56,14 @@ public partial class CornerNode(int cornerIndex) : Node3D
 
         Label.Position = cornerIndex switch
         {
-            0 => new Vector3(-0.3f, 0.3f, -0.3f),
-            1 => new Vector3(-0.3f, 0.5f, 0.3f),
-            2 => new Vector3(0.3f, 0.5f, 0.3f),
-            3 => new Vector3(0.3f, 0.3f, -0.3f),
-            4 => new Vector3(-0.3f, -0.3f, -0.3f),
-            5 => new Vector3(-0.3f, -0.5f, 0.3f),
-            6 => new Vector3(0.3f, -0.5f, 0.3f),
-            7 => new Vector3(0.3f, -0.3f, -0.3f),
+            0 => new Vector3(-0.1f, 0.1f, -0.1f),
+            1 => new Vector3(-0.1f, 0.3f, 0.1f),
+            2 => new Vector3(0.1f, 0.3f, 0.1f),
+            3 => new Vector3(0.1f, 0.1f, -0.1f),
+            4 => new Vector3(-0.1f, -0.1f, -0.1f),
+            5 => new Vector3(-0.1f, -0.3f, 0.1f),
+            6 => new Vector3(0.1f, -0.3f, 0.1f),
+            7 => new Vector3(0.1f, -0.1f, -0.1f),
             _ => Label.Position
         };
 
@@ -59,7 +71,7 @@ public partial class CornerNode(int cornerIndex) : Node3D
         {
             //Label.Rotation = new Vector3(0, 57, 0);
         }
-        CornerMesh.MaterialOverride = new StandardMaterial3D()
+        cornerMesh.MaterialOverride = new StandardMaterial3D()
         {
             AlbedoColor = focused ? Colors.Yellow : Consts.cornerToColor[cornerIndex]
         };

@@ -24,7 +24,7 @@ public class Renderable : INotifyPropertyChanged
     private bool _visible;
     
     private Vector2L textureSizeSize = new Vector2L(0,0);
-    public Dictionary<string, object> Extra { get; } = new();
+    public Dictionary<string, object> Extra { get; set; } = new();
     
     
     public Renderable()
@@ -88,6 +88,7 @@ public class Renderable : INotifyPropertyChanged
         set => SetField(ref _position, value);
     }
 
+    
     public event PropertyChangedEventHandler? PropertyChanged;
 
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)

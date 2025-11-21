@@ -54,11 +54,11 @@ public partial class GizmoMove : Node3D
                 this.Position = ((renderable.Item1.Position.AsVector3().LHS() +
                                   (renderable.Item1.Size.AsVector3().LHS() / 2)));
                 
-                this.Visible = true;
+                //this.Visible = true;
             }
             else
             {
-                this.Visible = false;
+              //  this.Visible = false;
             }
         };
 
@@ -115,11 +115,11 @@ public partial class GizmoMove : Node3D
     {
         //this.Position = appState.ActiveEditorState.WorldMousePosition;
         base._PhysicsProcess(delta);
-
-        this.Scale = this.Scale.Lerp((model.State.SelectedObjects.Count != 0
+        //this.Visible = model.State.Mode != EditorMode.ShapeEdit;
+        this.Scale = this.Scale.Lerp((model.State.SelectedObjects.Count != 0 && model.State.Mode != EditorMode.ShapeEdit
             ? new Vector3(model.State.Camera.Zoom,
                 model.State.Camera.Zoom, model.State.Camera.Zoom)
-            : Vector3.One) / 1.5f, (float)delta * 24.0f);
+            : new Vector3(0.01f, 0.01f, 0.01f)) / 1.5f, (float)delta * 24.0f);
         ((StandardMaterial3D)xGizmo.Mesh.SurfaceGetMaterial(0)).AlbedoColor =
             ((StandardMaterial3D)xGizmo.Mesh.SurfaceGetMaterial(0)).AlbedoColor.Lerp(
                 model.State.HoveredAxis == Axis.X ? xColor.Lightened(0.3f) : xColor, (float)delta * 24.0f);

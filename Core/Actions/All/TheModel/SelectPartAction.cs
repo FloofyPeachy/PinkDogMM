@@ -15,7 +15,7 @@ public class SelectPartAction : IAction
     public int id;
     public void Execute()
     {
-        
+        if (model.State.Mode == EditorMode.ShapeEdit) return;
         if (model!.GetItemById(id) == null)
         {
             model.State?.UnselectAll();
@@ -55,5 +55,5 @@ public class SelectPartAction : IAction
     }
    
     public bool AddToStack => false;
-    public string TextPrefix => "Selected Part";
+    public string Icon => "Selected Part";
 }

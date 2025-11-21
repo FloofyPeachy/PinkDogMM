@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://blyq6ctodibnd"]
+[gd_scene load_steps=43 format=3 uid="uid://blyq6ctodibnd"]
 
 [ext_resource type="Script" uid="uid://c1kaiyhwrhlwn" path="res://Scenes/ModelArea.cs" id="1_llaap"]
 [ext_resource type="Theme" uid="uid://bqumg0v5lmvy1" path="res://Themes/theme.res" id="2_3wcq2"]
@@ -20,13 +20,16 @@
 [ext_resource type="Texture2D" uid="uid://beexsww2dvrfw" path="res://Assets/pdmmarrow-01.png" id="14_r1lqq"]
 [ext_resource type="Script" uid="uid://bd311ilp2ri3i" path="res://Scenes/world_root.gd" id="15_o8ysw"]
 [ext_resource type="Shader" uid="uid://bw2mkq16g7676" path="res://grid_shader.gdshader" id="15_r0gdq"]
+[ext_resource type="Script" uid="uid://b40jkmpkg2st4" path="res://UI/MArea/ActionButton.cs" id="16_l1tb2"]
 [ext_resource type="Script" uid="uid://br0tnousc8smc" path="res://3D/Editor/ViewportInteraction.cs" id="16_wchy0"]
 [ext_resource type="Script" uid="uid://dbux30vp2ns8p" path="res://UI/DebugText.cs" id="17_omj5t"]
 [ext_resource type="Script" uid="uid://ciifw4ocwf482" path="res://3D/Editor/Guides/GizmoMove.cs" id="17_s0p6w"]
 [ext_resource type="Script" uid="uid://deto50rcvil4m" path="res://3D/Editor/Cube.cs" id="20_2gya4"]
-[ext_resource type="Script" uid="uid://cci1fqhbg87v5" path="res://UI/MArea/Window/TexturePanelPopup.cs" id="20_7msfe"]
 [ext_resource type="Script" uid="uid://bs1gf7wfydipg" path="res://Scenes/event_popup.gd" id="20_yo4xu"]
 [ext_resource type="Script" uid="uid://bjj2avsv6rcyr" path="res://3D/ViewportExternal.cs" id="21_ohojw"]
+[ext_resource type="Script" uid="uid://00ilym2e88le" path="res://3D/Editor/Guides/CornerNodes.cs" id="24_5b8eh"]
+[ext_resource type="PackedScene" uid="uid://cr02vg2jytmof" path="res://Scenes/Controls/history_preview.tscn" id="27_5b8eh"]
+[ext_resource type="Texture2D" uid="uid://csde7rjtgmaby" path="res://Assets/placeholders/icon_refresh.png" id="27_r66bw"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_s0p6w"]
 
@@ -245,9 +248,10 @@ color = Color(0.16078432, 0.14901961, 0.2, 1)
 [node name="ActionStrip" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer"]
 layout_mode = 2
 size_flags_stretch_ratio = 2.0
-theme_override_constants/separation = 0
+theme_override_constants/separation = 5
 
 [node name="NewPartButton" type="Button" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
+visible = false
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -257,16 +261,41 @@ expand_icon = true
 script = ExtResource("11_pgaso")
 
 [node name="TestHelpframe" type="Button" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
+visible = false
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-size_flags_horizontal = 3
 icon = ExtResource("10_fomah")
 flat = true
 expand_icon = true
 script = ExtResource("11_pgaso")
 
-[node name="Modes" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
+[node name="Button" type="Button" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
 layout_mode = 2
+text = "Normal"
+
+[node name="VSeparator" type="VSeparator" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
+layout_mode = 2
+
+[node name="AddButton" type="Button" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
+layout_mode = 2
+text = "New"
+script = ExtResource("16_l1tb2")
+ActionPath = "TheModel/AddPart"
+metadata/_custom_type_script = "uid://b40jkmpkg2st4"
+
+[node name="AddShapeboxButton" type="Button" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
+layout_mode = 2
+text = "Clone"
+script = ExtResource("16_l1tb2")
+ActionPath = "TheModel/ClonePart"
+metadata/_custom_type_script = "uid://b40jkmpkg2st4"
+
+[node name="DeleteButton" type="Button" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
+layout_mode = 2
+text = "Deletetd"
+script = ExtResource("16_l1tb2")
+ActionPath = "TheModel/DeletePart"
+metadata/_custom_type_script = "uid://b40jkmpkg2st4"
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HSplitContainer/RenderArea"]
 layout_mode = 2
@@ -287,7 +316,7 @@ mouse_target = true
 own_world_3d = true
 handle_input_locally = false
 physics_object_picking = true
-size = Vector2i(1101, 648)
+size = Vector2i(1101, 644)
 render_target_update_mode = 4
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport"]
@@ -341,6 +370,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03878951, -1.395234, -0.06
 mesh = SubResource("BoxMesh_o02ra")
 skeleton = NodePath("../..")
 
+[node name="CornerNodes" type="Node3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"]
+script = ExtResource("24_5b8eh")
+
 [node name="DebugText" type="Label" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer"]
 layout_mode = 2
 script = ExtResource("17_omj5t")
@@ -389,24 +421,18 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/StatusBar/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Welcome to PDMM!"
 label_settings = SubResource("LabelSettings_yo4xu")
 
-[node name="TexturePanelPopup" type="PanelContainer" parent="VBoxContainer/StatusBar/HBoxContainer"]
-visible = false
+[node name="Button" type="Button" parent="VBoxContainer/StatusBar/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 8
-script = ExtResource("20_7msfe")
+size_flags_horizontal = 2
+text = "15m ago"
+icon = ExtResource("27_r66bw")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/StatusBar/HBoxContainer/TexturePanelPopup"]
+[node name="HistoryPreview" parent="VBoxContainer/StatusBar/HBoxContainer" instance=ExtResource("27_5b8eh")]
 layout_mode = 2
-
-[node name="Button" type="Button" parent="VBoxContainer/StatusBar/HBoxContainer/TexturePanelPopup"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-text = "Textures"
 
 [node name="EventPopup" type="PanelContainer" parent="."]
 visible = false
@@ -450,4 +476,3 @@ mesh = SubResource("BoxMesh_o02ra")
 [connection signal="tab_changed" from="VBoxContainer/HSplitContainer/TabsArea/SubTabSwitcher/TabBar" to="VBoxContainer/HSplitContainer/TabsArea" method="_on_tab_bar_tab_changed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip/NewPartButton" to="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip/NewPartButton" method="_on_pressed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip/TestHelpframe" to="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip/NewPartButton" method="_on_test_helpframe_pressed"]
-[connection signal="pressed" from="VBoxContainer/StatusBar/HBoxContainer/TexturePanelPopup/Button" to="VBoxContainer/StatusBar/HBoxContainer/TexturePanelPopup" method="ButtonPressed"]

@@ -478,7 +478,7 @@ public class Vector2L(Vector2 initialVector) : INotifyPropertyChanged
         }
     }
 
-    
+    public Vector2 AsVector2() => _vector;
     protected virtual void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

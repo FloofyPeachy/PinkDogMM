@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Linq;
 using Godot;
 using Godot.Collections;
@@ -10,11 +11,23 @@ namespace PinkDogMM_Gd.UI.Viewport;
 
 public partial class PartNode(Part part) : Node3D
 {
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _partMesh?.Dispose();
+            _outlineMesh?.Dispose();
+            _staticBody?.Dispose();
+            part.PropertyChanged -= OnPartOnPropertyChanged;
+        }
+
+        base.Dispose(disposing);
+    }
+
     public Part Part = part;
     private MeshInstance3D? _partMesh;
     private MeshInstance3D? _outlineMesh;
     private StaticBody3D? _staticBody;
-    private CornerNodes _cornerNodes;
     private ActionRegistry actionRegistry;
     private Model model;
     private bool _selected;
@@ -23,10 +36,10 @@ public partial class PartNode(Part part) : Node3D
     {
         Name = part.Name;
         Scale = new Vector3(0.0625f, 0.0625f, 0.0625f);
-        part.PropertyChanged += (sender, args) =>
-        {
-            UpdateMesh(args.PropertyName.Contains("Size") || args.PropertyName.Contains("Shapebox"));
-        };
+
+       
+
+        part.PropertyChanged += OnPartOnPropertyChanged;
         
         model = Model.Get(this);
         model.State.TextureChanged += (sender, texture) =>
@@ -37,7 +50,10 @@ public partial class PartNode(Part part) : Node3D
         Scale = new Vector3(0.001f, 0.001f, 0.0001f);
         actionRegistry = GetNode<ActionRegistry>("/root/ActionRegistry");
     }
-
+    void OnPartOnPropertyChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        UpdateMesh(args.PropertyName.Contains("Size") || args.PropertyName.Contains("Shapebox"));
+    }
     public void SetSelected(bool selected)
     {
         this._selected = selected;
@@ -52,13 +68,7 @@ public partial class PartNode(Part part) : Node3D
         
         
     }
-    public void SetBeingEdited(bool edited)
-    {
-        this._beingEdited = edited;
-        _cornerNodes.Visible = edited;
-
-    }
-
+ 
     public void SetVisibility(bool visible)
     {
         /*var color = ((outlineMesh.MaterialOverride as StandardMaterial3D)!).AlbedoColor;
@@ -150,7 +160,7 @@ public partial class PartNode(Part part) : Node3D
     public override void _PhysicsProcess(double delta)
     {
     
-        Position = model.State.Mode != EditorMode.Normal ? Position.Lerp(new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f, (float)delta * 16.0f) : new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f;
+        Position = model.State.Mode == EditorMode.Normal ? Position.Lerp(new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f, (float)delta * 16.0f) : new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f;
         /*if (Input.IsMouseButtonPressed(MouseButton.Left))
         {
             Position = new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f;
@@ -196,10 +206,6 @@ public partial class PartNode(Part part) : Node3D
     {
         _partMesh = new MeshInstance3D();
         _outlineMesh = new MeshInstance3D();
-        _cornerNodes = new CornerNodes(part)
-        {
-            Visible = false
-        };
         
         MakeMeshCollision();
         
@@ -223,8 +229,7 @@ public partial class PartNode(Part part) : Node3D
             ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
             VertexColorUseAsAlbedo = false,
         };
-
-        AddChild(_cornerNodes);
+        
         AddChild(_partMesh);
         AddChild(_outlineMesh);
         

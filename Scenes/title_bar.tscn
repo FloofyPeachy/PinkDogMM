@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://by1iknijv05d"]
 
 [ext_resource type="PackedScene" uid="uid://bb3y874g16k2f" path="res://Scenes/Elements/Toolbar.tscn" id="2_gfrwf"]
-[ext_resource type="Script" uid="uid://ykj4jdud56kr" path="res://Scenes/ModelTabs.cs" id="3_gfrwf"]
+[ext_resource type="Script" uid="uid://ykj4jdud56kr" path="res://UI/MArea/Tab/ModelTabs.cs" id="3_gfrwf"]
 [ext_resource type="Script" uid="uid://bp7inv2gr223t" path="res://Scenes/system_buttons.gd" id="3_j0e4q"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gfrwf"]

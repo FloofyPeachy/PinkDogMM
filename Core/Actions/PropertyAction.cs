@@ -12,7 +12,7 @@ public class PropertyAction<T>(object target, string propertyName, T oldValue, T
     private readonly PropertyInfo propertyInfo = target.GetType().GetProperty(propertyName)
                                                  ?? throw new ArgumentException($"Property {propertyName} not found");
 
-    public string TextPrefix => $"Set {propertyInfo.Name}";
+    public string Icon => $"Set {propertyInfo.Name}";
     public int DefaultKeys { get; }
 
     public void Execute()

@@ -71,10 +71,10 @@ public partial class AppState : Node
 	//	ActiveModel.State.PartSelectionChanged += OnPartSelectionChanged;
 	//	ActiveModel.State.PartUnselected += OnPartUnselected;
 
-		ActiveModel.State.History.ActionExecuted += OnActionExecuted;
+		/*ActiveModel.State.History.ActionExecuted += OnActionExecuted;
 		
 		ActiveEditorState.ModeChanged += OnModeChanged;
-		ActiveEditorState.FocusedCornerChanged += OnFocusedCornerChanged;
+		ActiveEditorState.FocusedCornerChanged += OnFocusedCornerChanged;*/
 
 	}
 	public void ExecuteNewModelAction()

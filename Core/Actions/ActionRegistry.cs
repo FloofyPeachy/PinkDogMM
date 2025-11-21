@@ -16,6 +16,12 @@ public partial class ActionRegistry : Node
 
     private readonly Dictionary<int, int> keys = new Dictionary<int, int>();
 
+    public static ActionRegistry Get(Node node)
+    {
+        return node.GetNode<ActionRegistry>("/root/ActionRegistry");
+    }
+    
+    
     public ActionRegistry()
     {
         Assembly asm = AppDomain.CurrentDomain.GetAssemblies()
@@ -60,12 +66,53 @@ public partial class ActionRegistry : Node
     {
     }
 
+    public IAction GetAction(string name)
+    {
+        if (!actions.TryGetValue(name, out var actionType))
+            throw new KeyNotFoundException($"No action registered for key: {name}");
+        if (typeof(IAction).IsAssignableFrom(actionType))
+        {
+            return (IAction)Activator.CreateInstance(actionType, null)!;
+        }
+        throw new KeyNotFoundException($"No action registered for key: {name}");
+    }
+    
     public void Redo()
     {
         var appState = GetNode("/root/AppState") as AppState;
         appState!.ActiveEditorState.History.Redo();
     }
 
+    public void Start(string key, Godot.Collections.Dictionary arguments)
+    {
+       var appState = GetNode("/root/AppState") as AppState;
+        arguments.Add("appState", appState);
+
+        if (actions.TryGetValue(key, out var actionType))
+        {
+            if (!typeof(IAction).IsAssignableFrom(actionType)) return;
+            var actInstance = (IStagedAction)Activator.CreateInstance(actionType, null)!;
+            actInstance.SetArguments(arguments);
+            appState!.ActiveEditorState.History.Start(actInstance);
+            
+        }
+        else
+        {
+            throw new KeyNotFoundException($"No action registered for key: {key}");
+        }
+    }
+
+    public void Tick(Godot.Collections.Dictionary arguments)
+    {
+        var appState = GetNode("/root/AppState") as AppState;
+        appState.ActiveEditorState.History.Tick(arguments);
+    }
+
+    public void Finish()
+    {
+        var appState = GetNode("/root/AppState") as AppState;
+        appState.ActiveEditorState.History.Finish();
+    }
     public void Undo()
     {
         var appState = GetNode("/root/AppState") as AppState;

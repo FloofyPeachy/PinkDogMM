@@ -10,7 +10,7 @@ public class NewAction : IAction<Model>
 {
     
     private Model model;
-    public string TextPrefix => "Created Model";
+    public string Icon => "Created Model";
 
     public void Execute()
     {

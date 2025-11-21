@@ -13,9 +13,10 @@ public class DeletePartAction : IAction
 {
     private int id = -1;
     private Model model;
+    List<TreeNode<Renderable>> parts = [];
     public void Execute()
     {
-        List<TreeNode<Renderable>> parts = [];
+        
         if (id != -1)
         {
             var part = model.Items.GetItemById(id);
@@ -45,11 +46,15 @@ public class DeletePartAction : IAction
 
     public void Undo()
     {
-        throw new System.NotImplementedException();
+        foreach (var treeNode in parts)
+        {
+            model.Items.Add(treeNode.Value, treeNode.Name);
+            model.State.SelectObject(treeNode.Value.Id);
+        }
     }
 
-    public bool AddToStack { get; }
-    public string TextPrefix => "Deleted Part";
+    public bool AddToStack => parts.Count != 0;
+    public string Icon => "icon_delete";
     
     public static int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.Delete, KeyModifiers.None);
 

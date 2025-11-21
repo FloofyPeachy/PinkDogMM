@@ -34,7 +34,7 @@ public class LoadModelAction : IAction<Model>
     
     public bool AddToStack => true;
     public string Id => "LoadModel";
-    public string TextPrefix => "Loaded";
+    public string Icon => "Loaded";
 
     public Model Result { get; private set; }
 }

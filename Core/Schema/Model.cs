@@ -52,7 +52,7 @@ public class TreeNode<T>
             BigParent = BigParent
         };
         
-        BigParent.Indicies.Add(BigParent.Children.Count + 1, childNode);
+        BigParent.Indicies.Add(BigParent.Children.Count, childNode);
         Children.Add(childNode);
         
         CollectionChanged?.Invoke(this, (true, childNode));

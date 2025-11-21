@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3 uid="uid://dcjcj1u2lns77"]
+
+[ext_resource type="Script" uid="uid://b4vdtr8fyqolo" path="res://Scenes/Controls/ActionTooltip.cs" id="1_nhe0h"]
+
+[sub_resource type="FontVariation" id="FontVariation_w8jiu"]
+variation_embolden = 0.5
+
+[sub_resource type="LabelSettings" id="LabelSettings_nhe0h"]
+font = SubResource("FontVariation_w8jiu")
+font_size = 14
+
+[sub_resource type="LabelSettings" id="LabelSettings_wqnvc"]
+font_size = 14
+
+[node name="ActionTooltip" type="PanelContainer"]
+offset_right = 336.0
+offset_bottom = 95.0
+script = ExtResource("1_nhe0h")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+stretch_mode = 6
+
+[node name="Title" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Title"
+label_settings = SubResource("LabelSettings_nhe0h")
+
+[node name="Description" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Action Text!!!! It could be long. It could be short. 
+Whatever it is, you can set it."
+label_settings = SubResource("LabelSettings_wqnvc")

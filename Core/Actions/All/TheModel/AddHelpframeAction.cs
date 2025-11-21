@@ -9,7 +9,7 @@ namespace PinkDogMM_Gd.Core.Actions.All.TheModel;
 
 public class AddHelpframeAction : IAction
 {
-    public string TextPrefix => "Added Helpframe";
+    public string Icon => "Added Helpframe";
     private Helpframe part;
     
     private string path;

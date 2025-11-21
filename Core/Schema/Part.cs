@@ -117,7 +117,7 @@ public class Shapebox : Shape
     
     public Vector3 GetCornerPosition(int i)
     {
-        var x = (i == 1 || i == 2 || i == 5 || i == 6) 
+        var x = i is 1 or 2 or 5 or 6 
             ? Size.X + Offset.X + ShapeboxX[i] 
             : Offset.X - ShapeboxX[i];
 

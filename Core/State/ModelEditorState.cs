@@ -104,11 +104,7 @@ public partial class ModelEditorState : Resource
     public void SelectObject(int id)
     {
         var objec = model!.GetItemById(id)!.Value;
-        if (SelectedObjects.Contains(objec))
-        {
-            SelectedObjects.Remove(objec);
-        }
-        else
+        if (!SelectedObjects.Remove(objec) && !SelectedObjects.Contains(objec))
         {
             SelectedObjects.Add(objec);
         }
@@ -172,8 +168,8 @@ public partial class ModelEditorState : Resource
     {
         Mode = mode;
         OnModeChanged(Mode);
-        FocusedCorner = 0; 
-        
+        FocusedCorner = 0;
+        if (mode == EditorMode.Normal) History.Finish();
     }
 
     public void ReloadModel(bool full)

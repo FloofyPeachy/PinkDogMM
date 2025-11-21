@@ -89,10 +89,11 @@ public class Camera
     private Vector3 PositionOfCorner(Part part)
     {
         var extra = Vector3.Zero;
-        if (!CenterOnAnchor)
+        /*if (!CenterOnAnchor)
         {
             return ((part.Position.AsVector3() + part.Size.AsVector3() / 2));
         }
+        */
 
         int index = state.FocusedCorner;
 

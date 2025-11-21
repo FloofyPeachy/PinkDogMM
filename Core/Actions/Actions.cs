@@ -7,22 +7,26 @@ namespace PinkDogMM_Gd.Core.Commands;
 
 public interface IAction
 {
-   
-    public string TextPrefix { get; }
+    public string Icon { get; }
     public static int DefaultKeys { get; }
     void Execute();
+
     void SetArguments(Dictionary arguments);
-    
+
     void Undo();
-    
+
     public bool AddToStack { get; }
-    
-    
 }
 
 public interface IStagedAction : IAction
 {
-    void Update();
+    /*
+     * Start to start.
+     * Tick during.
+     * Execute() when done.
+     */
+    void Start();
+    void Tick(Dictionary arguments);
 }
 
 public class ActionResult
@@ -33,7 +37,7 @@ public class ActionResult
         Success = success;
     }
 
-    
+
     public ActionResult(object? data, bool success)
     {
         Data = data;
@@ -42,8 +46,6 @@ public class ActionResult
 
     public object? Data { get; set; }
     public bool Success { get; set; } = true;
-    
-  
 }
 
 public interface IAction<TResult> : IAction
