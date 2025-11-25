@@ -19,7 +19,6 @@ public class AddPartAction : IAction
     {
         part = new Shapebox()
         {
-            Id = model.TotalPartCount,
             Name = "Part " + (model.TotalPartCount + 1)
         };
         if (byKey)
@@ -27,7 +26,7 @@ public class AddPartAction : IAction
             var pos = model.State.WorldMousePosition.Round();
             part.Position = new Vector3L(pos.X, -pos.Y, -pos.Z);
         }
-        model.Items.Add(part, part.Name);
+        model.Add(part);
         model.State.SelectPart(part);
     }
 
@@ -39,7 +38,7 @@ public class AddPartAction : IAction
 
     public void Undo()
     {
-        model.Items.Remove(part);
+        model.Remove(part);
     }
 
     public string Icon => "icon_newblock_new";

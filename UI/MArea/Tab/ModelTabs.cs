@@ -26,9 +26,9 @@ public partial class ModelTabs : TabBar
 		{
 			GD.Print("Attempting to close!!");
 		};
-		_appState.ActiveModelChanged += index =>
+		_appState.ActiveModelChanged2 += (from, to) =>
 		{
-			SetCurrentTab(index);
+			SetCurrentTab(to);
 		};
 		TabClicked += tab =>
 		{

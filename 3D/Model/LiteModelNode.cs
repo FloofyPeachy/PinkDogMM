@@ -19,9 +19,9 @@ public partial class LiteModelNode : Node3D
             child.Free();
         }
         GlobalRotationDegrees = new Vector3(0, 90, 0);
-        foreach (var modAllPt in model.AllParts)
+        foreach (var modAllPt in model.AllObjects)
         {
-            var part = modAllPt.Value as Part;
+            var part = modAllPt as Part;
             AddChild(CreatePartMesh(part, textureIdx));
         }
     }

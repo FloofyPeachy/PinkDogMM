@@ -39,25 +39,23 @@ public partial class ModelNode : Node3D
 			GetParent().AddChild(new HelpframeNode(changed.Item as Helpframe ?? throw new InvalidOperationException()));
 		};
 		
-		model.Items.CollectionChanged += (sender, args) =>
+		model.CollectionChanged += (sender, args) =>
 
 		{
-			if (args.Item2.Value is Part part)
+			if (args.Item2 is not Part part) return;
+			var partNode = new PartNode(part);
+			if (args.Item1)
 			{
-				var partNode = new PartNode(part);
-				if (args.Item1)
-				{
-					parts.Add(part, partNode);
-					AddChild(partNode);
-				}
-				else
-				{
-				
-					parts[part].Free();
-					parts.Remove(part);
-				}
+				parts.Add(part, partNode);
+				AddChild(partNode);
 			}
-			
+			else
+			{
+				
+				parts[part].Free();
+				parts.Remove(part);
+			}
+
 		};
 
 		model.State.ObjectSelectionChanged += (sender, tuple) =>
@@ -117,10 +115,10 @@ public partial class ModelNode : Node3D
 			RebuildAll();
 		};
 		
-		foreach (var modelAllPart in model.AllParts)
+		foreach (var modelAllPart in model.AllObjects)
 		{
-			var newOne = new PartNode(modelAllPart.Value as Part);
-			parts.Add(modelAllPart.Value as Part, newOne);
+			var newOne = new PartNode(modelAllPart as Part);
+			parts.Add(modelAllPart as Part, newOne);
 			
 			Callable.From(() =>
 			{
@@ -140,10 +138,10 @@ public partial class ModelNode : Node3D
 		}
 		parts.Clear();
 		
-		foreach (var modelAllPart in model.AllParts)
+		foreach (var modelAllPart in model.AllObjects)
 		{
-			var newOne = new PartNode(modelAllPart.Value as Part);
-			parts.Add(modelAllPart.Value as Part, newOne);
+			var newOne = new PartNode(modelAllPart as Part);
+			parts.Add(modelAllPart as Part, newOne);
 			
 			Callable.From(() =>
 			{

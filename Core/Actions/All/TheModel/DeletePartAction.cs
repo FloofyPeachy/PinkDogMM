@@ -13,24 +13,24 @@ public class DeletePartAction : IAction
 {
     private int id = -1;
     private Model model;
-    List<TreeNode<Renderable>> parts = [];
+    List<Renderable> parts = [];
     public void Execute()
     {
         
         if (id != -1)
         {
-            var part = model.Items.GetItemById(id);
+            var part = model.GetItemById(id);
             if (part != null) parts.Add(part);
         }
         else
         {
-            parts.AddRange(model.State.SelectedObjects.ToList().Select(selectedPart => model.Items.GetItemById(selectedPart.Id)).OfType<TreeNode<Renderable>>());
+            parts.AddRange(model.State.SelectedObjects.ToList().Select(selectedPart => model.GetItemById(selectedPart.Id)).OfType<Renderable>());
         }
       
         foreach (var treeNode in parts)
         {
-            model.Items.Remove(treeNode.Value);
-            model.State.UnselectObject(treeNode.Value);
+            model.Remove(treeNode);
+            model.State.UnselectObject(treeNode);
         }
     }
 
@@ -48,8 +48,8 @@ public class DeletePartAction : IAction
     {
         foreach (var treeNode in parts)
         {
-            model.Items.Add(treeNode.Value, treeNode.Name);
-            model.State.SelectObject(treeNode.Value.Id);
+            model.Add(treeNode);
+            model.State.SelectObject(treeNode.Id);
         }
     }
 

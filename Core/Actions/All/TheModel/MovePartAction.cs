@@ -22,28 +22,28 @@ public class MovePartAction : IStagedAction
         
         foreach (var keyValuePair in positions)
         {
-            var part = model.Items.BigParent.GetItemById(keyValuePair.Key.AsInt32());
+            var part = model.GetItemById(keyValuePair.Key.AsInt32());
             if (!initalPositions.ContainsKey(keyValuePair.Key.AsInt32()))
             {
-                initalPositions.Add(keyValuePair.Key.AsInt32(), part.Value.Position.AsVector3());
+                initalPositions.Add(keyValuePair.Key.AsInt32(), part.Position.AsVector3());
             }
           
             var pos = keyValuePair.Value.AsVector3();
-            part.Value.Position.X = pos.X;
-            part.Value.Position.Y = pos.Y;
-            part.Value.Position.Z = pos.Z;
+            part.Position.X = pos.X;
+            part.Position.Y = pos.Y;
+            part.Position.Z = pos.Z;
         }
     }
     public void Execute()
     {
         foreach (var keyValuePair in positions)
         {
-            var part = model.Items.BigParent.GetItemById(keyValuePair.Key.AsInt32());
+            var part = model.GetItemById(keyValuePair.Key.AsInt32());
             
             var pos = keyValuePair.Value.AsVector3();
-            part.Value.Position.X = pos.X;
-            part.Value.Position.Y = pos.Y;
-            part.Value.Position.Z = pos.Z;
+            part.Position.X = pos.X;
+            part.Position.Y = pos.Y;
+            part.Position.Z = pos.Z;
         }
     }
 
@@ -57,12 +57,12 @@ public class MovePartAction : IStagedAction
     {
         foreach (var keyValuePair in initalPositions)
         {
-            var part = model.Items.BigParent.GetItemById(keyValuePair.Key.AsInt32());
+            var part = model.GetItemById(keyValuePair.Key.AsInt32());
             
             var pos = keyValuePair.Value.AsVector3();
-            part.Value.Position.X = pos.X;
-            part.Value.Position.Y = pos.Y;
-            part.Value.Position.Z = pos.Z;
+            part.Position.X = pos.X;
+            part.Position.Y = pos.Y;
+            part.Position.Z = pos.Z;
             
         }
     }

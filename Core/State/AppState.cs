@@ -42,6 +42,7 @@ public partial class AppState : Node
 	public ObservableCollection<Model> Models = new([]);
 
 	//public Settings Settings = new();
+	 //This method for doing things kinda sucks. We should change it..
 	
 	public HistoryStack History = new(); //for global editor state!!! not for models!!!!
 	public Part? SelectedPart;

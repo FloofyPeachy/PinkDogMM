@@ -16,7 +16,7 @@ public partial class TreeBit : Tree
 	{
 
 		model = Model.Get(this);
-		model.Items.CollectionChanged += (sender, tuple) =>
+		model.CollectionChanged += (sender, tuple) =>
 		{
 			PopulateTree();
 		};
@@ -45,28 +45,47 @@ public partial class TreeBit : Tree
 	}
 
 
-	private void AddToTree(TreeNode<Renderable> item, TreeItem parent)
+	private void AddToTree(Renderable item, TreeItem? parent)
 	{
-		if (item.Children.Count == 0)
-		{
-			var partItem = this.CreateItem(parent);
-			partItem.SetText(0, item.Name);
-			return;
-		};
-		foreach (var partChild in item.Children)
-		{
-			AddToTree(partChild, parent);
-		}
+		var partItem = this.CreateItem(parent);
+		partItem.SetText(0, item.Name.ToString());
+		
 	}
 	private void PopulateTree()
 	{
 		this.Clear();
 		var tree = this;
 		var root = tree.CreateItem(null); // root item, hidden if hide_root = true
+		var groups = new Dictionary<string, TreeItem>();
+		
+		foreach (var keyValuePair in model.Groups)
+		{
+			var groupNode = this.CreateItem(root);
+			groupNode.SetText(0, keyValuePair.Key);
+			foreach (var renderable in model.GetObjects(keyValuePair.Key))
+			{
+				var partItem = this.CreateItem(groupNode);
+				partItem.SetText(0, renderable.Name.ToString());
+			}
+		}
+		
 		root.SetText(0,model.Name);
-
-
-		AddToTree(model.Items, root);
+		
+		foreach (var renderable in model.GetObjects())
+		{
+			if (renderable is not Part)
+			{
+				var helpersRoot = tree.CreateItem(root);
+				helpersRoot.SetText(0, "Helpers");
+				AddToTree(renderable, helpersRoot);
+			}
+			else
+			{
+				AddToTree(renderable, root);
+			}
+		
+		}
+		
 		/*foreach (var groupKey in model.PartGroups)
 		{
 			// Create a group (parent) node

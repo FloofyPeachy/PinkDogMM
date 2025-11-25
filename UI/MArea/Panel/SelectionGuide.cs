@@ -27,7 +27,7 @@ public partial class SelectionGuide : PanelContainer
         {
             label.Text = model1.State.SelectedObjects.Count switch
             {
-                > 1 => String.Join(", ", model1.State.SelectedObjects.Select(o => o.GetType().Name)),
+                > 1 => String.Join(" + ", model1.State.SelectedObjects.Select(o => o.GetType().Name)),
                 0 => "Nothing",
                 _ => model1.State.SelectedObjects.First().GetType().Name
             };

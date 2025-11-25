@@ -9,6 +9,7 @@ public class Renderable : INotifyPropertyChanged
 {
     /*Renderables are back, bitches!!!!*/
     private int _id = 0;
+    private string _name;
     
     private Vector3L _position = new Vector3L();
     private Vector3L _size = new Vector3L(1,1,1);
@@ -20,7 +21,13 @@ public class Renderable : INotifyPropertyChanged
         get => _bounding;
         set => _bounding = value;
     }
-
+    
+    public string Name
+    {
+        get => _name;
+        set => SetField(ref _name, value);
+    }
+    
     private bool _visible;
     
     private Vector2L textureSizeSize = new Vector2L(0,0);

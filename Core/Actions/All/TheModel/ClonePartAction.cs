@@ -34,7 +34,6 @@ public class ClonePartAction : IAction
             if (selPart is Shapebox)
             {
                 var newshp = new Shapebox();
-                newshp.Id = id;
                 newshp.Name = name;
                 newshp.PartType = type;
                 newshp.Position = new Vector3L(position);
@@ -44,13 +43,12 @@ public class ClonePartAction : IAction
                 newshp.TextureSize = new Vector2L(textureSize);
                 newshp.Extra = extra;
                 parts.Add(newshp);
-                model.Items.Add(newshp, name);
+                model.Add(newshp);
          
                 return;
             }
 
             var newpart = new Part();
-            newpart.Id = id;
             newpart.Name = name;
             newpart.PartType = type;
             newpart.Position = new Vector3L(position);
@@ -60,7 +58,7 @@ public class ClonePartAction : IAction
             newpart.TextureSize = new Vector2L(textureSize);
             newpart.Extra = extra;
             parts.Add(newpart);
-            model.Items.Add(newpart, name);
+            model.Add(newpart);
            
 
 
@@ -79,7 +77,7 @@ public class ClonePartAction : IAction
     {
         foreach (var part in parts)
         {
-            model.Items.Remove(part);
+            model.Remove(part);
         }
     }
 

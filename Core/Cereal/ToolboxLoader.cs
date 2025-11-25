@@ -32,11 +32,11 @@ public class ToolboxLoader : ModelLoader
                     string[] lineSplit = line.Split("|");
                     if (lineSplit[0] == "ModelClassName") model.Name = line.Split("|")[1].ReplaceLineEndings("");
                     if (!line.StartsWith("Element")) continue;
-                    model.Items.Add(
+                    model.Add(
                         lineSplit[5] == "Shapebox" ? DeserialiseShapebox(lineSplit, partCount) : DeserialisePart(lineSplit, partCount), lineSplit[3]);
                     partCount++;
                     PL.I.Debug(PartJson.PartToJson(DeserialiseShapebox(lineSplit, partCount)));
-                }
+                } 
             } else if (entry.Name.EndsWith("Model.png"))
             {
                 StreamReader reader = new StreamReader(entry.Open());
@@ -64,7 +64,6 @@ public class ToolboxLoader : ModelLoader
         //It's a very complicated and weird thing, but here we go:
 
         part.Name = line[3];
-        part.Id = index;
         part.Position = new Vector3L(float.Parse(line[6]), float.Parse(line[7]), float.Parse(line[8]));
         part.Size = new Vector3L(int.Parse(line[9]), int.Parse(line[10]), int.Parse(line[11]));
         part.Rotation = new Vector3L(float.Parse(line[12]), float.Parse(line[13]), float.Parse(line[14]));
@@ -92,7 +91,6 @@ public class ToolboxLoader : ModelLoader
         {
             //It's a very complicated and weird thing, but here we go:
             Name = line[3],
-            Id = index,
             Position = new Vector3L(float.Parse(line[6]), float.Parse(line[7]), float.Parse(line[8])),
             Size = new Vector3L(int.Parse(line[9]), int.Parse(line[10]), int.Parse(line[11])),
             Rotation = new Vector3L(float.Parse(line[12]), float.Parse(line[13]), float.Parse(line[14])),

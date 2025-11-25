@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://blyq6ctodibnd"]
+[gd_scene load_steps=44 format=3 uid="uid://blyq6ctodibnd"]
 
 [ext_resource type="Script" uid="uid://c1kaiyhwrhlwn" path="res://Scenes/ModelArea.cs" id="1_llaap"]
 [ext_resource type="Theme" uid="uid://bqumg0v5lmvy1" path="res://Themes/theme.res" id="2_3wcq2"]
@@ -31,7 +31,15 @@
 [ext_resource type="PackedScene" uid="uid://cr02vg2jytmof" path="res://Scenes/Controls/history_preview.tscn" id="27_5b8eh"]
 [ext_resource type="Texture2D" uid="uid://csde7rjtgmaby" path="res://Assets/placeholders/icon_refresh.png" id="27_r66bw"]
 
-[sub_resource type="ImageTexture" id="ImageTexture_s0p6w"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5b8eh"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.13333334, 0.11764706, 0.2, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ix2ul"]
+bg_color = Color(0.11372549, 0.101960786, 0.16470589, 1)
 
 [sub_resource type="Environment" id="Environment_ngb8x"]
 ambient_light_source = 3
@@ -119,21 +127,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("2_3wcq2")
-
-[node name="TexturesTab" type="PanelContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer"]
-visible = false
-layout_mode = 2
-script = ExtResource("4_ms2l4")
-
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/TexturesTab"]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/TexturesTab/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_5b8eh")
 
 [node name="PropertiesTab" type="VSplitContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -142,15 +138,15 @@ layout_mode = 2
 
 [node name="SelectionGuide" type="PanelContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/PropertiesTab/SideTabArea"]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ix2ul")
 script = ExtResource("3_gy4qg")
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/PropertiesTab/SideTabArea/SelectionGuide"]
-layout_mode = 2
-texture = SubResource("ImageTexture_s0p6w")
-
 [node name="Label" type="Label" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/PropertiesTab/SideTabArea/SelectionGuide"]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Nothing"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="SideTabs" type="TabContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/PropertiesTab/SideTabArea"]
 layout_mode = 2
@@ -191,7 +187,20 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("9_viecs")
 
+[node name="TexturesTab" type="PanelContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer"]
+visible = false
+layout_mode = 2
+script = ExtResource("4_ms2l4")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/TexturesTab"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/TexturesTab/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="PaintingTab" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer"]
+visible = false
 layout_mode = 2
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/PaintingTab"]
@@ -316,7 +325,7 @@ mouse_target = true
 own_world_3d = true
 handle_input_locally = false
 physics_object_picking = true
-size = Vector2i(1101, 644)
+size = Vector2i(981, 644)
 render_target_update_mode = 4
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport"]

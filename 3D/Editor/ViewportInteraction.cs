@@ -354,9 +354,9 @@ public partial class ViewportInteraction : Control
                             origins[1] + directions[1] * cam.Far,
                             origins[3] + directions[3] * cam.Far));
 
-                        foreach (var modelAllPart in model.AllParts)
+                        foreach (var modelAllPart in model.AllObjects)
                         {
-                            var renderable = modelAllPart.Value!;
+                            var renderable = modelAllPart;
                             Vector3 half = renderable.Size.AsVector3() * 0.5f;
                             Vector3 min = -half;
                             Vector3 max = half;
@@ -547,6 +547,8 @@ public partial class ViewportInteraction : Control
                             break;
 
                         case Key.G:
+                            actionRegistry.Execute("TheModel/GroupPart",
+                                new Dictionary { { "model", model }, { "ungroup",false} });
                             model.State.ChangeMode(EditorMode.Move);
                             break;
                         case Key.Capslock:
@@ -594,7 +596,7 @@ public partial class ViewportInteraction : Control
                             break;
                         case Key.F3:
                             List<Part> parts = [];
-                            parts.AddRange(model.AllParts.Select(modelAllPart => modelAllPart.Value as Part));
+                            parts.AddRange(model.AllObjects.Select(modelAllPart => modelAllPart as Part));
 
                             Texturerer.DrawTexture(parts);
                             break;

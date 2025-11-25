@@ -11,7 +11,7 @@ namespace PinkDogMM_Gd.Core.Schema;
 public class Part : Renderable
 {
     
-    private string _name;
+   
     
     private PartTypes _partType;
     
@@ -20,12 +20,7 @@ public class Part : Renderable
     
 
     private readonly string uuid = Guid.NewGuid().ToString();
-    public string Name
-    {
-        get => _name;
-        set => SetField(ref _name, value);
-    }
-
+  
     public PartTypes PartType
     {
         get => _partType;

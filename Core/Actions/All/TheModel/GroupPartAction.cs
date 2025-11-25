@@ -1,6 +1,8 @@
 using System;
+using Godot;
 using Godot.Collections;
 using PinkDogMM_Gd.Core.Commands;
+using PinkDogMM_Gd.Core.Configuration;
 using PinkDogMM_Gd.Core.Schema;
 
 namespace PinkDogMM_Gd.Core.Actions.All.TheModel;
@@ -13,9 +15,10 @@ public class GroupPartAction : IAction
     public string Icon => "icon_add";
     public void Execute()
     {
+       
         foreach (var obj in model.State.SelectedObjects)
         {
-            //model.Items.Add("")
+            model.AddToGroup(obj.Id, "Newish Group");
         }
     }
 
@@ -31,4 +34,5 @@ public class GroupPartAction : IAction
     }
 
     public bool AddToStack => true;
+    public static int DefaultKeys => KeyCombo.KeyAndModifiers((int)Key.G, KeyModifiers.Ctrl);
 }

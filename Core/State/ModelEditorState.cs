@@ -103,7 +103,7 @@ public partial class ModelEditorState : Resource
     }
     public void SelectObject(int id)
     {
-        var objec = model!.GetItemById(id)!.Value;
+        var objec = model!.GetItemById(id)!;
         if (!SelectedObjects.Remove(objec) && !SelectedObjects.Contains(objec))
         {
             SelectedObjects.Add(objec);
