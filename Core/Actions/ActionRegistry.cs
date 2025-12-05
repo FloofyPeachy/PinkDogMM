@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Godot;
+using Godot.Collections;
 using PinkDogMM_Gd.Core.Commands;
 using PinkDogMM_Gd.Core.Configuration;
 
@@ -12,9 +13,9 @@ namespace PinkDogMM_Gd.Core.Actions;
 [Tool]
 public partial class ActionRegistry : Node
 {
-    private readonly Dictionary<string, Type> actions = new Dictionary<string, Type>();
+    private readonly System.Collections.Generic.Dictionary<string, Type> actions = new System.Collections.Generic.Dictionary<string, Type>();
 
-    private readonly Dictionary<int, int> keys = new Dictionary<int, int>();
+    private readonly System.Collections.Generic.Dictionary<int, int> keys = new System.Collections.Generic.Dictionary<int, int>();
 
     public static ActionRegistry Get(Node node)
     {
@@ -31,7 +32,7 @@ public partial class ActionRegistry : Node
         for (var index = 0; index < types.Length; index++)
         {
             var type = types[index];
-            if (type.FullName == null || !type.FullName.StartsWith("PinkDogMM_Gd.Core.Actions.All")) continue;
+            if (type.FullName == null || (!type.FullName.StartsWith("PinkDogMM_Gd.Core.Actions.All"))) continue;
             var newName = type.FullName.Substring(30).Replace(".", "/").Replace("Action", "");
             actions.Add(newName, type);
             PL.I.Info($"Added action {newName}");
@@ -87,14 +88,24 @@ public partial class ActionRegistry : Node
     {
        var appState = GetNode("/root/AppState") as AppState;
         arguments.Add("appState", appState);
+        if (key.Contains("Tool"))
+        {
+            arguments.Add("worldRoot", GetNode("/root/Node2D/Panel/VBoxContainer/AreaSwitcher/" +
+                                               "ModelArea/VBoxContainer/HSplitContainer/RenderArea/MarginContainer/" +
+                                               "SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"));
+        }
 
         if (actions.TryGetValue(key, out var actionType))
         {
             if (!typeof(IAction).IsAssignableFrom(actionType)) return;
             var actInstance = (IStagedAction)Activator.CreateInstance(actionType, null)!;
             actInstance.SetArguments(arguments);
-            appState!.ActiveEditorState.History.Start(actInstance);
-            
+            appState!.ActiveEditorState.History.Start(key, actInstance);
+            if (key.Contains("Tool"))
+            {
+                //technically not the best way to do things..
+                
+            }
         }
         else
         {

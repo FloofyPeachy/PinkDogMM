@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using Godot;
+using PinkDogMM_Gd.Core.Actions.All.Tools;
 using PinkDogMM_Gd.Core.Commands;
 using PinkDogMM_Gd.Core.Schema;
 using PinkDogMM_Gd.Render;
@@ -21,12 +22,12 @@ public enum EditorMode
     Paint
 }
 
-
-public enum Axis {
-    X =0,
+public enum Axis
+{
+    X = 0,
     Y = 1,
     Z = 2,
-    All =3
+    All = 3
 }
 
 [GlobalClass]
@@ -38,6 +39,7 @@ public partial class ModelEditorState : Resource
     public Camera Camera; //RotationX, RotationY, Zoom
     public Renderable? Hovering = new();
     public Vector3 WorldMousePosition = Vector3.Zero;
+    public Vector3 GridMousePosition = Vector3.Zero;
     public int CurrentTexture = 0;
     public Vector3 HoveredSide = Vector3.Zero;
     public Axis ActiveAxis = Axis.All;
@@ -46,8 +48,9 @@ public partial class ModelEditorState : Resource
     public bool IsMoving = false;
     public string BottomText = "Welcome to PDMM!";
     public int _focusedCorner = -1;
-    
-    
+    public string CurrentTool = "Tools/MoveTool";
+
+
     public int FocusedCorner
     {
         get => _focusedCorner;
@@ -60,11 +63,13 @@ public partial class ModelEditorState : Resource
     }
 
     public EditorMode Mode = EditorMode.Normal;
-    
+
     [Signal]
     public delegate void EditorEventHappenedEventHandler(string eventText);
+
     [Signal]
     public delegate void MovingObjectEventHandler(bool moving);
+
     public event EventHandler<(Renderable, bool)>? ObjectSelectionChanged;
     public event EventHandler<string>? BottomTextChanged;
     public event EventHandler<Renderable>? ObjectSelected;
@@ -75,11 +80,20 @@ public partial class ModelEditorState : Resource
     public event EventHandler<int> TextureChanged;
     public event EventHandler<bool> ModelReloaded;
     public event EventHandler<EditorMode>? ModeChanged;
-    
+
+    public event EventHandler<string>? ToolChanged;
+
     public ModelEditorState(Model model)
     {
         Camera = new(this);
         this.model = model;
+        History.ActionStarted += (sender, action) =>
+        {
+            if (action.Item2 is Tool)
+            {
+                ChangeTool(action.Item1);
+            }
+        };
     }
 
     public void SwitchTexture(int idx)
@@ -87,20 +101,26 @@ public partial class ModelEditorState : Resource
         CurrentTexture = idx;
         OnTextureChanged(idx);
     }
+
     public void SelectPart(Part part)
     {
         SelectedObjects.Add(part);
-        
+
         OnObjectSelectionChanged((part, true));
         OnObjectSelected(part);
     }
-
+    public bool IsPartSelected(int id)
+    {
+        var item = model.GetItemById(id);
+        return item != null && SelectedObjects.Contains(item);
+    }
     public void SetMoving(bool moving)
     {
         if (this.IsMoving == moving) return;
         this.IsMoving = moving;
         EmitSignalMovingObject(moving);
     }
+
     public void SelectObject(int id)
     {
         var objec = model!.GetItemById(id)!;
@@ -108,16 +128,13 @@ public partial class ModelEditorState : Resource
         {
             SelectedObjects.Add(objec);
         }
-        objec.PropertyChanged += (sender, args) =>
-        {
-            ;
-        };
+
+        objec.PropertyChanged += (sender, args) => { ; };
         ;
-        
+
         OnObjectSelectionChanged((objec, true));
     }
 
-   
 
     public void ShowEventText(string text)
     {
@@ -133,18 +150,21 @@ public partial class ModelEditorState : Resource
 
     public void SwitchCameraProjection()
     {
-        Camera.SetMode(Camera.Mode, Camera.Projection == CameraProjection.Perspective ? CameraProjection.Orthogonal : CameraProjection.Perspective);
+        Camera.SetMode(Camera.Mode,
+            Camera.Projection == CameraProjection.Perspective
+                ? CameraProjection.Orthogonal
+                : CameraProjection.Perspective);
         ShowEventText(Camera.Projection.ToString());
         ;
     }
-    
+
     public void UnselectObject(Renderable part)
     {
         SelectedObjects.Remove(part);
-        
+
         OnObjectSelectionChanged((part, false));
     }
-    
+
     public void HoverOverObject(Renderable? obj)
     {
         if (Hovering != obj)
@@ -153,36 +173,43 @@ public partial class ModelEditorState : Resource
             OnObjectHoveringChanged(obj);
         }
     }
-    
-    
+
+
     public void UnselectAll()
     {
         foreach (var selectedPart in SelectedObjects.ToList())
         {
             UnselectObject(selectedPart);
         }
+
         ;
     }
 
     public void ChangeMode(EditorMode mode)
     {
-        Mode = mode;
+        /*Mode = mode;
         OnModeChanged(Mode);
         FocusedCorner = 0;
-        if (mode == EditorMode.Normal) History.Finish();
+        if (mode == EditorMode.Normal) History.Finish();*/
+    }
+
+    public void ChangeTool(string tool = "Tools/PointerTool")
+    {
+        OnToolChanged(tool);
+        CurrentTool = tool;
     }
 
     public void ReloadModel(bool full)
     {
         OnModelReloaded(full);
     }
-    
+
     public void SetPeek(bool peeking)
     {
         IsPeeking = peeking;
         OnIsPeekingChanged(IsPeeking);
     }
-   
+
     protected virtual void OnAllPartsUnselected()
     {
         AllPartsUnselected?.Invoke(this, EventArgs.Empty);
@@ -214,6 +241,7 @@ public partial class ModelEditorState : Resource
         this.BottomText = text;
         OnBottomTextChanged(text);
     }
+
     protected virtual void OnObjectSelectionChanged((Renderable, bool) e)
     {
         ObjectSelectionChanged?.Invoke(this, e);
@@ -242,5 +270,11 @@ public partial class ModelEditorState : Resource
     protected virtual void OnModelReloaded(bool e)
     {
         ModelReloaded?.Invoke(this, e);
+    }
+
+
+    protected virtual void OnToolChanged(string e)
+    {
+        ToolChanged?.Invoke(this, e);
     }
 }

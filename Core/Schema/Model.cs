@@ -130,6 +130,7 @@ public partial class Model : Resource
 
     public Renderable? GetItemById(int id) => Index.TryGetValue(id, out int value) ? Items[value] : null;
 
+  
     public Model()
     {
         State = new(this);
@@ -215,7 +216,7 @@ public partial class Model : Resource
     public List<Renderable> AllObjects => Items;
     public static Model Get(Node it)
     {
-        return it.Owner != null ? it.Owner.GetMeta("model").As<Model>() : it.GetParent().GetMeta("model").As<Model>();
+        return it.Owner != null ? it.Owner.GetMeta("model").As<Model>() : (it.GetParent().HasMeta("model") ? it.GetParent().GetMeta("model").As<Model>() : it.GetParent().Owner.GetMeta("model").As<Model>());
     }
 }
 

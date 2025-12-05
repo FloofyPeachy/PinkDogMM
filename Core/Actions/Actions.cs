@@ -18,7 +18,7 @@ public interface IAction
     public bool AddToStack { get; }
 }
 
-public interface IStagedAction : IAction
+public interface IStagedAction : IAction<Dictionary>
 {
     /*
      * Start to start.
@@ -48,7 +48,7 @@ public class ActionResult
     public bool Success { get; set; } = true;
 }
 
-public interface IAction<TResult> : IAction
+public interface IAction<out TResult> : IAction
 {
     TResult Result { get; }
 }

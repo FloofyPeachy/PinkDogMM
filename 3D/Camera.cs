@@ -58,11 +58,12 @@ public class Camera
         UpdateCamera();
     }
 
-    private void UpdateCamera()
+    public void UpdateCamera()
     {
+        return;
         if (Mode == CameraMode.Free) return;
 
-        if (state.Mode != EditorMode.Normal) return;
+        if (state.CurrentTool == "Tools/MoveTool") return;
         if (state.SelectedObjects.Count != 0)
         {
             var selected = state.SelectedObjects.OfType<Part>().ToList();
@@ -129,6 +130,6 @@ public class Camera
     public override string ToString()
     {
         return
-            $"{nameof(Position)}: {Position},{nameof(Rotation)}: {Rotation},{nameof(Zoom)}: {Zoom}, {nameof(Mode)}: {Mode}";
+            $"{nameof(Position)}: {Position}, {nameof(Rotation)}: {Rotation.AsVector2() * 64}, {nameof(Zoom)}: {Zoom}, {nameof(Mode)}: {Mode}";
     }
 }

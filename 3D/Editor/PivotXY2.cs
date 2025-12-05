@@ -247,8 +247,8 @@ public partial class PivotXY2 : Node3D
             pivotY.Rotate(pivotY.Transform.Basis.Y, -motion.Relative.X * Mathf.DegToRad(Sensitivity));
             pivotX.Rotate(pivotX.Transform.Basis.X, -motion.Relative.Y * Mathf.DegToRad(Sensitivity));
 
-            state.Camera.Rotation.X = pivotX.Rotation.X;
-            state.Camera.Rotation.Y = pivotY.Rotation.Y;
+            state.Camera.Rotation.Y = pivotX.Rotation.X;
+            state.Camera.Rotation.X = pivotY.Rotation.Y;
         }
         else if (Input.IsMouseButtonPressed(MouseButton.Middle))
         {

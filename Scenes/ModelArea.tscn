@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://blyq6ctodibnd"]
+[gd_scene load_steps=45 format=3 uid="uid://blyq6ctodibnd"]
 
 [ext_resource type="Script" uid="uid://c1kaiyhwrhlwn" path="res://Scenes/ModelArea.cs" id="1_llaap"]
 [ext_resource type="Theme" uid="uid://bqumg0v5lmvy1" path="res://Themes/theme.res" id="2_3wcq2"]
@@ -28,6 +28,7 @@
 [ext_resource type="Script" uid="uid://bs1gf7wfydipg" path="res://Scenes/event_popup.gd" id="20_yo4xu"]
 [ext_resource type="Script" uid="uid://bjj2avsv6rcyr" path="res://3D/ViewportExternal.cs" id="21_ohojw"]
 [ext_resource type="Script" uid="uid://00ilym2e88le" path="res://3D/Editor/Guides/CornerNodes.cs" id="24_5b8eh"]
+[ext_resource type="Script" uid="uid://b2kd86joud60f" path="res://3D/Editor/Guides/GhostPart.cs" id="25_ix2ul"]
 [ext_resource type="PackedScene" uid="uid://cr02vg2jytmof" path="res://Scenes/Controls/history_preview.tscn" id="27_5b8eh"]
 [ext_resource type="Texture2D" uid="uid://csde7rjtgmaby" path="res://Assets/placeholders/icon_refresh.png" id="27_r66bw"]
 
@@ -278,9 +279,37 @@ flat = true
 expand_icon = true
 script = ExtResource("11_pgaso")
 
-[node name="Button" type="Button" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
+[node name="Move" type="Button" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
 layout_mode = 2
-text = "Normal"
+toggle_mode = true
+text = "Pointer"
+script = ExtResource("16_l1tb2")
+ActionPath = "Tools/PointerTool"
+metadata/_custom_type_script = "uid://b40jkmpkg2st4"
+
+[node name="Move3" type="Button" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
+layout_mode = 2
+toggle_mode = true
+text = "Add"
+script = ExtResource("16_l1tb2")
+ActionPath = "Tools/AddTool"
+metadata/_custom_type_script = "uid://b40jkmpkg2st4"
+
+[node name="Move2" type="Button" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
+layout_mode = 2
+toggle_mode = true
+text = "Move"
+script = ExtResource("16_l1tb2")
+ActionPath = "Tools/MoveTool"
+metadata/_custom_type_script = "uid://b40jkmpkg2st4"
+
+[node name="Move4" type="Button" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
+layout_mode = 2
+toggle_mode = true
+text = "Move"
+script = ExtResource("16_l1tb2")
+ActionPath = "Tools/SizeTool"
+metadata/_custom_type_script = "uid://b40jkmpkg2st4"
 
 [node name="VSeparator" type="VSeparator" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
 layout_mode = 2
@@ -381,6 +410,9 @@ skeleton = NodePath("../..")
 
 [node name="CornerNodes" type="Node3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"]
 script = ExtResource("24_5b8eh")
+
+[node name="GhostPart" type="MeshInstance3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"]
+script = ExtResource("25_ix2ul")
 
 [node name="DebugText" type="Label" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer"]
 layout_mode = 2

@@ -31,7 +31,7 @@ public partial class ViewportInteraction : Control
         model = Model.Get(this);
         actionRegistry = GetNode<ActionRegistry>("/root/ActionRegistry");
         popupMenu = GetNode<PopupMenu>("PopupMenu");
-        model.State.ModeChanged += (sender, mode) =>
+        /*model.State.ModeChanged += (sender, mode) =>
         {
             if (mode == EditorMode.Resize)
             {
@@ -45,10 +45,9 @@ public partial class ViewportInteraction : Control
                 InitialWorldPos = Vector3.Zero;
                 InitalVec3 = Vector3.Zero;
                 model.State.ActiveAxis = Axis.All;
-           
                 Input.SetMouseMode(Input.MouseModeEnum.Visible);
             }
-        };
+        };*/
     }
 
     public override void _Process(double delta)
@@ -68,14 +67,14 @@ public partial class ViewportInteraction : Control
         }
     }
 
-    public override void _UnhandledInput(InputEvent @event)
+    public void _UnhandledInput(InputEvent @event)
     {
         //PL.I.Info("This event!!");
         //var partAtMouse = GetObjectAtMouse();
 
         switch (@event)
         {
-            case InputEventMouseButton button:
+            /*case InputEventMouseButton button:
             {
                 switch (button.ButtonIndex)
                 {
@@ -195,7 +194,7 @@ public partial class ViewportInteraction : Control
                             return;
                         }
 
-                    }*/
+                    }#1#
                         /*if (button.Pressed && part != null)
                     {
                         //Might be dragging? Start it.
@@ -217,7 +216,7 @@ public partial class ViewportInteraction : Control
                         AmountMoved = Vector3.Zero;
                         CurrentMousePos = Vector2.Zero;
                     }
-                    */
+                    #1#
 
 
                         /*if (!button.Pressed)
@@ -249,7 +248,7 @@ public partial class ViewportInteraction : Control
                             /*
                             if (nodeAtMouse == null) return;
                             var objec = model.Helpers[nodeAtMouse.Value.Item2.GetMeta("ido").AsInt32()];
-                            model.State.SelectedObjects.Add(objec);#1#
+                            model.State.SelectedObjects.Add(objec);#2#
                         }
                         else
                         {
@@ -275,7 +274,7 @@ public partial class ViewportInteraction : Control
                         var actualPart2 = appState?.ActiveModel?.GetPartById(DraggingPart);
                         InitalSize = actualPart2.Size.AsVector3();
                         CapturedMousePos = button.Position;
-                        Input.MouseMode = Input.MouseModeEnum.Captured;#1#
+                        Input.MouseMode = Input.MouseModeEnum.Captured;#2#
                     }
                     else
                     {
@@ -287,8 +286,8 @@ public partial class ViewportInteraction : Control
                         lastProjection = Vector3.Zero;
                         InitalSize = Vector3.Zero;
                         CapturedMousePos = Vector2.Zero;
-                        Input.MouseMode = Input.MouseModeEnum.Visible;#1#
-                    }*/
+                        Input.MouseMode = Input.MouseModeEnum.Visible;#2#
+                    }#1#
 
                         break;
                 }
@@ -299,20 +298,21 @@ public partial class ViewportInteraction : Control
                 break;
             }
             case InputEventMouseMotion motion:
-                model.State.WorldMousePosition = WorldPosFromMouse3(motion.Position)* 16;
+                model.State.WorldMousePosition = WorldPosFromMouse3(motion.Position).LH();
 
+                model.State.GridMousePosition = PlanePosFromMouse(motion.Position);
                 if (CapturedMousePos != Vector2.Zero) GD.Print(CapturedMousePos - motion.Position);
                 var delta = (CapturedMousePos - motion.Position).Abs();
-                if (CapturedMousePos != Vector2.Zero && model.State.Mode == EditorMode.Normal)
+                if (CapturedMousePos != Vector2.Zero && model.State.CurrentTool != null)
                 {
                     if (model.State.SelectedObjects.Count != 0 && delta > new Vector2(5, 5))
                     {
                         //Start dragging.
                         GD.Print("now dragging part!");
                         Input.SetDefaultCursorShape(Input.CursorShape.Move);
-                        model.State.ChangeMode(EditorMode.Move);
+                        //model.State.ChangeMode(EditorMode.Move);
 
-                    actionRegistry.Start("TheModel/MovePart",
+                    actionRegistry.Start("Tools/MoveTool",
                         new Dictionary { { "model", model }});
                     }
                     else
@@ -408,7 +408,7 @@ public partial class ViewportInteraction : Control
             if (!Input.IsMouseButtonPressed(MouseButton.Left)) return;
 
             if (model.State.Mode == EditorMode.Move) HandleMoveMode(@event);
-            if (model.State.Mode == EditorMode.Resize) HandleScaleMode(@event);*/
+            if (model.State.Mode == EditorMode.Resize) HandleScaleMode(@event);#1#
                 /*if (model.State.Mode != EditorMode.ShapeEdit)
             {
                 if (partAtMouse == null) return;
@@ -443,7 +443,7 @@ public partial class ViewportInteraction : Control
                     model.State.HoveredSide == Vector3.Back)
                 {
                     actualPart.Size.Z = newSize.Z;
-                }#1#
+                }#2#
                 /*if (Math.Abs(DragDirection.X) == 1f)
                 {
                     //actualPart.Position = new Vector3L((result.Value * 16));
@@ -458,7 +458,7 @@ public partial class ViewportInteraction : Control
                 if (Math.Abs(DragDirection.Z) == 1f)
                 {
                     actualPart.Size.Z = -newSize.Z;
-                }#1#
+                }#2#
                 lastProjection = result.Value;
             }
             else
@@ -476,11 +476,11 @@ public partial class ViewportInteraction : Control
                 actualPart.ShapeboxZ[model.State.FocusedCorner] =
                     (float)Math.Round(result.Value.Z);
                 /*actualPart.ShapeboxX[model.State.FocusedCorner] =
-                    -(float)Math.Round(result.Value.X)#1#
+                    -(float)Math.Round(result.Value.X)#2#
                 /*
                 actualPart.ShapeboxX[model.State.FocusedCorner] =
                     (float)Math.Round(delta.X);
-                    #1#
+                    #2#
 
                 //PL.I.Info(CurrentMousePos);
 
@@ -488,21 +488,21 @@ public partial class ViewportInteraction : Control
                 //var newSize = (Captu.Round() + (result!.Value * 16).Round());
 
                 /*actualPart.ShapeboxX[model.State.FocusedCorner] =
-                    -(float)Math.Round(result.Value.X);#1#
+                    -(float)Math.Round(result.Value.X);#2#
 
                 //PL.I.Info((float)Math.Round(result.Value.X * 8));
                 /*PL.I.Info(AmountMoved);
                 AmountMoved += CapturedMousePos;
-                PL.I.Info(AmountMoved);#1#
+                PL.I.Info(AmountMoved);#2#
                 //actualPart.ShapeboxX[model.State.FocusedCorner] = (float)Math.Round(AmountMoved.X * 0.2f);
 
 
 
                 lastProjection = result.Value;
-            }*/
+            }#1#
 
 
-                break;
+                break;*/
             case InputEventKey key:
                 if (key is { Echo: false })
 
@@ -865,11 +865,38 @@ public partial class ViewportInteraction : Control
         return camera.ProjectPosition(mousePos, camera.Position.Z);
     }
 
+    private Vector3 PlanePosFromMouse(Vector2 mousePos)
+    {
+        var result = new Dictionary();
+        var spaceState = camera.GetWorld3D().DirectSpaceState;
+        
+        var origin = camera.ProjectRayOrigin(mousePos);
+        var end = origin + camera.ProjectRayNormal(mousePos) * 1000.0f;
+
+        var plane = new Plane();
+        var positionY = model.State.Hovering?.Position.Y;
+        
+        plane.Y = positionY ?? -1.395f;
+        var intersection = plane.IntersectsRay(origin, end);
+        if (positionY != null && intersection != null) intersection = intersection.Value with { Y = -positionY.Value / 1/16 };
+        
+        return intersection ?? Vector3.Zero;
+    }
+
     private Vector3 WorldPosFromPos(Vector2 point)
     {
         return camera.ProjectRayOrigin(point);
     }
 
+    public void InputOnGrid(Node camera,
+        Godot.InputEvent @event,
+        Vector3 eventPosition,
+        Vector3 normal,
+        long shapeIdx)
+    {
+        GD.Print("on grid!!");
+        model.State.GridMousePosition = eventPosition;
+    }
     private bool GetHovering()
     {
         /*(Vector3, Node3D)? collider = GetNodeAtMouse();*/

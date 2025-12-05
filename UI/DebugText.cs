@@ -20,10 +20,12 @@ public partial class DebugText : Label
 		if (state.ActiveModel != null)
 		{
 			builder.Append("Camera: " + state.ActiveModel.State.Camera.ToString());
-			builder.Append("\nMouse Pos: " + state.ActiveModel.State.WorldMousePosition + "\n");
+			builder.Append("\nMouse Pos: " + state.ActiveModel.State.WorldMousePosition + "");
+			builder.Append("\nPos on Grid: " + state.ActiveModel.State.GridMousePosition + "\n");
 			builder.Append("\nModel: " + state.ActiveModel.Name);
 			builder.Append("\nFocused corner: " + state.ActiveModel.State.FocusedCorner);
 			builder.Append("\nMode: " + state.ActiveModel.State.Mode);
+			builder.Append("\nTool: " + state.ActiveModel.State.CurrentTool);
 			builder.Append("\nSelected: " +  String.Join(", ", state.ActiveModel.State.SelectedObjects));
 			builder.Append("\nHovering: " + state.ActiveModel.State.Hovering);
 			builder.Append("\nHovered side: " + state.ActiveModel.State.HoveredSide);

@@ -15,6 +15,9 @@ public partial class HistoryStack : Resource
     public event EventHandler<IAction>? ActionExecuted;
     public event EventHandler<IAction>? ActionUndone;
     public event EventHandler<IAction>? ActionRedone;
+
+    public event EventHandler<(string, IAction)>? ActionStarted;
+    
     
     public int Position => undoStack.Count - redoStack.Count;
     
@@ -33,10 +36,12 @@ public partial class HistoryStack : Resource
         OnActionUndone(action);
     }
 
-    public void Start(IStagedAction action)
+    public void Start(string path, IStagedAction action)
     {
+        Finish();
         activeAction = action;
         activeAction.Start();
+        OnActionStarted((path, action));
     }
 
     public void Tick(Dictionary arguments)
@@ -106,5 +111,11 @@ public partial class HistoryStack : Resource
     protected virtual void OnActionRedone(IAction e)
     {
         ActionRedone?.Invoke(this, e);
+    }
+
+
+    protected virtual void OnActionStarted((string, IAction) e)
+    {
+        ActionStarted?.Invoke(this, e);
     }
 }

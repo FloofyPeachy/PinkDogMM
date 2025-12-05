@@ -100,9 +100,9 @@ public partial class PartNode(Part part) : Node3D
         _partMesh.MaterialOverride = new StandardMaterial3D()
         {
             ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
-            AlbedoTexture = (model.HasTextures && model.State.CurrentTexture != -1)
+            AlbedoTexture = (model.HasTextures && model.State.CurrentTexture != 0)
                 ? ( model.Textures[model.State.CurrentTexture].Image) : null,
-            VertexColorUseAsAlbedo = (model.State.CurrentTexture == -1),
+            VertexColorUseAsAlbedo = (model.State.CurrentTexture == 0),
             TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest,
             CullMode = BaseMaterial3D.CullModeEnum.Disabled,
         };
@@ -159,7 +159,7 @@ public partial class PartNode(Part part) : Node3D
 
     public override void _PhysicsProcess(double delta)
     {
-    
+        _partMesh.Visible = !model.State.IsPeeking;
         Position = model.State.Mode == EditorMode.Normal ? Position.Lerp(new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f, (float)delta * 16.0f) : new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f;
         /*if (Input.IsMouseButtonPressed(MouseButton.Left))
         {
@@ -212,9 +212,9 @@ public partial class PartNode(Part part) : Node3D
         _partMesh.MaterialOverride = new StandardMaterial3D()
         {
             ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
-            AlbedoTexture = (model.HasTextures && model.State.CurrentTexture != -1)
+            AlbedoTexture = (model.HasTextures && model.State.CurrentTexture != 0)
                 ? model.Textures[model.State.CurrentTexture].Image : null,
-            VertexColorUseAsAlbedo = model.State.CurrentTexture == -1,
+            VertexColorUseAsAlbedo = model.State.CurrentTexture == 0,
             TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest,
             CullMode = BaseMaterial3D.CullModeEnum.Disabled,
         };

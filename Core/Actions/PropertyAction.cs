@@ -9,6 +9,7 @@ namespace PinkDogMM_Gd.Core.Actions;
 public class PropertyAction<T>(object target, string propertyName, T oldValue, T newValue)
     : IAction
 {
+    
     private readonly PropertyInfo propertyInfo = target.GetType().GetProperty(propertyName)
                                                  ?? throw new ArgumentException($"Property {propertyName} not found");
 

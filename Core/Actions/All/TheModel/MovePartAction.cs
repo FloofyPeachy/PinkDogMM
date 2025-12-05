@@ -70,5 +70,5 @@ public class MovePartAction : IStagedAction
     public bool AddToStack => true;
 
 
-
+    public Dictionary Result { get; }
 }

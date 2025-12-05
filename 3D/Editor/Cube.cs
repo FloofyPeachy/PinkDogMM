@@ -74,7 +74,7 @@ public partial class Cube : MeshInstance3D
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
-        this.Rotation = new Vector3(  model.State.Camera.Rotation.X + 1.5f, 0,   model.State.Camera.Rotation.Y + 0.1f);
+        this.Rotation = new Vector3(  -model.State.Camera.Rotation.Y + 1.6f, 0,   model.State.Camera.Rotation.X + 0.01f);
         GetViewport().GetCamera3D().Projection = model.State.Camera.Projection == CameraProjection.Perspective
             ? Camera3D.ProjectionType.Orthogonal
             : Camera3D.ProjectionType.Orthogonal;

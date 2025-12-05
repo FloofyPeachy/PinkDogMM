@@ -108,7 +108,7 @@ public partial class GizmoMove : Node3D
     private void MouseInOutAxis(Axis axis, bool entered)
     {
         model.State.HoveredAxis = entered ? axis : Axis.All;
-        GD.Print(axis + ":" + entered);
+    
     }
 
     public override void _PhysicsProcess(double delta)

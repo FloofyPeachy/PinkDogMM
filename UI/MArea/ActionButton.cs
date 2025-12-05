@@ -25,13 +25,34 @@ public partial class ActionButton: Button
             $"res://Assets/placeholders/{ActionRef.Icon}.png");
         Text = "";
         Flat = true;
+        model = Model.Get(this);
+        model.State.ToolChanged += (sender, tuple) =>
+        {
+            UpdateTool();
+        };
+    }
+
+    public void UpdateTool()
+    {
+        if (ActionPath.StartsWith("Tools/"))
+        {
+            ButtonPressed = model.State.CurrentTool == ActionPath;
+        }
     }
 
     public override void _Pressed()
     {
         var dict = new Dictionary();
         dict.Add("model", Model.Get(this));
-        registry.Execute(ActionPath, dict);
+        if (ActionPath.StartsWith("Tools/"))
+        {
+            registry.Start(ActionPath, dict);
+        }
+        else
+        {
+            registry.Execute(ActionPath, dict);
+        }
+       
     }
 
     public override GodotObject _MakeCustomTooltip(string forText)
