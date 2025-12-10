@@ -16,9 +16,13 @@ public abstract partial class Tool3D : Node3D
     public Model Model;
 
     public Vector2 CurrentMousePos = Vector2.Zero;
+    
     public Vector3? FirstWorldPos = Vector3.Zero;
+    public Vector3 WorldPosDelta = Vector3.Zero;
+    public Vector3 LastWorldPos = Vector3.Zero;
     public Vector3? CurrentWorldPos = Vector3.Zero;
     
+    public Plane WorldPlane = default;
     public Vector2? DragStart;
     public Vector2? DragDelta;
     
@@ -34,6 +38,7 @@ public abstract partial class Tool3D : Node3D
         ActionRegistry = GetNode<ActionRegistry>("/root/ActionRegistry");
         
         Model = Model.Get(this);
+        Selected();
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -43,19 +48,38 @@ public abstract partial class Tool3D : Node3D
             case InputEventMouseButton button:
             { 
                 DragStart = button.Pressed ? button.Position : null;
-                MouseClick(button.ButtonIndex, button.Pressed);
-                GD.Print("start ");
+                MouseClick(button.Position, button.ButtonIndex, button.Pressed);
+                GD.Print(DragStart.GetValueOrDefault());
                 FirstWorldPos = button.Pressed ? PlanePosFromMouse(button.Position) : null;
                 break;
               
             }
             case InputEventMouseMotion motion:
             {
-                DragDelta = motion.ButtonMask == MouseButtonMask.Left ? (CurrentMousePos - motion.Position).Abs() : null;
-                CurrentMousePos = !Captured ? motion.Position : CurrentMousePos += motion.Relative;
-                Model.State.GridMousePosition = PlanePosFromMouse(motion.Position) * 16;
-                CurrentWorldPos = (PlanePosFromMouse(CurrentMousePos) * 16).LH();
+               
+             
+                // 1. update mouse position first
+                if (!Captured)
+                    CurrentMousePos = motion.Position;
+                else
+                    CurrentMousePos += motion.Relative;
+
+// 2. compute current world position BEFORE updating LastWorldPos
+               CurrentWorldPos = (PlanePosFromMouse(CurrentMousePos) * 16).LH();
+
+// 3. initialize drag start once
+                DragStart ??= motion.Position;
+
+// 4. compute delta here
+                WorldPosDelta = CurrentWorldPos.GetValueOrDefault() - LastWorldPos;
+
+// 5. call your scaling logic
                 MouseMotion(CurrentMousePos);
+
+// 6. update world-pos for next frame
+                CurrentWorldPos = CurrentWorldPos.GetValueOrDefault();
+                LastWorldPos = CurrentWorldPos.GetValueOrDefault();
+
                 break;
             }
         }
@@ -64,6 +88,11 @@ public abstract partial class Tool3D : Node3D
 /*
  * Event Functions (you override these)
  */
+
+    public virtual void Selected()
+    {
+    }
+
     public virtual void Tick(Dictionary arguments)
     {
        
@@ -74,7 +103,7 @@ public abstract partial class Tool3D : Node3D
         return new Dictionary();
     }
     
-    public virtual void MouseClick(MouseButton buttonIndex, bool pressed)
+    public virtual void MouseClick(Vector2 position, MouseButton buttonIndex, bool pressed)
     {
     }
 
@@ -103,7 +132,7 @@ public abstract partial class Tool3D : Node3D
         return Camera.ProjectPosition(mousePos, Camera.Position.Z);
     }
 
-    public Vector3 PlanePosFromMouse(Vector2 mousePos, Plane plane = default)
+    public Vector3 PlanePosFromMouse(Vector2 mousePos)
     {
         var result = new Dictionary();
         var spaceState = Camera.GetWorld3D().DirectSpaceState;
@@ -112,22 +141,22 @@ public abstract partial class Tool3D : Node3D
         var end = origin + Camera.ProjectRayNormal(mousePos) * 1000.0f;
         
         var positionY = Model.State.Hovering?.Position.Y;
-        if (plane == Plane.PlaneYZ)
+        if (WorldPlane == Plane.PlaneYZ)
         {
-            plane.X = -1.395f;
+            WorldPlane.X = -1.395f;
         }
         else
         {
-            plane.Y = -1.395f;
+            WorldPlane.Y = -1.395f;
         }
        
-        var intersection = plane.IntersectsRay(origin, end);
+        var intersection = WorldPlane.IntersectsRay(origin, end);
         /*i/*f (positionY != null && intersection != null)
             intersection = intersection.Value with { Y = -positionY.Value / 1 / 16 };#1#*/
 
         return intersection ?? Vector3.Zero;
     }
-    private (Vector3, Node3D, Vector3, int)? GetNodeAtPos(Vector2 position)
+    public (Vector3, Node3D, Vector3, int)? GetNodeAtPos(Vector2 position)
     {
         var spaceState = Camera.GetWorld3D().DirectSpaceState;
         

@@ -113,6 +113,7 @@ public partial class GizmoMove : Node3D
 
     public override void _PhysicsProcess(double delta)
     {
+        this.Visible = false;
         //this.Position = appState.ActiveEditorState.WorldMousePosition;
         base._PhysicsProcess(delta);
         //this.Visible = model.State.Mode != EditorMode.ShapeEdit;

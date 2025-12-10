@@ -12,13 +12,17 @@ public partial class PointerTool3D : Tool3D
         base.Tick(arguments);
     }
 
-    public override void MouseClick(MouseButton buttonIndex, bool pressed)
+    public override void MouseClick(Vector2 position, MouseButton buttonIndex, bool pressed)
     {
         if (buttonIndex != MouseButton.Left || !pressed) return;
 
         var idAtMouse = GetIdAtMouse();
-        if (idAtMouse != -1 && Model.State.SelectedObjects.Contains(Model.GetItemById(idAtMouse)))
+        if (idAtMouse != -1)
         {
+            ActionRegistry.Execute("TheModel/SelectPart",
+                new Dictionary { { "model", Model }, { "id", idAtMouse} });
+            ActionRegistry.Start("Tools/SizeTool",
+                new Dictionary { { "model", Model }});
             /*ActionRegistry.Start("Tools/MoveTool",
                 new Dictionary { { "model", Model }, { "id", idAtMouse} });*/
         }
@@ -26,6 +30,7 @@ public partial class PointerTool3D : Tool3D
         {
             ActionRegistry.Execute("TheModel/SelectPart",
                 new Dictionary { { "model", Model }, { "id", idAtMouse} });
+            
         }
       
         

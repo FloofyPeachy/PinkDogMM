@@ -22,7 +22,7 @@ public partial class AddTool3D : Tool3D
         AddChild(ghostPart);
     }
 
-    public override void MouseClick(MouseButton buttonIndex, bool pressed)
+    public override void MouseClick(Vector2 position, MouseButton buttonIndex, bool pressed)
     {
     }
 
@@ -30,7 +30,7 @@ public partial class AddTool3D : Tool3D
     {
         if (DragDelta.HasValue)
         {
-            var initial = PlanePosFromMouse(DragStart.Value, default) * 16;
+            var initial = PlanePosFromMouse(DragStart.Value) * 16;
             var deltaPos = ((PlanePosFromMouse(DragStart.Value) * 16) - Model.State.GridMousePosition).Round();
 
             ghostPart.Mesh = new BoxMesh()
@@ -56,8 +56,8 @@ public partial class AddTool3D : Tool3D
             };
             var
                 pos = DragStart.HasValue
-                    ? (PlanePosFromMouse(DragStart.Value, default) * 16)
-                    : (PlanePosFromMouse(position, default) * 16)
+                    ? (PlanePosFromMouse(DragStart.Value) * 16)
+                    : (PlanePosFromMouse(position) * 16)
                     .Round(); /*(PlanePosFromMouse(position, ctrlPressed ? Plane.PlaneYZ : new Plane() ) * (ctrlPressed ? 1 : 16)).Round().LH();*/
 
             ghostPart.GlobalPosition =
