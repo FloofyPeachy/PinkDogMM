@@ -29,6 +29,7 @@ public class PL
    
     public void Debug(object data)
     {
+        return;
         GD.PrintRich(BuildHeader("debug", "gray") + data);
     }
 

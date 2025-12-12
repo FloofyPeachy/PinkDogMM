@@ -66,7 +66,7 @@ public class MeshGenerator
                 ];
                 (Vector3, Vector2)[] side = enumerator.Current;
 
-                PL.I.Info(sideIdx);
+               
                 List<(Vector3, Vector2)> tri1 = [side[0], side[1], side[2]];
                 List<(Vector3, Vector2)> tri2 = [side[0], side[2], side[3]];
 

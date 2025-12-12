@@ -6,13 +6,13 @@ using PinkDogMM_Gd.Core.Schema;
 
 namespace PinkDogMM_Gd.Render;
 
-public enum CameraMode
+public enum Mode
 {
     Orbit,
     Free
 }
 
-public enum CameraProjection
+public enum Projection
 {
     Perspective,
     Orthogonal
@@ -23,8 +23,8 @@ public class Camera
     public Vector2L Rotation = new();
     public float Zoom = 20;
     public Vector3L Position = new Vector3L();
-    public CameraMode Mode = CameraMode.Orbit;
-    public CameraProjection Projection = CameraProjection.Perspective;
+    public Mode Mode = Mode.Orbit;
+    public Projection Projection = Projection.Perspective;
     public bool CenterOnAnchor = false;
     private ModelEditorState state;
 
@@ -51,7 +51,7 @@ public class Camera
         };
     }
 
-    public void SetMode(CameraMode _mode, CameraProjection projection)
+    public void SetMode(Mode _mode, Projection projection)
     {
         this.Mode = _mode;
         this.Projection = projection;
@@ -60,8 +60,9 @@ public class Camera
 
     public void UpdateCamera()
     {
-      
-        if (Mode == CameraMode.Free) return;
+
+        return;
+        if (Mode == Mode.Free) return;
 
         if (state.CurrentTool == "Tools/MoveTool") return;
         if (state.SelectedObjects.Count != 0)

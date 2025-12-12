@@ -160,7 +160,7 @@ public partial class PartNode(Part part) : Node3D
     public override void _PhysicsProcess(double delta)
     {
         _partMesh.Visible = !model.State.IsPeeking;
-        Position = model.State.Mode == EditorMode.Normal ? Position.Lerp(new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f, (float)delta * 16.0f) : new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f;
+        Position = model.State.CurrentTool == "Tools/PointerTool" ? Position.Lerp(new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f, (float)delta * 16.0f) : new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f;
         /*if (Input.IsMouseButtonPressed(MouseButton.Left))
         {
             Position = new Vector3(part.Position.Z, -part.Position.Y, part.Position.X) * 0.0625f;

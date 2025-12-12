@@ -5,6 +5,7 @@ using System.Linq;
 using PinkDogMM_Gd.Core.Configuration;
 using PinkDogMM_Gd.Core.Schema;
 using PinkDogMM_Gd.Render;
+using Projection = PinkDogMM_Gd.Render.Projection;
 
 public partial class Cube : MeshInstance3D
 {
@@ -74,8 +75,8 @@ public partial class Cube : MeshInstance3D
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
-        this.Rotation = new Vector3(  -model.State.Camera.Rotation.Y + 1.6f, 0,   model.State.Camera.Rotation.X + 0.01f);
-        GetViewport().GetCamera3D().Projection = model.State.Camera.Projection == CameraProjection.Perspective
+        this.Rotation = new Vector3(  -model.State.Camera.Rotation.Y + 1.6f, 0,   model.State.Camera.Rotation.X);
+        GetViewport().GetCamera3D().Projection = model.State.Camera.Projection == Projection.Perspective
             ? Camera3D.ProjectionType.Orthogonal
             : Camera3D.ProjectionType.Orthogonal;
     }

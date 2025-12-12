@@ -16,7 +16,7 @@ public class SizeTool : Tool
         foreach (var keyValuePair in sizesPoses)
         {
             var part = Model.GetItemById(keyValuePair.Key.AsInt32());
-
+            if (part == null) return;
             var size = keyValuePair.Value.AsVector3Array()[0];
             var pos = keyValuePair.Value.AsVector3Array()[1];
             

@@ -7,6 +7,7 @@ using PinkDogMM_Gd.Core;
 using PinkDogMM_Gd.Core.Actions.All.TheModel;
 using PinkDogMM_Gd.Core.Schema;
 using PinkDogMM_Gd.Render;
+using Projection = PinkDogMM_Gd.Render.Projection;
 
 namespace PinkDogMM_Gd.Scenes;
 
@@ -63,11 +64,11 @@ public partial class PivotXY2 : Node3D
             float.Cos(pivotX.Rotation.X) * float.Sin(pivotY.Rotation.Y)
         ).Normalized();
 
-        camera.Projection = state.Camera.Projection == CameraProjection.Perspective
+        camera.Projection = state.Camera.Projection == Projection.Perspective
             ? Camera3D.ProjectionType.Perspective
             : Camera3D.ProjectionType.Orthogonal;
 
-        if (state.Camera.Projection == CameraProjection.Orthogonal)
+        if (state.Camera.Projection == Projection.Orthogonal)
         {
             camera.Position = camera.Position.Lerp(new Vector3(Pan.X,Pan.Y,1000), 
                 (float)delta * 24.0f);
@@ -82,7 +83,7 @@ public partial class PivotXY2 : Node3D
         this.GlobalPosition = GlobalPosition.Lerp(ActualPosition * new Vector3(1,1 ,1) * 1/16,
             (float)delta * 16.0f);
         
-        if (state.Camera.Mode == CameraMode.Orbit) return;
+        if (state.Camera.Mode == Mode.Orbit) return;
         
         
         
@@ -167,7 +168,7 @@ public partial class PivotXY2 : Node3D
             switch (button.ButtonIndex)
             {
                 case MouseButton.WheelUp:
-                    if (state.Camera.Projection == CameraProjection.Perspective)
+                    if (state.Camera.Projection == Projection.Perspective)
                     {
                         CamPosition = camera.Position + new Vector3(0, 0,  -ZoomSpeed);
                         state.Camera.Zoom = CamPosition.Z;
@@ -182,7 +183,7 @@ public partial class PivotXY2 : Node3D
                     GetViewport().SetInputAsHandled();
                     break;
                 case MouseButton.WheelDown:
-                    if (state.Camera.Projection == CameraProjection.Perspective)
+                    if (state.Camera.Projection == Projection.Perspective)
                     {
                         CamPosition = camera.Position + new Vector3(0, 0,  ZoomSpeed);
                         state.Camera.Zoom = CamPosition.Z;

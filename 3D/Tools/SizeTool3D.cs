@@ -14,6 +14,8 @@ public partial class SizeTool3D : Tool3D
     private Color xColor = Color.Color8(58, 179, 218, 1);
     private Color yColor = Color.Color8(128, 199, 47, 1);
     private Color zColor = Color.Color8(176, 45, 36, 1);
+    private Vector3 _newSize;
+    private Vector3 _newPos;
 
     public override void Selected()
     {
@@ -47,12 +49,19 @@ public partial class SizeTool3D : Tool3D
                 GD.Print("axis:" +  axis);
                 Model.State.ActiveAxis = axis;
                 WorldPlane = axis == Axis.Y ? Plane.PlaneYZ : default;
+                _newSize = Model.State.SelectedObjects.Count != 0
+                    ? Model.State.SelectedObjects[0].Size.AsVector3().LHS()
+                    : Vector3.Zero;
+                _newPos = Model.State.SelectedObjects.Count != 0
+                    ? Model.State.SelectedObjects[0].Position.AsVector3().LHS()
+                    : Vector3.Zero;
             }
           
         }
         else
         {
             Uncapture();
+            _newSize = Vector3.Zero;
         }
         
         var idAtMouse = GetIdAtMouse();
@@ -172,43 +181,41 @@ public partial class SizeTool3D : Tool3D
         for (var index = 0; index < Model.State.SelectedObjects.Count; index++)
         {
             var renderable = Model.State.SelectedObjects[index];
-            var newSize = renderable.Size.AsVector3();
-            var newPos = renderable.Position.AsVector3();
+           
+          
             var frameDelta = WorldPosDelta;
            
             Vector3 v = WorldPosDelta;
-            GD.Print(v);
             if (Model.State.ActiveAxis is not Axis.All)
             {
-                if (Model.State.ActiveAxis != Axis.X) v.X = 0;
-                if (Model.State.ActiveAxis != Axis.Y) v.Y = 0;
-                if (Model.State.ActiveAxis != Axis.Z) v.Z = 0;
+                /*if (Model.State.ActiveAxis != Axis.X) v.X = 1;
+                if (Model.State.ActiveAxis != Axis.Y) v.Y = 1;
+                if (Model.State.ActiveAxis != Axis.Z) v.Z = 1;*/
             }
-
+            GD.Print(v);
 
             /*v = (v * 2).Clamp(-128, 128).Round();*/
 
             if (Model.State.ActiveAxis is Axis.X or Axis.All)
             {
-                newSize.X += v.X;
+                _newSize.X += v.X;
+                _newPos.X  += v.X;
                 //newPos.X  += Math.Min(v.X, 0);
             }
 
             if (Model.State.ActiveAxis is Axis.Y or Axis.All)
             {
-                newSize.Y += v.Y;
-                //newPos.Y  += Math.Min(v.Y, 0);
+                _newSize.Y += v.Y;
+                _newPos.Y  += v.Y;
             }
-
             if (Model.State.ActiveAxis is Axis.Z or Axis.All)
             {
-                newSize.Z += v.Z;
-                //newSize.Z = (float)Math.Round(newSize.Z);
-                //newPos.Z  += Math.Min(v.Z, 0);
+                _newSize.Z += v.Z;
+                _newPos.Z  += v.Z;
             }
-            GD.Print(newSize);
+            GD.Print(_newSize);
 
-            posSizes.Add(renderable.Id, new Array() {newSize, newPos});
+            posSizes.Add(renderable.Id, new Array() {_newSize.Round().Abs().Max(0), _newPos.Round().Min(0)});
            
         }
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://blyq6ctodibnd"]
+[gd_scene load_steps=46 format=3 uid="uid://blyq6ctodibnd"]
 
 [ext_resource type="Script" uid="uid://c1kaiyhwrhlwn" path="res://Scenes/ModelArea.cs" id="1_llaap"]
 [ext_resource type="Theme" uid="uid://bqumg0v5lmvy1" path="res://Themes/theme.res" id="2_3wcq2"]
@@ -30,6 +30,7 @@
 [ext_resource type="Script" uid="uid://00ilym2e88le" path="res://3D/Editor/Guides/CornerNodes.cs" id="24_5b8eh"]
 [ext_resource type="Script" uid="uid://b2kd86joud60f" path="res://3D/Editor/Guides/GhostPart.cs" id="25_ix2ul"]
 [ext_resource type="PackedScene" uid="uid://cr02vg2jytmof" path="res://Scenes/Controls/history_preview.tscn" id="27_5b8eh"]
+[ext_resource type="Script" uid="uid://b30vtny1v4btw" path="res://Scenes/rotation_view.gd" id="27_jg57w"]
 [ext_resource type="Texture2D" uid="uid://csde7rjtgmaby" path="res://Assets/placeholders/icon_refresh.png" id="27_r66bw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5b8eh"]
@@ -425,6 +426,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 0
 stretch = true
 mouse_target = true
+script = ExtResource("27_jg57w")
 
 [node name="SubViewport" type="SubViewport" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/RotationView"]
 own_world_3d = true
@@ -451,6 +453,17 @@ far = 3998.25
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/RotationView/SubViewport/WorldEnvironment"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.2614386)
 light_energy = 9.333
+
+[node name="PopupMenu" type="PopupMenu" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/RotationView"]
+item_count = 3
+item_0/text = "Perspective"
+item_0/checkable = 1
+item_0/id = 0
+item_1/text = "Orthogonal"
+item_1/checkable = 1
+item_1/id = 1
+item_2/id = 2
+item_2/separator = true
 
 [node name="StatusBar" type="PanelContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 32)

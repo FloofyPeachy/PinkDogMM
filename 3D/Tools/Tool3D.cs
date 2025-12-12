@@ -43,10 +43,12 @@ public abstract partial class Tool3D : Node3D
 
     public override void _UnhandledInput(InputEvent @event)
     {
+        
         switch (@event)
         {
             case InputEventMouseButton button:
-            { 
+            {
+                if (button.ButtonIndex == MouseButton.Right) return;
                 DragStart = button.Pressed ? button.Position : null;
                 MouseClick(button.Position, button.ButtonIndex, button.Pressed);
                 GD.Print(DragStart.GetValueOrDefault());

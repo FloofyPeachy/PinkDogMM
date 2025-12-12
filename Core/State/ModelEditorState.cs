@@ -8,6 +8,7 @@ using PinkDogMM_Gd.Core.Actions.All.Tools;
 using PinkDogMM_Gd.Core.Commands;
 using PinkDogMM_Gd.Core.Schema;
 using PinkDogMM_Gd.Render;
+using Projection = PinkDogMM_Gd.Render.Projection;
 using Texture = PinkDogMM_Gd.Core.Schema.Texture;
 
 namespace PinkDogMM_Gd.Core;
@@ -143,7 +144,7 @@ public partial class ModelEditorState : Resource
 
     public void SwitchCameraMode()
     {
-        Camera.SetMode(Camera.Mode == CameraMode.Orbit ? CameraMode.Free : CameraMode.Orbit, Camera.Projection);
+        Camera.SetMode(Camera.Mode == Render.Mode.Orbit ? Render.Mode.Free : Render.Mode.Orbit, Camera.Projection);
         ShowEventText(Camera.Mode.ToString());
         ;
     }
@@ -151,9 +152,9 @@ public partial class ModelEditorState : Resource
     public void SwitchCameraProjection()
     {
         Camera.SetMode(Camera.Mode,
-            Camera.Projection == CameraProjection.Perspective
-                ? CameraProjection.Orthogonal
-                : CameraProjection.Perspective);
+            Camera.Projection == Projection.Perspective
+                ? Projection.Orthogonal
+                : Projection.Perspective);
         ShowEventText(Camera.Projection.ToString());
         ;
     }
