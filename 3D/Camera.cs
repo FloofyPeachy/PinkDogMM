@@ -61,7 +61,7 @@ public class Camera
     public void UpdateCamera()
     {
 
-        return;
+       
         if (Mode == Mode.Free) return;
 
         if (state.CurrentTool == "Tools/MoveTool") return;

@@ -70,7 +70,7 @@ public class MeshGenerator
                 List<(Vector3, Vector2)> tri1 = [side[0], side[1], side[2]];
                 List<(Vector3, Vector2)> tri2 = [side[0], side[2], side[3]];
 
-                foreach (var vector3 in tri1.Concat(tri2))
+                foreach (var vector3 in tri2.Concat(tri1))
                 {
                     st.SetColor(colors[sideIdx]);
                     var uv = vector3.Item2;
@@ -230,6 +230,24 @@ public class MeshGenerator
         return st.Commit();
     }
 
+    static void WriteQuad(ref int i, float u0, float v0, float u1, float v1, bool flipU = false)
+    {
+        Vector2[] uvs = new Vector2[24];
+        if (!flipU)
+        {
+            uvs[i++] = new(u0, v0);
+            uvs[i++] = new(u1, v0);
+            uvs[i++] = new(u1, v1);
+            uvs[i++] = new(u0, v1);
+        }
+        else
+        {
+            uvs[i++] = new(u1, v0);
+            uvs[i++] = new(u0, v0);
+            uvs[i++] = new(u0, v1);
+            uvs[i++] = new(u1, v1);
+        }
+    }
     public static Vector2[] GenerateCubeUVs(Part part, Vector2 textureSize)
     {
         // We'll follow a typical "cuboid unfolded" layout in the texture atlas
@@ -240,6 +258,9 @@ public class MeshGenerator
         int dy = (int)part.Size.Y;
         int dz = (int)part.Size.Z;
 
+      
+        
+        
         Vector2[] uvs = new Vector2[24]; // 6 faces × 4 vertices
 
         /*
@@ -270,40 +291,70 @@ public class MeshGenerator
         */
 
         // Front face
-        uvs[0] = new Vector2(U(tx + dz, textureSize.X), V(ty, textureSize.Y));
-        uvs[1] = new Vector2(U(tx + dz + dx, textureSize.X), V(ty, textureSize.Y));
-        uvs[2] = new Vector2(U(tx + dz + dx, textureSize.X), V(ty + dz, textureSize.Y));
-        uvs[3] = new Vector2(U(tx + dz, textureSize.X), V(ty + dz, textureSize.Y));
+        /*for (int i = 0; i < 24; i++)
+        {
+            WriteQuad(ref i, U(tx + dz, textureSize.X), V(ty, textureSize.Y), U(tx + dz + dx, textureSize.X),
+                V(ty, textureSize.Y));
+            WriteQuad(ref i, U(tx + dz + dx, textureSize.X), V(ty + dz, textureSize.Y), U(tx + dz, textureSize.X), V(ty + dz, textureSize.Y));
+        }*/
+
+        //
+        int i = 0;
+        uvs[i++] = new Vector2(U(tx + dz, textureSize.X), V(ty, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz + dx, textureSize.X), V(ty, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz + dx, textureSize.X), V(ty + dz, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz, textureSize.X), V(ty + dz, textureSize.Y));
 
         // Back face
-        uvs[4] = new Vector2(U(tx + dz + dx + dz, textureSize.X), V(ty, textureSize.Y));
-        uvs[5] = new Vector2(U(tx + dz + dx + dz + dx, textureSize.X), V(ty, textureSize.Y));
-        uvs[6] = new Vector2(U(tx + dz + dx + dz + dx, textureSize.X), V(ty + dz, textureSize.Y));
-        uvs[7] = new Vector2(U(tx + dz + dx + dz, textureSize.X), V(ty + dz, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz + dx + dz, textureSize.X), V(ty, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz + dx + dz + dx, textureSize.X), V(ty, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz + dx + dz + dx, textureSize.X), V(ty + dz, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz + dx + dz, textureSize.X), V(ty + dz, textureSize.Y));
 
-        // Top face
-        uvs[8] = new Vector2(U(tx + dz, textureSize.X), V(ty + dz, textureSize.Y));
-        uvs[9] = new Vector2(U(tx + dz + dx, textureSize.X), V(ty + dz, textureSize.Y));
-        uvs[10] = new Vector2(U(tx + dz + dx, textureSize.X), V(ty + dz + dy, textureSize.Y));
-        uvs[11] = new Vector2(U(tx + dz, textureSize.X), V(ty + dz + dy, textureSize.Y));
+        // Front face
+        /*uvs[i++] = new Vector2(U(tx + dz, textureSize.X), V(ty + dz, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz + dx, textureSize.X), V(ty + dz, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz + dx, textureSize.X), V(ty + dz + dy, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz, textureSize.X), V(ty + dz + dy, textureSize.Y));*/
 
-        // Bottom face
-        uvs[12] = new Vector2(U(tx + dz + dx + dz, textureSize.X), V(ty + dz, textureSize.Y));
-        uvs[13] = new Vector2(U(tx + dz + dx + dz + dx, textureSize.X), V(ty + dz, textureSize.Y));
-        uvs[14] = new Vector2(U(tx + dz + dx + dz + dx, textureSize.X), V(ty + dz + dy, textureSize.Y));
-        uvs[15] = new Vector2(U(tx + dz + dx + dz, textureSize.X), V(ty + dz + dy, textureSize.Y));
+        float u0 = U(tx + dz, textureSize.X);
+        float v0 = V(ty + dz, textureSize.Y);
+
+        float u1 = U(tx + dz + dx, textureSize.X);
+        float v1 = V(ty + dz + dy, textureSize.Y);
+        
+        uvs[i++] = new Vector2(u0, v0);
+        uvs[i++] = new Vector2(u0, v1);
+        uvs[i++] = new Vector2(u1, v1);
+        uvs[i++] = new Vector2(u1, v0);
+
+        u0 = U(tx + dz + dx + dz, textureSize.X);
+        v0 = V(ty + dz, textureSize.Y);
+
+        u1 = U(tx + dz + dx + dz + dx, textureSize.X);
+        v1 = V(ty + dz + dy, textureSize.Y);
+        
+        uvs[i++] = new Vector2(u0, v0);
+        uvs[i++] = new Vector2(u0, v1);
+        uvs[i++] = new Vector2(u1, v1);
+        uvs[i++] = new Vector2(u1, v0);
+        
+        /*uvs[i++] = new Vector2(U(tx + dz + dx + dz, textureSize.X), V(ty + dz, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz + dx + dz + dx, textureSize.X), V(ty + dz, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz + dx + dz + dx, textureSize.X), V(ty + dz + dy, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz + dx + dz, textureSize.X), V(ty + dz + dy, textureSize.Y));*/
 
         // Left face
-        uvs[16] = new Vector2(U(tx, textureSize.X), V(ty + dz, textureSize.Y));
-        uvs[17] = new Vector2(U(tx + dz, textureSize.X), V(ty + dz, textureSize.Y));
-        uvs[18] = new Vector2(U(tx + dz, textureSize.X), V(ty + dz + dy, textureSize.Y));
-        uvs[19] = new Vector2(U(tx, textureSize.X), V(ty + dz + dy, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx, textureSize.X), V(ty + dz, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz, textureSize.X), V(ty + dz, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz, textureSize.X), V(ty + dz + dy, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx, textureSize.X), V(ty + dz + dy, textureSize.Y));
 
         // Right face
-        uvs[20] = new Vector2(U(tx + dz + dx, textureSize.X), V(ty + dz, textureSize.Y));
-        uvs[21] = new Vector2(U(tx + dz + dx + dz, textureSize.X), V(ty + dz, textureSize.Y));
-        uvs[22] = new Vector2(U(tx + dz + dx + dz, textureSize.X), V(ty + dz + dy, textureSize.Y));
-        uvs[23] = new Vector2(U(tx + dz + dx, textureSize.X), V(ty + dz + dy, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz + dx, textureSize.X), V(ty + dz, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz + dx + dz, textureSize.X), V(ty + dz, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz + dx + dz, textureSize.X), V(ty + dz + dy, textureSize.Y));
+        uvs[i++] = new Vector2(U(tx + dz + dx, textureSize.X), V(ty + dz + dy, textureSize.Y));
 
         return uvs;
     }

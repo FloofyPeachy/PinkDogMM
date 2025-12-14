@@ -161,8 +161,9 @@ public partial class PivotXY2 : Node3D
         //state.Camera.Zoom = state.Camera.Zoom - state.Camera.Position.Y;
     }
 
-    public override void _Input(InputEvent @event)
+    public override void _UnhandledInput(InputEvent @event)
     {
+      
         if (@event is InputEventMouseButton button)
         {
             switch (button.ButtonIndex)
@@ -180,7 +181,7 @@ public partial class PivotXY2 : Node3D
                     }
                     
                     //state.Camera.Position.Z--;
-                    GetViewport().SetInputAsHandled();
+                    //GetViewport().SetInputAsHandled();
                     break;
                 case MouseButton.WheelDown:
                     if (state.Camera.Projection == Projection.Perspective)
@@ -195,7 +196,7 @@ public partial class PivotXY2 : Node3D
                     }
 
                     //state.Camera.Position.Z++;
-                    GetViewport().SetInputAsHandled();
+                    //GetViewport().SetInputAsHandled();
                     break;
                 default:
                     break;

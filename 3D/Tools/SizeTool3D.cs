@@ -20,7 +20,6 @@ public partial class SizeTool3D : Tool3D
     public override void Selected()
     {
         MakeGizmo();
-        
     }
 
     public override void _PhysicsProcess(double delta)
@@ -51,7 +50,7 @@ public partial class SizeTool3D : Tool3D
                 WorldPlane = axis == Axis.Y ? Plane.PlaneYZ : default;
                 _newSize = Model.State.SelectedObjects.Count != 0
                     ? Model.State.SelectedObjects[0].Size.AsVector3().LHS()
-                    : Vector3.Zero;
+                    : Vector3.One;
                 _newPos = Model.State.SelectedObjects.Count != 0
                     ? Model.State.SelectedObjects[0].Position.AsVector3().LHS()
                     : Vector3.Zero;

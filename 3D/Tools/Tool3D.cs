@@ -41,7 +41,7 @@ public abstract partial class Tool3D : Node3D
         Selected();
     }
 
-    public override void _UnhandledInput(InputEvent @event)
+    public override void _Input(InputEvent @event)
     {
         
         switch (@event)
@@ -176,7 +176,8 @@ public abstract partial class Tool3D : Node3D
         return (hitNormal.Round(), result["collider"].As<Node3D>(), result["position"].AsVector3(),
             result["face_index"].AsInt32());
     }
-    private (Vector3, Node3D, Vector3, int)? GetNodeAtMouse()
+
+    public (Vector3, Node3D, Vector3, int)? GetNodeAtMouse()
     {
         return GetNodeAtPos(GetViewport().GetMousePosition());
     }

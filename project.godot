@@ -44,7 +44,7 @@ project/assembly_name="PinkDogMM_Gd"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/orbit_camera/plugin.cfg", "res://addons/theme_gen_save_sync/plugin.cfg")
+enabled=PackedStringArray("res://addons/orbit_camera/plugin.cfg", "res://addons/theme_gen_save_sync/plugin.cfg", "res://addons/tnowe_extra_controls/plugin.cfg")
 
 [gui]
 

@@ -29,6 +29,21 @@ public interface IStagedAction : IAction<Dictionary>
     void Tick(Dictionary arguments);
 }
 
+
+public interface ISubstackAction : IAction<Dictionary> {
+
+    /*
+     * Action with a built in HistoryStack, for your pleasure
+     * Start() to start.
+     * Execute() when done.
+     * .Undo() to undo in the INTERNAL stack.
+     * .Redo() to redo IN the INTERNAL stack.
+     */
+
+    new void Undo();
+    void Redo();
+}
+
 public class ActionResult
 {
     public ActionResult(bool success)

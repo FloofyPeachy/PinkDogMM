@@ -90,9 +90,7 @@ public partial class ActionRegistry : Node
         arguments.Add("appState", appState);
         if (key.Contains("Tool"))
         {
-            arguments.Add("worldRoot", GetNode("/root/Node2D/Panel/VBoxContainer/AreaSwitcher/" +
-                                               "ModelArea/VBoxContainer/HSplitContainer/RenderArea/MarginContainer/" +
-                                               "SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"));
+            arguments.Add("worldRoot", GetNode("/root/Node2D/Panel/VBoxContainer/AreaSwitcher/").GetChild(appState.ActiveModelIndex).GetNode("VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"));
         }
 
         if (actions.TryGetValue(key, out var actionType))

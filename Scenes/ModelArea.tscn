@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3 uid="uid://blyq6ctodibnd"]
+[gd_scene load_steps=43 format=3 uid="uid://blyq6ctodibnd"]
 
 [ext_resource type="Script" uid="uid://c1kaiyhwrhlwn" path="res://Scenes/ModelArea.cs" id="1_llaap"]
 [ext_resource type="Theme" uid="uid://bqumg0v5lmvy1" path="res://Themes/theme.res" id="2_3wcq2"]
@@ -16,19 +16,16 @@
 [ext_resource type="Script" uid="uid://lywd0h120fhi" path="res://Scenes/Elements/button.gd" id="11_pgaso"]
 [ext_resource type="Script" uid="uid://bx542mtyrvqb6" path="res://3D/Model/ModelNode.cs" id="12_p4o42"]
 [ext_resource type="Script" uid="uid://d3gaebg0r4w50" path="res://3D/Editor/PivotXY2.cs" id="13_pgiwo"]
+[ext_resource type="PackedScene" uid="uid://b5ptv2yulljyj" path="res://Scenes/texture_map.tscn" id="13_r66bw"]
 [ext_resource type="Texture2D" uid="uid://d4i4h3uqlkvo1" path="res://Assets/placeholders/icon_pipette.png" id="13_xp4iq"]
 [ext_resource type="Texture2D" uid="uid://beexsww2dvrfw" path="res://Assets/pdmmarrow-01.png" id="14_r1lqq"]
 [ext_resource type="Script" uid="uid://bd311ilp2ri3i" path="res://Scenes/world_root.gd" id="15_o8ysw"]
 [ext_resource type="Shader" uid="uid://bw2mkq16g7676" path="res://grid_shader.gdshader" id="15_r0gdq"]
 [ext_resource type="Script" uid="uid://b40jkmpkg2st4" path="res://UI/MArea/ActionButton.cs" id="16_l1tb2"]
-[ext_resource type="Script" uid="uid://br0tnousc8smc" path="res://3D/Editor/ViewportInteraction.cs" id="16_wchy0"]
 [ext_resource type="Script" uid="uid://dbux30vp2ns8p" path="res://UI/DebugText.cs" id="17_omj5t"]
-[ext_resource type="Script" uid="uid://ciifw4ocwf482" path="res://3D/Editor/Guides/GizmoMove.cs" id="17_s0p6w"]
 [ext_resource type="Script" uid="uid://deto50rcvil4m" path="res://3D/Editor/Cube.cs" id="20_2gya4"]
 [ext_resource type="Script" uid="uid://bs1gf7wfydipg" path="res://Scenes/event_popup.gd" id="20_yo4xu"]
 [ext_resource type="Script" uid="uid://bjj2avsv6rcyr" path="res://3D/ViewportExternal.cs" id="21_ohojw"]
-[ext_resource type="Script" uid="uid://00ilym2e88le" path="res://3D/Editor/Guides/CornerNodes.cs" id="24_5b8eh"]
-[ext_resource type="Script" uid="uid://b2kd86joud60f" path="res://3D/Editor/Guides/GhostPart.cs" id="25_ix2ul"]
 [ext_resource type="PackedScene" uid="uid://cr02vg2jytmof" path="res://Scenes/Controls/history_preview.tscn" id="27_5b8eh"]
 [ext_resource type="Script" uid="uid://b30vtny1v4btw" path="res://Scenes/rotation_view.gd" id="27_jg57w"]
 [ext_resource type="Texture2D" uid="uid://csde7rjtgmaby" path="res://Assets/placeholders/icon_refresh.png" id="27_r66bw"]
@@ -117,7 +114,7 @@ offset_bottom = 51.0
 grow_vertical = 2
 rotation = -1.5707964
 theme_override_font_sizes/font_size = 14
-current_tab = 0
+current_tab = 2
 tab_alignment = 2
 tab_count = 3
 tab_0/title = "Painting"
@@ -130,6 +127,9 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("2_3wcq2")
 theme_override_styles/panel = SubResource("StyleBoxFlat_5b8eh")
+
+[node name="TextureMap" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer" instance=ExtResource("13_r66bw")]
+layout_mode = 2
 
 [node name="PropertiesTab" type="VSplitContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer"]
 layout_mode = 2
@@ -312,6 +312,14 @@ script = ExtResource("16_l1tb2")
 ActionPath = "Tools/SizeTool"
 metadata/_custom_type_script = "uid://b40jkmpkg2st4"
 
+[node name="Move5" type="Button" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
+layout_mode = 2
+toggle_mode = true
+text = "Paint"
+script = ExtResource("16_l1tb2")
+ActionPath = "Tools/PaintTool"
+metadata/_custom_type_script = "uid://b40jkmpkg2st4"
+
 [node name="VSeparator" type="VSeparator" parent="VBoxContainer/HSplitContainer/RenderArea/BoxContainer/ActionStrip"]
 layout_mode = 2
 
@@ -364,25 +372,8 @@ environment = SubResource("Environment_ngb8x")
 [node name="WorldRoot" type="Node3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment"]
 script = ExtResource("15_o8ysw")
 
-[node name="Gizmo" type="Node3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"]
-script = ExtResource("17_s0p6w")
-
 [node name="ModelNode" type="Node3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"]
 script = ExtResource("12_p4o42")
-
-[node name="ViewportInteraction" type="Control" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-mouse_filter = 1
-script = ExtResource("16_wchy0")
-
-[node name="PopupMenu" type="PopupMenu" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot/ViewportInteraction"]
 
 [node name="PivotXY2" type="Node3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"]
 visible = false
@@ -408,12 +399,6 @@ texture = ExtResource("14_r1lqq")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03878951, -1.395234, -0.06745005)
 mesh = SubResource("BoxMesh_o02ra")
 skeleton = NodePath("../..")
-
-[node name="CornerNodes" type="Node3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"]
-script = ExtResource("24_5b8eh")
-
-[node name="GhostPart" type="MeshInstance3D" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"]
-script = ExtResource("25_ix2ul")
 
 [node name="DebugText" type="Label" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer"]
 layout_mode = 2

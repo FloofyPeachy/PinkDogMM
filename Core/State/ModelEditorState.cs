@@ -49,7 +49,7 @@ public partial class ModelEditorState : Resource
     public bool IsMoving = false;
     public string BottomText = "Welcome to PDMM!";
     public int _focusedCorner = -1;
-    public string CurrentTool = "Tools/MoveTool";
+    public string CurrentTool = "";
 
 
     public int FocusedCorner
@@ -168,11 +168,10 @@ public partial class ModelEditorState : Resource
 
     public void HoverOverObject(Renderable? obj)
     {
-        if (Hovering != obj)
-        {
+     
             Hovering = obj;
             OnObjectHoveringChanged(obj);
-        }
+        
     }
 
 
