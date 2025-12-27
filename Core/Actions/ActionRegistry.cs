@@ -7,6 +7,7 @@ using Godot;
 using Godot.Collections;
 using PinkDogMM_Gd.Core.Commands;
 using PinkDogMM_Gd.Core.Configuration;
+using PinkDogMM_Gd.Core.Schema;
 
 namespace PinkDogMM_Gd.Core.Actions;
 
@@ -88,6 +89,7 @@ public partial class ActionRegistry : Node
     {
        var appState = GetNode("/root/AppState") as AppState;
         arguments.Add("appState", appState);
+        if (!arguments.ContainsKey("model")) arguments.Add("model", appState.ActiveModel!);
         if (key.Contains("Tool"))
         {
             arguments.Add("worldRoot", GetNode("/root/Node2D/Panel/VBoxContainer/AreaSwitcher/").GetChild(appState.ActiveModelIndex).GetNode("VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport/WorldEnvironment/WorldRoot"));

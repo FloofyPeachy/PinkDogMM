@@ -26,7 +26,7 @@ public partial class AddTool3D : Tool3D
     {
     }
 
-    public override void MouseMotion(Vector2 position)
+    public override void MouseMotion(Vector2 position, MouseButtonMask? buttonMask)
     {
         if (DragDelta.HasValue)
         {

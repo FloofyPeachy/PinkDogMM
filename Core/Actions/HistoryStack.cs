@@ -88,6 +88,7 @@ public partial class HistoryStack : Resource
         action.Execute();
          undoStack.Push(action);
          redoStack.Clear();
+         OnActionExecuted(action);
          return action.Result;
     }
     public void UpdateHistory()

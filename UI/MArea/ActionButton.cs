@@ -26,10 +26,10 @@ public partial class ActionButton: Button
         Text = "";
         Flat = true;
         model = Model.Get(this);
-        model.State.ToolChanged += (sender, tuple) =>
+        /*model.State.ToolChanged += (sender, tuple) =>
         {
             UpdateTool();
-        };
+        };*/
     }
 
     public void UpdateTool()
@@ -43,7 +43,6 @@ public partial class ActionButton: Button
     public override void _Pressed()
     {
         var dict = new Dictionary();
-        dict.Add("model", Model.Get(this));
         if (ActionPath.StartsWith("Tools/"))
         {
             registry.Start(ActionPath, dict);

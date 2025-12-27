@@ -161,7 +161,7 @@ public partial class SizeTool3D : Tool3D
        gizmo.QueueFree();
        gizmos.Remove(gizmo);
     }
-    public override void MouseMotion(Vector2 position)
+    public override void MouseMotion(Vector2 position, MouseButtonMask? buttonMask)
     {
         if (!Captured) return;
         if (_initalSizes == null)

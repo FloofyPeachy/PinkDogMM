@@ -30,7 +30,7 @@ public interface IStagedAction : IAction<Dictionary>
 }
 
 
-public interface ISubstackAction : IAction<Dictionary> {
+public interface ISubstackAction : IStagedAction {
 
     /*
      * Action with a built in HistoryStack, for your pleasure

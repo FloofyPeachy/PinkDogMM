@@ -16,7 +16,7 @@ public abstract partial class Tool3D : Node3D
     public Model Model;
 
     public Vector2 CurrentMousePos = Vector2.Zero;
-    
+    public bool MouseDown = false;
     public Vector3? FirstWorldPos = Vector3.Zero;
     public Vector3 WorldPosDelta = Vector3.Zero;
     public Vector3 LastWorldPos = Vector3.Zero;
@@ -53,6 +53,7 @@ public abstract partial class Tool3D : Node3D
                 MouseClick(button.Position, button.ButtonIndex, button.Pressed);
                 GD.Print(DragStart.GetValueOrDefault());
                 FirstWorldPos = button.Pressed ? PlanePosFromMouse(button.Position) : null;
+                MouseDown = button.Pressed;
                 break;
               
             }
@@ -76,7 +77,7 @@ public abstract partial class Tool3D : Node3D
                 WorldPosDelta = CurrentWorldPos.GetValueOrDefault() - LastWorldPos;
 
 // 5. call your scaling logic
-                MouseMotion(CurrentMousePos);
+                MouseMotion(CurrentMousePos, motion.ButtonMask);
 
 // 6. update world-pos for next frame
                 CurrentWorldPos = CurrentWorldPos.GetValueOrDefault();
@@ -109,7 +110,7 @@ public abstract partial class Tool3D : Node3D
     {
     }
 
-    public virtual void MouseMotion(Vector2 position)
+    public virtual void MouseMotion(Vector2 position, MouseButtonMask? buttonMask)
     {
     }
     

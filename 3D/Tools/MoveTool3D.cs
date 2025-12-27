@@ -17,7 +17,7 @@ public partial class MoveTool3D : Tool3D
                 new Dictionary { { "model", Model }});
         }
     }
-    public override void MouseMotion(Vector2 position)
+    public override void MouseMotion(Vector2 position, MouseButtonMask? buttonMask)
     {
         bool ctrlPressed = Input.IsPhysicalKeyPressed(Key.Ctrl);
         Model.State.ActiveAxis = ctrlPressed ? Axis.Y : Axis.All;

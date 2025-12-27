@@ -36,7 +36,7 @@ public partial class PointerTool3D : Tool3D
         
     }
     
-    public override void MouseMotion(Vector2 position)
+    public override void MouseMotion(Vector2 position, MouseButtonMask? buttonMask)
     {
         var objectAtMouse = GetObjectAtMouse();
         var id = objectAtMouse?.Item2 ?? (Model.State.Hovering?.Id ?? -1);

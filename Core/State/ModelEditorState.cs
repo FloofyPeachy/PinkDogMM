@@ -31,6 +31,23 @@ public enum Axis
     All = 3
 }
 
+public partial class PaintState : Resource
+{
+    private Color _primaryColor = Colors.White;
+    private Color _secondaryColor = Colors.Black;
+
+    public Color SecondaryColor
+    {
+        get => _secondaryColor;
+        set => _secondaryColor = value;
+    }
+
+    public Color PrimaryColor
+    {
+        get => _primaryColor;
+        set => _primaryColor = value;
+    }
+}
 [GlobalClass]
 public partial class ModelEditorState : Resource
 {
@@ -50,7 +67,7 @@ public partial class ModelEditorState : Resource
     public string BottomText = "Welcome to PDMM!";
     public int _focusedCorner = -1;
     public string CurrentTool = "";
-
+    public PaintState PaintState = new PaintState();
 
     public int FocusedCorner
     {
