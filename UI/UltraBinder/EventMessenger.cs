@@ -39,11 +39,12 @@ public partial class EventMessenger : Control
 {
 	private System.Collections.Generic.Dictionary<string, List<PropertyBinding>> listeners = [];
 	private INotifyPropertyChanged _target = null!;
-
+	private bool _settingInit = false;
 	public EventMessenger()
 	{
 		ChildEnteredTree += OnChildEnteredTree;
 		typesToProps.Add(typeof(TextEdit), "Text");
+		typesToProps.Add(typeof(CheckBox), "ButtonPressed");
 		typesToProps.Add(typeof(SpinBox), "Value");
 		typesToProps.Add(typeof(OptionButton), "Selected");
 	}
@@ -66,7 +67,7 @@ public partial class EventMessenger : Control
 		
 			_target = model.State.SelectedObjects[0];
 			_target.PropertyChanged += SelectedOnPropertyChanged;
-			SetInital();
+			SetInitial();
 		};
 		
 	
@@ -87,8 +88,9 @@ public partial class EventMessenger : Control
 	}
 
 
-	private void SetInital()
+	private void SetInitial()
 	{
+		_settingInit = true;
 		foreach (var keyValuePair in listeners)
 		{
 			var key = keyValuePair.Key;
@@ -104,9 +106,18 @@ public partial class EventMessenger : Control
 					return;
 				}
 
-				controlProp.SetValue(binding.Node, value);
+				try
+				{
+					controlProp.SetValue(binding.Node, value);
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e);
+					
+				}
 			}
 		}
+		_settingInit = false;
 	}
 
 	private void SelectedOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -117,7 +128,7 @@ public partial class EventMessenger : Control
 			if (keyValuePair.Key != e.PropertyName) continue;
 
 			var parts = e.PropertyName.Split('.');
-			object? value = sender.GetType().GetProperty(e.PropertyName)?.GetValue(e.PropertyName);
+			object? value = sender.GetType().GetProperty(e.PropertyName)?.GetValue(sender);
 			if (value == null)
 			{
 				//Try again..differently
@@ -161,8 +172,9 @@ public partial class EventMessenger : Control
 		var parts = propertyPath.Split('.');
 		object? current = target;
 
-		foreach (var part in parts)
+		for (var i = 0; i < parts.Length; i++)
 		{
+			var part = parts[i];
 			if (current == null)
 				return null;
 
@@ -177,11 +189,9 @@ public partial class EventMessenger : Control
 			}
 			else
 			{
+				
 				var propInfo = current.GetType().GetProperty(part);
-				if (propInfo == null)
-					return null;
-
-				current = propInfo.GetValue(current);
+				current = propInfo?.GetValue(current) ?? current;
 			}
 		}
 
@@ -195,17 +205,33 @@ public partial class EventMessenger : Control
 
 		var parts = propertyPath.Split('.');
 		object? current = target;
-
+		PropertyInfo? currentProp = null;
 		// walk to the second-to-last property
-		for (int i = 0; i < parts.Length - 1; i++)
+		for (int i = 0; i < parts.Length; i++)
 		{
 			if (current == null)
 				return;
+			var part = parts[i];
+			if (int.TryParse(part, out int index))
+			{
+				var list2 = current as IList;
 
-			var propInfo = current.GetType().GetProperty(parts[i]);
-			if (propInfo == null)
-				return;
-			current = propInfo.GetValue(current);
+				/*if (list2 != null && list2.Count < index)*/
+					
+
+					current = list2?[index];
+			}
+			else
+			{
+				
+				var propInfo = current.GetType().GetProperty(part);
+				if (propInfo?.GetValue(current) != null && i != parts.Length - 1)
+				{
+					current = propInfo?.GetValue(current) ?? current;
+				}
+			
+				
+			}
 		}
 
 		if (current == null)
@@ -237,7 +263,7 @@ public partial class EventMessenger : Control
 			// handle type conversion if needed
 			if (value != null && !finalProp.PropertyType.IsInstanceOfType(value))
 			{
-				value = Convert.ChangeType(value, finalProp.PropertyType);
+				value = finalProp.PropertyType.IsEnum ? Enum.ToObject(finalProp.PropertyType, value) : Convert.ChangeType(value, finalProp.PropertyType);
 			}
 
 			finalProp.SetValue(current, value);
@@ -247,7 +273,12 @@ public partial class EventMessenger : Control
 	public void OnChildEnteredTree(Node node)
 	{
 		Array<Node> children = node.GetChildren();
-		if (children.Count == 0) return;
+		if (children.Count == 0)
+		{
+			//Just connect itself.
+			ConnectNode(node);
+			return;
+		};
 		//Try to connect things.
 
 		foreach (var child in children)
@@ -258,6 +289,7 @@ public partial class EventMessenger : Control
 
 	private void UpdateTargetProperty(Node node, string watchedField, string propertyToUpdate)
 	{
+		if (_settingInit) return;
 		SetNestedPropertyValue(_target, watchedField, node.GetType().GetProperty(propertyToUpdate)?.GetValue(node));
 	}
 
@@ -282,7 +314,12 @@ public partial class EventMessenger : Control
 			if (node is SpinBox)
 				node.Connect("value_changed",
 					Callable.From((double _) => UpdateTargetProperty(node, watchedField, propertyToUpdate)));
-
+			if (node is CheckBox)
+				node.Connect("toggled",
+					Callable.From((double _) => UpdateTargetProperty(node, watchedField, propertyToUpdate)));
+			if (node is OptionButton)
+				node.Connect("item_selected",
+					Callable.From((double _) => UpdateTargetProperty(node, watchedField, propertyToUpdate)));
 			PL.I.Info(this.GetName() + " bound to " + watchedField);
 		}
 

@@ -166,6 +166,9 @@ layout_mode = 2
 script = ExtResource("6_86pth")
 metadata/_tab_index = 1
 
+[node name="FoldableContainer" type="FoldableContainer" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/PropertiesTab/SideTabArea/SideTabs/ShapeboxPanel"]
+layout_mode = 2
+
 [node name="TabBar" type="TabBar" parent="VBoxContainer/HSplitContainer/TabsArea/TabContainer/PropertiesTab/SideTabArea"]
 visible = false
 layout_mode = 2
@@ -363,7 +366,7 @@ mouse_target = true
 own_world_3d = true
 handle_input_locally = false
 physics_object_picking = true
-size = Vector2i(981, 644)
+size = Vector2i(724, 644)
 render_target_update_mode = 4
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="VBoxContainer/HSplitContainer/RenderArea/MarginContainer/SubViewportContainer/SubViewport"]

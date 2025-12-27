@@ -17,7 +17,7 @@ public class AddPartAction : IAction
     
     public void Execute()
     {
-        part = new Shapebox()
+        part = new Flexbox()
         {
             Name = "Part " + (model.TotalPartCount + 1)
         };

@@ -114,6 +114,7 @@ public partial class TextureOverlay : Control
 
     private void MakeRanges()
     {
+        return;
         ranges.Clear();
         foreach (var obj in model.AllObjects)
         {

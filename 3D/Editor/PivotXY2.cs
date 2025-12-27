@@ -163,7 +163,34 @@ public partial class PivotXY2 : Node3D
 
     public override void _UnhandledInput(InputEvent @event)
     {
-      
+     
+      if (@event is InputEventPanGesture gesture)
+      {
+          if (!Input.IsKeyPressed(Key.Capslock))
+          {
+              pivotY.Rotate(pivotY.Transform.Basis.Y, gesture.Delta.X * Mathf.DegToRad(Sensitivity));
+              pivotX.Rotate(pivotX.Transform.Basis.X, gesture.Delta.Y * Mathf.DegToRad(Sensitivity));
+
+              state.Camera.Rotation.Y = pivotX.Rotation.X;
+              state.Camera.Rotation.X = pivotY.Rotation.Y;
+          }
+          else
+          {
+              if (gesture.Delta.Y > 0)
+          {
+              CamPosition = camera.Position + new Vector3(0, 0,  -ZoomSpeed);
+              state.Camera.Zoom = CamPosition.Z;
+          }
+          else
+          {
+              CamPosition = camera.Position + new Vector3(0, 0,  ZoomSpeed);
+              state.Camera.Zoom = CamPosition.Z;
+          }
+          }
+          
+          GD.Print(gesture.Delta);
+          
+      }
         if (@event is InputEventMouseButton button)
         {
             switch (button.ButtonIndex)

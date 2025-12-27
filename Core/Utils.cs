@@ -23,7 +23,7 @@ public class Utils
         }
     }
 
-    public static Vector3 AvgPos(List<Renderable> objects, bool CenterOnAnchor, int FocusedCorner)
+    /*public static Vector3 AvgPos(List<Renderable> objects, bool CenterOnAnchor, int FocusedCorner)
     {
         if (objects.Count == 0)
             return Vector3.Zero;
@@ -66,7 +66,7 @@ public class Utils
         );
 
         return result;
-    }
+    }*/
     public static Image ImageFromJpgData(Stream data)
     {
         using var reader = new StreamReader(data);

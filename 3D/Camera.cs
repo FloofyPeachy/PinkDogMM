@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using Godot;
@@ -115,13 +116,23 @@ public class Camera
 
         bool addDimZ = state.FocusedCorner is 2 or 3 or 6 or 7;
 
+        List<float> xCorners = [];
+        List<float> yCorners = [];
+        List<float> zCorners = [];
+        if (part is Shapebox shapebox)
+        {
+          
+            xCorners.AddRange(shapebox.Corners.Select(shapeboxCorner => shapeboxCorner.X));
+            yCorners.AddRange(shapebox.Corners.Select(shapeboxCorner => shapeboxCorner.Y));
+            zCorners.AddRange(shapebox.Corners.Select(shapeboxCorner => shapeboxCorner.Z));
+        }
         Vector3 result = new Vector3(
             (float)GetComponent(part.Position.X, part.Size.X, part.Offset.X,
-                (part is Shapebox shapebox ? shapebox.ShapeboxX.ToArray() : null), addDimX),
+                (part is Shapebox shapebox0 ? xCorners.ToArray() : null), addDimX),
             (float)GetComponent(part.Position.Y, part.Size.Y, part.Offset.Y,
-                (part is Shapebox shapebox1 ? shapebox1.ShapeboxY.ToArray() : null), addDimY),
+                (part is Shapebox shapebox1 ? yCorners.ToArray() : null), addDimY),
             (float)GetComponent(part.Position.Z, part.Size.Z, part.Offset.Z,
-                (part is Shapebox shapebox2 ? shapebox2.ShapeboxZ.ToArray() : null), addDimZ)
+                (part is Shapebox shapebox2 ? zCorners.ToArray() : null), addDimZ)
         );
 
         return result;

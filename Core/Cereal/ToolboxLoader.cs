@@ -97,7 +97,7 @@ public class ToolboxLoader : ModelLoader
             Rotation = new Vector3L(float.Parse(line[12]), float.Parse(line[13]), float.Parse(line[14])),
             Offset = new Vector3L(),
             TextureSize = new Vector2L(int.Parse(line[18]), int.Parse(line[19])),
-            Sections = sections,
+            Corners = sections,
             Visible = line[98] == "1"
         };
         

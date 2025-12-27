@@ -50,7 +50,7 @@ public partial class PartNode(Part part) : Node3D
 
     void OnPartOnPropertyChanged(object? sender, PropertyChangedEventArgs args)
     {
-        UpdateMesh(args.PropertyName.Contains("Size") || args.PropertyName.Contains("Shapebox"));
+        UpdateMesh(args.PropertyName.Contains("Size") || args.PropertyName.Contains("Corner"));
     }
 
     public void SetSelected(bool selected)
