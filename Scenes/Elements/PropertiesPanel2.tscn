@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://biwvutiwsrcfv"]
 
-[ext_resource type="Script" uid="uid://4q7sbpera1ko" path="res://UltraBinder/EventMessenger.cs" id="1_gfs58"]
+[ext_resource type="Script" uid="uid://4q7sbpera1ko" path="res://UI/UltraBinder/EventMessenger.cs" id="1_gfs58"]
 
 [sub_resource type="FontVariation" id="FontVariation_0qya0"]
 variation_embolden = 0.3
@@ -55,6 +55,7 @@ size_flags_vertical = 0
 
 [node name="Label" type="Label" parent="VBoxContainer/Name"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Name"
 label_settings = SubResource("LabelSettings_gfs58")
 
@@ -69,6 +70,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/Type"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Type"
 label_settings = SubResource("LabelSettings_ofwf7")
 
@@ -88,6 +90,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/Size"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Size:"
 label_settings = SubResource("LabelSettings_c6cty")
 
@@ -117,7 +120,6 @@ label_settings = SubResource("LabelSettings_c6cty")
 
 [node name="PosX" type="SpinBox" parent="VBoxContainer/Position"]
 layout_mode = 2
-size_flags_horizontal = 3
 allow_greater = true
 allow_lesser = true
 metadata/WatchedField = "Position.X"
@@ -139,33 +141,6 @@ allow_greater = true
 allow_lesser = true
 metadata/WatchedField = "Position.Z"
 
-[node name="Offset" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/Offset"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Offset"
-label_settings = SubResource("LabelSettings_c6cty")
-
-[node name="PosX" type="SpinBox" parent="VBoxContainer/Offset"]
-layout_mode = 2
-size_flags_horizontal = 3
-metadata/WatchedField = "Position.X"
-metadata/PropertyToUpdate = "Value"
-
-[node name="PosY" type="SpinBox" parent="VBoxContainer/Offset"]
-layout_mode = 2
-size_flags_horizontal = 3
-metadata/WatchedField = "Position.Y"
-
-[node name="PosZ" type="SpinBox" parent="VBoxContainer/Offset"]
-layout_mode = 2
-size_flags_horizontal = 3
-min_value = -1000.0
-max_value = 1000.0
-metadata/WatchedField = "Position.Z"
-
 [node name="Rotation" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
@@ -177,7 +152,6 @@ label_settings = SubResource("LabelSettings_c6cty")
 
 [node name="PosX" type="SpinBox" parent="VBoxContainer/Rotation"]
 layout_mode = 2
-size_flags_horizontal = 3
 min_value = -180.0
 max_value = 180.0
 allow_greater = true
@@ -187,7 +161,6 @@ metadata/PropertyToUpdate = "Value"
 
 [node name="PosY" type="SpinBox" parent="VBoxContainer/Rotation"]
 layout_mode = 2
-size_flags_horizontal = 3
 allow_greater = true
 allow_lesser = true
 metadata/WatchedField = "Rotation.Y"
@@ -200,3 +173,63 @@ max_value = 1000.0
 allow_greater = true
 allow_lesser = true
 metadata/WatchedField = "Rotation.Z"
+
+[node name="FoldableContainer" type="FoldableContainer" parent="VBoxContainer"]
+layout_mode = 2
+title = "More"
+title_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/FoldableContainer"]
+layout_mode = 2
+
+[node name="Offset" type="HBoxContainer" parent="VBoxContainer/FoldableContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/FoldableContainer/VBoxContainer/Offset"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Offset"
+label_settings = SubResource("LabelSettings_c6cty")
+
+[node name="PosX" type="SpinBox" parent="VBoxContainer/FoldableContainer/VBoxContainer/Offset"]
+layout_mode = 2
+metadata/WatchedField = "Position.X"
+metadata/PropertyToUpdate = "Value"
+
+[node name="PosY" type="SpinBox" parent="VBoxContainer/FoldableContainer/VBoxContainer/Offset"]
+layout_mode = 2
+size_flags_horizontal = 3
+metadata/WatchedField = "Position.Y"
+
+[node name="PosZ" type="SpinBox" parent="VBoxContainer/FoldableContainer/VBoxContainer/Offset"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -1000.0
+max_value = 1000.0
+metadata/WatchedField = "Position.Z"
+
+[node name="TexturePos" type="HBoxContainer" parent="VBoxContainer/FoldableContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/FoldableContainer/VBoxContainer/TexturePos"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Texture"
+label_settings = SubResource("LabelSettings_c6cty")
+
+[node name="PosX" type="SpinBox" parent="VBoxContainer/FoldableContainer/VBoxContainer/TexturePos"]
+layout_mode = 2
+metadata/WatchedField = "TextureSize.X"
+metadata/PropertyToUpdate = "Value"
+
+[node name="PosY" type="SpinBox" parent="VBoxContainer/FoldableContainer/VBoxContainer/TexturePos"]
+layout_mode = 2
+size_flags_horizontal = 3
+metadata/WatchedField = "TextureSize.Y"
+metadata/PropertyToUpdate = "Value"
+
+[node name="CheckBox" type="CheckBox" parent="VBoxContainer/FoldableContainer/VBoxContainer"]
+layout_mode = 2
+text = "Cull"
+metadata/WatchedField = "Cull"
+metadata/PropertyToUpdaate = "ButtonPressed"

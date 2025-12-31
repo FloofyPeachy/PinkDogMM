@@ -30,10 +30,10 @@ public partial class CornerNodes : Node3D
             
             for (var i = 0; i < 8; i++)
             {
-                var corner = new CornerNode(i);
+                /*var corner = new CornerNode(i);
                 corner.SetMeta("corner", i);
                 corners.Add(corner);
-                AddChild(corner);
+                AddChild(corner);*/
             }
             
             part = model.State.SelectedObjects.First() as Part;

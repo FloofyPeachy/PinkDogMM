@@ -86,6 +86,7 @@ public partial class HistoryStack : Resource
     public TResult Execute<TResult>(IAction<TResult> action)
     {
         action.Execute();
+        
          undoStack.Push(action);
          redoStack.Clear();
          OnActionExecuted(action);

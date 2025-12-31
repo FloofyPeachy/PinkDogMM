@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -97,6 +98,8 @@ public class Renderable : INotifyPropertyChanged
 
     
     public event PropertyChangedEventHandler? PropertyChanged;
+    
+    public event EventHandler? Freeing;
 
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
@@ -109,5 +112,14 @@ public class Renderable : INotifyPropertyChanged
         field = value;
         OnPropertyChanged(propertyName);
         return true;
+    }
+
+    public void Free()
+    {
+        OnFreeing();
+    }
+    protected virtual void OnFreeing()
+    {
+        Freeing?.Invoke(this, EventArgs.Empty);
     }
 }

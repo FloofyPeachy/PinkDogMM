@@ -18,7 +18,8 @@ public partial class PartNode(Part part) : Node3D
             _partMesh?.Dispose();
             _outlineMesh?.Dispose();
             _staticBody?.Dispose();
-            part.PropertyChanged -= OnPartOnPropertyChanged;
+            actionRegistry.Dispose();
+            model.Dispose();
         }
 
         base.Dispose(disposing);
@@ -40,7 +41,11 @@ public partial class PartNode(Part part) : Node3D
 
 
         part.PropertyChanged += OnPartOnPropertyChanged;
-
+        part.Freeing += (sender, args) =>
+        {
+            Free();
+        };
+        
         model = Model.Get(this);
         model.State.TextureChanged += (sender, texture) => { UpdateMesh(false); };
         SetMesh();
@@ -103,7 +108,7 @@ public partial class PartNode(Part part) : Node3D
                 : null,
             VertexColorUseAsAlbedo = (model.State.CurrentTexture == 0),
             TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest,
-            CullMode = BaseMaterial3D.CullModeEnum.Disabled,
+            CullMode = Part.Cull ? BaseMaterial3D.CullModeEnum.Back : BaseMaterial3D.CullModeEnum.Disabled,
         };
         _outlineMesh.Name = part.Name + " Outline";
 
@@ -149,7 +154,10 @@ public partial class PartNode(Part part) : Node3D
         _outlineMesh.MaterialOverride = new StandardMaterial3D()
         {
             ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
-            AlbedoColor = Colors.Gray
+            AlbedoColor = Colors.Gray,
+            Grow = true,
+            CullMode = BaseMaterial3D.CullModeEnum.Front,
+            GrowAmount = 2
         };
     }
 
@@ -223,7 +231,7 @@ public partial class PartNode(Part part) : Node3D
                 : null,
             VertexColorUseAsAlbedo = model.State.CurrentTexture == -1,
             TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest,
-            CullMode = BaseMaterial3D.CullModeEnum.Disabled,
+            CullMode = Part.Cull ? BaseMaterial3D.CullModeEnum.Back : BaseMaterial3D.CullModeEnum.Disabled,
             Transparency = BaseMaterial3D.TransparencyEnum.AlphaScissor
         };
 

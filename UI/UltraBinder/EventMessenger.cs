@@ -320,7 +320,7 @@ public partial class EventMessenger : Control
 			if (node is OptionButton)
 				node.Connect("item_selected",
 					Callable.From((double _) => UpdateTargetProperty(node, watchedField, propertyToUpdate)));
-			PL.I.Info(this.GetName() + " bound to " + watchedField);
+			PL.I.Info(node.GetName() + " bound to " + watchedField);
 		}
 
 		Array<Node> children = node.GetChildren();

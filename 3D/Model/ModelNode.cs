@@ -14,7 +14,7 @@ namespace PinkDogMM_Gd.Scenes;
 
 public partial class ModelNode : Node3D
 {
-	private System.Collections.Generic.Dictionary<Part, PartNode> parts = [];
+	
 	private Vector2 _lastMousePos;
 	private bool _dragging = false;
 	private AppState appState;
@@ -46,14 +46,14 @@ public partial class ModelNode : Node3D
 			var partNode = new PartNode(part);
 			if (args.Item1)
 			{
-				parts.Add(part, partNode);
+				//parts.Add(part, partNode);
 				AddChild(partNode);
 			}
 			else
 			{
 				
-				parts[part].Free();
-				parts.Remove(part);
+				//parts[part].QueueFree();
+				//parts.Remove(part);
 			}
 
 		};
@@ -66,7 +66,7 @@ public partial class ModelNode : Node3D
 			
 		model.State.IsPeekingChanged += (sender, b) =>
 		{
-			foreach (var keyValuePair in parts)
+			/*foreach (var keyValuePair in parts)
 			{
 				if (!b)
 				{
@@ -83,7 +83,7 @@ public partial class ModelNode : Node3D
 				}
 					
 					
-			}
+			}*/
 		};
 
 		/*model.State.ObjectHoveringChanged += (sender, renderable) =>
@@ -118,7 +118,7 @@ public partial class ModelNode : Node3D
 		foreach (var modelAllPart in model.AllObjects)
 		{
 			var newOne = new PartNode(modelAllPart as Part);
-			parts.Add(modelAllPart as Part, newOne);
+			//parts.Add(modelAllPart as Part, newOne);
 			
 			Callable.From(() =>
 			{
@@ -132,16 +132,12 @@ public partial class ModelNode : Node3D
 
 	public void RebuildAll()
 	{
-		foreach (var keyValuePair in parts)
-		{
-			keyValuePair.Value.QueueFree();
-		}
-		parts.Clear();
+	
 		
 		foreach (var modelAllPart in model.AllObjects)
 		{
 			var newOne = new PartNode(modelAllPart as Part);
-			parts.Add(modelAllPart as Part, newOne);
+			//parts.Add(modelAllPart as Part, newOne);
 			
 			Callable.From(() =>
 			{
@@ -154,10 +150,7 @@ public partial class ModelNode : Node3D
 	}
 	public void RefreshAll()
 	{
-		foreach (var keyValuePair in parts)
-		{
-			keyValuePair.Value.UpdateMesh(true);
-		}
+		
 	}
 
 	

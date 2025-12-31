@@ -27,15 +27,28 @@ public partial class SizeTool3D : Tool3D
         UpdateGizmo();
     }
 
-    public override void MouseClick(Vector2 position, MouseButton buttonIndex, bool pressed)
+    public override void MouseClick(Vector2 position, MouseButton buttonIndex, bool pressed, bool doubl)
     {
         bool ok = false;
         if (pressed && buttonIndex == MouseButton.Left)
         {
-            Capture();
+            if (doubl)
+            {
+                ActionRegistry.Start("Tools/ShapeEditTool",
+                    new Dictionary { { "model", Model }});
+                return;
+            }
             var node = GetNodeAtPos(position);
             if (node.HasValue)
             {
+                if (!node.Value.Item2.GetParent().HasMeta("axis"))
+                {
+                    //not on axis, but on a part. trying to move?
+                    ActionRegistry.Start("Tools/MoveTool",
+                        new Dictionary { { "model", Model }});
+                    return;
+                }
+                Capture();
                 var variant = node.Value.Item2.GetParent().GetMeta("axis").AsInt32();
                 var axis = variant switch
                 {
@@ -49,7 +62,7 @@ public partial class SizeTool3D : Tool3D
                 Model.State.ActiveAxis = axis;
                 WorldPlane = axis == Axis.Y ? Plane.PlaneYZ : default;
                 _newSize = Model.State.SelectedObjects.Count != 0
-                    ? Model.State.SelectedObjects[0].Size.AsVector3().LHS()
+                    ? Model.State.SelectedObjects[0].Size.AsVector3()
                     : Vector3.One;
                 _newPos = Model.State.SelectedObjects.Count != 0
                     ? Model.State.SelectedObjects[0].Position.AsVector3().LHS()
@@ -91,7 +104,7 @@ public partial class SizeTool3D : Tool3D
         for (var index = 0; index < gizmos.Count; index++)
         {
             var gizmo = gizmos[index];
-            gizmo.Position = (GizmoPosition(index, size) / 2);
+            gizmo.Position = (GizmoPosition(index, size + new Vector3(0.1f, 0.1f, 0.1f)) / 2);
         }
         this.Position = (pos + size / 2);
     }
@@ -195,7 +208,7 @@ public partial class SizeTool3D : Tool3D
 
             /*v = (v * 2).Clamp(-128, 128).Round();*/
 
-            if (Model.State.ActiveAxis is Axis.X or Axis.All)
+            /*if (Model.State.ActiveAxis is Axis.X or Axis.All)
             {
                 _newSize.X += v.X;
                 _newPos.X  += v.X;
@@ -211,7 +224,14 @@ public partial class SizeTool3D : Tool3D
             {
                 _newSize.Z += v.Z;
                 _newPos.Z  += v.Z;
-            }
+            }*/
+            if (Model.State.ActiveAxis != Axis.X) v.X = 0;
+            if (Model.State.ActiveAxis != Axis.Y) v.Y = 0;
+            if (Model.State.ActiveAxis != Axis.Z) v.Z = 0;
+
+            _newSize += v;
+            _newPos += v;
+                
             GD.Print(_newSize);
 
             posSizes.Add(renderable.Id, new Array() {_newSize.Round().Abs().Max(0), _newPos.Round().Min(0)});

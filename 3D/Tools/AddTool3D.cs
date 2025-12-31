@@ -22,7 +22,7 @@ public partial class AddTool3D : Tool3D
         AddChild(ghostPart);
     }
 
-    public override void MouseClick(Vector2 position, MouseButton buttonIndex, bool pressed)
+    public override void MouseClick(Vector2 position, MouseButton buttonIndex, bool pressed, bool doubl)
     {
     }
 

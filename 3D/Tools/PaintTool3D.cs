@@ -6,7 +6,7 @@ namespace PinkDogMM_Gd._3D.Tools;
 
 public partial class PaintTool3D : Tool3D
 {
-    public override void MouseClick(Godot.Vector2 vector2, MouseButton buttonIndex, bool pressed)
+    public override void MouseClick(Godot.Vector2 vector2, MouseButton buttonIndex, bool pressed, bool doubl)
     {
         if (buttonIndex != MouseButton.Left | !pressed) return;
         var node = GetNodeAtMouse();

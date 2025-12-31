@@ -14,6 +14,7 @@ size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_gfrwf")
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(0, 38)
 layout_mode = 2
 
 [node name="Toolbar" parent="HBoxContainer2" instance=ExtResource("2_gfrwf")]

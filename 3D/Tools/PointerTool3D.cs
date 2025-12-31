@@ -12,7 +12,7 @@ public partial class PointerTool3D : Tool3D
         base.Tick(arguments);
     }
 
-    public override void MouseClick(Vector2 position, MouseButton buttonIndex, bool pressed)
+    public override void MouseClick(Vector2 position, MouseButton buttonIndex, bool pressed, bool doubl)
     {
         if (buttonIndex != MouseButton.Left || !pressed) return;
 

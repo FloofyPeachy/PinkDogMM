@@ -13,12 +13,12 @@ public partial class HistoryPreview : PanelContainer
         model = Model.Get(this);
         model.State.History.ActionExecuted += (sender, action) =>
         {
-            GetNode("HBoxContainer").AddChild(new TextureRect()
+            /*GetNode("HBoxContainer").AddChild(new TextureRect()
             {
                 StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered,
                 Texture = GD.Load<CompressedTexture2D>(
                     $"res://Assets/placeholders/{action.Icon}.png"),
-            });
+            });*/
         };
 
         model.State.History.ActionUndone += (sender, action) =>

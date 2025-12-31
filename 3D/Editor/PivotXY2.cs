@@ -177,18 +177,18 @@ public partial class PivotXY2 : Node3D
           else
           {
               if (gesture.Delta.Y > 0)
-          {
-              CamPosition = camera.Position + new Vector3(0, 0,  -ZoomSpeed);
-              state.Camera.Zoom = CamPosition.Z;
-          }
-          else
-          {
-              CamPosition = camera.Position + new Vector3(0, 0,  ZoomSpeed);
-              state.Camera.Zoom = CamPosition.Z;
-          }
+              {
+                  CamPosition = camera.Position + new Vector3(0, 0,  -ZoomSpeed * 1.1f);
+                  state.Camera.Zoom = CamPosition.Z;
+              }
+              else
+              {
+                  CamPosition = camera.Position + new Vector3(0, 0,  ZoomSpeed * 1.1f);
+                  state.Camera.Zoom = CamPosition.Z;
+              }
           }
           
-          GD.Print(gesture.Delta);
+         
           
       }
         if (@event is InputEventMouseButton button)

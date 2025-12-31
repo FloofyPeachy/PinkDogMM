@@ -1,6 +1,8 @@
+using PinkDogMM_Gd.Core.Schema;
+
 namespace PinkDogMM_Gd.Core.LoadSave;
 
-public class Cerealizer
+public static class Cerealizer
 {
     
 }

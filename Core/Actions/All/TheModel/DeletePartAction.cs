@@ -30,7 +30,6 @@ public class DeletePartAction : IAction
         foreach (var treeNode in parts)
         {
             model.Remove(treeNode);
-            model.State.UnselectObject(treeNode);
         }
     }
 

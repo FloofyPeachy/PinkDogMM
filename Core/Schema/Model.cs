@@ -203,14 +203,18 @@ public partial class Model : Resource
     public void Remove(Renderable item)
     {
         Items.Remove(item);
+        State.UnselectObject(item);
+        item.Free();
+        
         RebuildIndex();
+        //CollectionChanged?.Invoke(this, (true, item));
+       
     }
 
     public void Remove(int id)
     {
         var item = Items[Index[id]];
-        Items.RemoveAt(Index[id]);
-        CollectionChanged?.Invoke(this, (true, item));
+      Remove(item);
     }
 
     public List<Renderable> AllObjects => Items;

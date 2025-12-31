@@ -19,7 +19,7 @@ public class LoadModelAction : IAction<Model>
     public void Execute()
     {
         if (path == null) return;
-        if (path.EndsWith(".mtb")) Result = new ToolboxLoader().Load(path);
+        if (path.EndsWith(".mtb")) Result = new ToolboxFormat().Load(path);
         Console.WriteLine($"Loaded model from {path}");
     }
 

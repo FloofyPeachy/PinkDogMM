@@ -1,5 +1,6 @@
 using System;
 using PinkDogMM_Gd._3D.Gear;
+using PinkDogMM_Gd._3D.Tools;
 
 namespace PinkDogMM_Gd.Core.Actions.All.Tools;
 
@@ -11,5 +12,5 @@ public class ShapeEditTool : Tool
     public override bool AddToStack => false;
     
     public override bool Sticky() => false;
-    public override Type Tool3D() => typeof(PointerTool3D);
+    public override Type Tool3D() => typeof(ShapeEditTool3D);
 }

@@ -134,7 +134,7 @@ public partial class ActionRegistry : Node
     {
         var appState = GetNode("/root/AppState") as AppState;
         arguments.Add("appState", appState);
-
+        if (!arguments.ContainsKey("model")) arguments.Add("model", appState.ActiveModel!);
         if (actions.TryGetValue(key, out var actionType))
         {
             if (typeof(IAction).IsAssignableFrom(actionType))
@@ -239,6 +239,12 @@ public partial class ActionRegistry : Node
             var appState = GetNode("/root/AppState") as AppState;
             
             Execute(actions.Keys.ToList()[index], new Godot.Collections.Dictionary() {{"model", appState.ActiveModel}, {"byKey" , "true"}});
+        }
+
+        if (action.Keycode == Key.Enter)
+        {
+            Finish();
+            Start("Tools/PointerTool", new Dictionary());
         }
     }
 }

@@ -35,7 +35,7 @@ public partial class TextureTool3D : Tool3D
         return new Dictionary();
     }
 
-    public override void MouseClick(Godot.Vector2 position, MouseButton buttonIndex, bool pressed)
+    public override void MouseClick(Godot.Vector2 position, MouseButton buttonIndex, bool pressed, bool doubl)
     {
         if (!pressed)
         {

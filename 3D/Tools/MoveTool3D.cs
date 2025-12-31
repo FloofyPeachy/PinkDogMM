@@ -8,7 +8,7 @@ public partial class MoveTool3D : Tool3D
 {
     private MeshInstance3D ghostPart;
     
-    public override void MouseClick(Vector2 position, MouseButton buttonIndex, bool pressed)
+    public override void MouseClick(Vector2 position, MouseButton buttonIndex, bool pressed, bool doubl)
     {
         if (buttonIndex == MouseButton.Left && !pressed)
         {

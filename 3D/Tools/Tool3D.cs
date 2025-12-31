@@ -50,7 +50,7 @@ public abstract partial class Tool3D : Node3D
             {
                 if (button.ButtonIndex == MouseButton.Right) return;
                 DragStart = button.Pressed ? button.Position : null;
-                MouseClick(button.Position, button.ButtonIndex, button.Pressed);
+                MouseClick(button.Position, button.ButtonIndex, button.Pressed, button.IsDoubleClick());
                 GD.Print(DragStart.GetValueOrDefault());
                 FirstWorldPos = button.Pressed ? PlanePosFromMouse(button.Position) : null;
                 MouseDown = button.Pressed;
@@ -67,19 +67,20 @@ public abstract partial class Tool3D : Node3D
                 else
                     CurrentMousePos += motion.Relative;
 
-// 2. compute current world position BEFORE updating LastWorldPos
-               CurrentWorldPos = (PlanePosFromMouse(CurrentMousePos) * 16).LH();
 
-// 3. initialize drag start once
+     
+                CurrentWorldPos = (PlanePosFromMouse(CurrentMousePos) * 16).LH();
+
+
                 DragStart ??= motion.Position;
 
-// 4. compute delta here
+
                 WorldPosDelta = CurrentWorldPos.GetValueOrDefault() - LastWorldPos;
 
-// 5. call your scaling logic
+
                 MouseMotion(CurrentMousePos, motion.ButtonMask);
 
-// 6. update world-pos for next frame
+
                 CurrentWorldPos = CurrentWorldPos.GetValueOrDefault();
                 LastWorldPos = CurrentWorldPos.GetValueOrDefault();
 
@@ -106,7 +107,7 @@ public abstract partial class Tool3D : Node3D
         return new Dictionary();
     }
     
-    public virtual void MouseClick(Vector2 position, MouseButton buttonIndex, bool pressed)
+    public virtual void MouseClick(Vector2 position, MouseButton buttonIndex, bool pressed, bool doubl = false)
     {
     }
 

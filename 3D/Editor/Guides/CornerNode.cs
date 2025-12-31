@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using PinkDogMM_Gd._3D.Tools;
 using PinkDogMM_Gd.Core;
 
 namespace PinkDogMM_Gd.UI.Viewport;
 
-public partial class CornerNode(int cornerIndex) : Node3D
+public partial class CornerNode(ShapeEditTool3D tool, int cornerIndex) : Node3D
 {
    
 
@@ -29,8 +30,24 @@ public partial class CornerNode(int cornerIndex) : Node3D
         };
         cornerMesh.CreateConvexCollision();
         cornerMesh.GetChildren().Last().SetMeta("corner", cornerIndex);
-        (cornerMesh.GetChildren().Last() as StaticBody3D).MouseEntered += () => { hovering = true; };
-        (cornerMesh.GetChildren().Last() as StaticBody3D).MouseExited += () => { hovering = false;};
+        (cornerMesh.GetChildren().Last() as StaticBody3D).InputEvent += (camera, @event, position, normal, idx) =>
+        {
+            if (@event is InputEventMouseButton)
+            {
+                tool.CornerClick(cornerIndex, @event.IsPressed());
+            }
+        };
+        
+        (cornerMesh.GetChildren().Last() as StaticBody3D).MouseEntered += () =>
+        {
+            tool.CornerHover(cornerIndex, true);
+            hovering = true;
+        };
+        (cornerMesh.GetChildren().Last() as StaticBody3D).MouseExited += () =>
+        {
+            tool.CornerHover(cornerIndex, false);
+            hovering = false;
+        };
         cornerMesh.Rotation = new Vector3(0, 0, 90);
 
         Label = new Label3D();
@@ -45,9 +62,10 @@ public partial class CornerNode(int cornerIndex) : Node3D
 
     public override void _PhysicsProcess(double delta)
     {
+    
         ((StandardMaterial3D)cornerMesh.MaterialOverride).AlbedoColor =
             ((StandardMaterial3D)cornerMesh.MaterialOverride).AlbedoColor.Lerp(
-             hovering ? color.Lightened(0.3f) : color, (float)delta * 24.0f);
+             hovering ? color.Lightened(0.5f) : color, (float)delta * 24.0f);
     }
 
     public void SetFocused(bool focused)

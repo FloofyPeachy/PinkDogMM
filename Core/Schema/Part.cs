@@ -16,7 +16,15 @@ public class Part : Renderable
     private Vector3L _offset = new Vector3L();
     
     private readonly string uuid = Guid.NewGuid().ToString();
-  
+
+    private bool _cull = false;
+
+    public bool Cull
+    {
+        get => _cull;
+        set => SetField(ref _cull, value);
+    }
+
     public PartTypes PartType
     {
         get => _partType;
@@ -37,7 +45,8 @@ public class Part : Renderable
     {
         Offset.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Offset));
     }
-   
+
+    
 }
 
 public class Shape : Part
