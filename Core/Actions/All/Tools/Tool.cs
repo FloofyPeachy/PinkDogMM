@@ -39,7 +39,7 @@ public abstract class Tool : IStagedAction
     {
         //All done! Cleanup.
         _result = tool3DInstance.Execute();
-        tool3DInstance.QueueFree();
+        tool3DInstance.Later();
     }
 
   

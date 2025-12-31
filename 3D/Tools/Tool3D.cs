@@ -21,13 +21,17 @@ public abstract partial class Tool3D : Node3D
     public Vector3 WorldPosDelta = Vector3.Zero;
     public Vector3 LastWorldPos = Vector3.Zero;
     public Vector3? CurrentWorldPos = Vector3.Zero;
-    
+
     public Plane WorldPlane = default;
     public Vector2? DragStart;
     public Vector2? DragDelta;
-    
+
     public bool Captured = false;
     public ActionRegistry ActionRegistry;
+
+    internal bool _later = false;
+
+    private Vector3 _initScale;
 
     /*
      * Godot Functions
@@ -36,31 +40,40 @@ public abstract partial class Tool3D : Node3D
     {
         Camera = GetNode<Camera3D>("../PivotXY2/PivotY/PivotX/Camera3D");
         ActionRegistry = GetNode<ActionRegistry>("/root/ActionRegistry");
-        
+
         Model = Model.Get(this);
+        Scale = new Vector3(0.001f, 0.001f, 0.0001f);
         Selected();
+    }
+
+    public override void _Process(double delta)
+    {
+        _initScale = new Vector3(0.001f, 0.001f, 0.0001f);
+        this.Scale = this.Scale.Lerp(!_later ? Vector3.One : _initScale,  (float)delta * 32.0f);
+        //GD.Print(this.Scale - _initScale);
+        if (this.Scale.IsEqualApprox(_initScale) && _later)
+        {
+            QueueFree();
+        }
     }
 
     public override void _Input(InputEvent @event)
     {
-        
         switch (@event)
         {
             case InputEventMouseButton button:
             {
                 if (button.ButtonIndex == MouseButton.Right) return;
                 DragStart = button.Pressed ? button.Position : null;
+                
                 MouseClick(button.Position, button.ButtonIndex, button.Pressed, button.IsDoubleClick());
                 GD.Print(DragStart.GetValueOrDefault());
                 FirstWorldPos = button.Pressed ? PlanePosFromMouse(button.Position) : null;
                 MouseDown = button.Pressed;
                 break;
-              
             }
             case InputEventMouseMotion motion:
             {
-               
-             
                 // 1. update mouse position first
                 if (!Captured)
                     CurrentMousePos = motion.Position;
@@ -68,7 +81,6 @@ public abstract partial class Tool3D : Node3D
                     CurrentMousePos += motion.Relative;
 
 
-     
                 CurrentWorldPos = (PlanePosFromMouse(CurrentMousePos) * 16).LH();
 
 
@@ -89,6 +101,12 @@ public abstract partial class Tool3D : Node3D
         }
     }
 
+    public void Later()
+    {
+        //Run the removing animation, then queuefree() itself.
+        _later = true;
+        
+    }
 /*
  * Event Functions (you override these)
  */
@@ -99,14 +117,13 @@ public abstract partial class Tool3D : Node3D
 
     public virtual void Tick(Dictionary arguments)
     {
-       
     }
-    
+
     public virtual Dictionary Execute()
     {
         return new Dictionary();
     }
-    
+
     public virtual void MouseClick(Vector2 position, MouseButton buttonIndex, bool pressed, bool doubl = false)
     {
     }
@@ -114,7 +131,7 @@ public abstract partial class Tool3D : Node3D
     public virtual void MouseMotion(Vector2 position, MouseButtonMask? buttonMask)
     {
     }
-    
+
 /*
  * Helper Functions (you can use these)
  */
@@ -143,7 +160,7 @@ public abstract partial class Tool3D : Node3D
 
         var origin = Camera.ProjectRayOrigin(mousePos);
         var end = origin + Camera.ProjectRayNormal(mousePos) * 1000.0f;
-        
+
         var positionY = Model.State.Hovering?.Position.Y;
         if (WorldPlane == Plane.PlaneYZ)
         {
@@ -153,17 +170,18 @@ public abstract partial class Tool3D : Node3D
         {
             WorldPlane.Y = -1.395f;
         }
-       
+
         var intersection = WorldPlane.IntersectsRay(origin, end);
         /*i/*f (positionY != null && intersection != null)
             intersection = intersection.Value with { Y = -positionY.Value / 1 / 16 };#1#*/
 
         return intersection ?? Vector3.Zero;
     }
+
     public (Vector3, Node3D, Vector3, int)? GetNodeAtPos(Vector2 position)
     {
         var spaceState = Camera.GetWorld3D().DirectSpaceState;
-        
+
         var origin = Camera.ProjectRayOrigin(position);
         var end = origin + Camera.ProjectRayNormal(position) * 1000.0f;
         DebugDraw3D.DrawRay(origin, Vector3.Forward, 1000f, Colors.Yellow);
@@ -200,8 +218,6 @@ public abstract partial class Tool3D : Node3D
     public int GetIdAtMouse()
     {
         var objectAtMouse = GetObjectAtMouse();
-        return  objectAtMouse?.Item2 ?? (Model.State.Hovering?.Id ?? -1);
+        return objectAtMouse?.Item2 ?? (Model.State.Hovering?.Id ?? -1);
     }
-
-    
 }

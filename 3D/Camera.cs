@@ -22,7 +22,7 @@ public enum Projection
 public class Camera
 {
     public Vector2L Rotation = new();
-    public float Zoom = 20;
+    public float Zoom = 10;
     public Vector3L Position = new Vector3L();
     public Mode Mode = Mode.Orbit;
     public Projection Projection = Projection.Perspective;

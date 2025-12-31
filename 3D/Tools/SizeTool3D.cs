@@ -16,6 +16,8 @@ public partial class SizeTool3D : Tool3D
     private Color zColor = Color.Color8(176, 45, 36, 1);
     private Vector3 _newSize;
     private Vector3 _newPos;
+    private Vector3 _size;
+    private Vector3 _pos;
 
     public override void Selected()
     {
@@ -24,7 +26,7 @@ public partial class SizeTool3D : Tool3D
 
     public override void _PhysicsProcess(double delta)
     {
-        UpdateGizmo();
+        if (!_later) UpdateGizmo();
     }
 
     public override void MouseClick(Vector2 position, MouseButton buttonIndex, bool pressed, bool doubl)
@@ -95,18 +97,20 @@ public partial class SizeTool3D : Tool3D
 
     public void UpdateGizmo()
     {
-        Vector3 size = Model.State.SelectedObjects.Count != 0
-            ? Model.State.SelectedObjects[0].Size.AsVector3().LHS()
-            : Vector3.Zero;
-        Vector3 pos = Model.State.SelectedObjects.Count != 0
-            ? Model.State.SelectedObjects[0].Position.AsVector3().LHS()
-            : Vector3.Zero;
+        if (Model.State.SelectedObjects.Count != 0)
+        {
+            _size = Model.State.SelectedObjects[0].Size.AsVector3().LHS();
+            _pos = Model.State.SelectedObjects[0].Position.AsVector3().LHS();
+        }
+
+        GD.Print(_size);
+        
         for (var index = 0; index < gizmos.Count; index++)
         {
             var gizmo = gizmos[index];
-            gizmo.Position = (GizmoPosition(index, size + new Vector3(0.1f, 0.1f, 0.1f)) / 2);
+            gizmo.Position = (GizmoPosition(index, _size + new Vector3(0.1f, 0.1f, 0.1f)) / 2);
         }
-        this.Position = (pos + size / 2);
+        this.Position = (_pos + _size / 2);
     }
 
     public Vector3 GizmoPosition(int index, Vector3 size)
