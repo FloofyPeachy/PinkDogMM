@@ -9,18 +9,18 @@ variation_embolden = 0.3
 font = SubResource("FontVariation_0qya0")
 font_size = 14
 
-[sub_resource type="FontVariation" id="FontVariation_gfs58"]
-variation_embolden = 0.3
-
-[sub_resource type="LabelSettings" id="LabelSettings_ofwf7"]
-font = SubResource("FontVariation_gfs58")
-font_size = 14
-
 [sub_resource type="FontVariation" id="FontVariation_rstxf"]
 variation_embolden = 0.3
 
 [sub_resource type="LabelSettings" id="LabelSettings_c6cty"]
 font = SubResource("FontVariation_rstxf")
+font_size = 14
+
+[sub_resource type="FontVariation" id="FontVariation_gfs58"]
+variation_embolden = 0.3
+
+[sub_resource type="LabelSettings" id="LabelSettings_ofwf7"]
+font = SubResource("FontVariation_gfs58")
 font_size = 14
 
 [node name="PropertiesPanel2" type="MarginContainer"]
@@ -49,34 +49,69 @@ layout_mode = 2
 text = "Part Properties"
 vertical_alignment = 1
 
-[node name="Name" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 0
 
-[node name="Label" type="Label" parent="VBoxContainer/Name"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 text = "Name"
 label_settings = SubResource("LabelSettings_gfs58")
+vertical_alignment = 3
 
-[node name="NameBox" type="TextEdit" parent="VBoxContainer/Name"]
+[node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Size"
+label_settings = SubResource("LabelSettings_c6cty")
+vertical_alignment = 3
+
+[node name="Label3" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Type"
+label_settings = SubResource("LabelSettings_ofwf7")
+vertical_alignment = 3
+
+[node name="Label4" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Position"
+label_settings = SubResource("LabelSettings_c6cty")
+vertical_alignment = 3
+
+[node name="Label5" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Rotation"
+label_settings = SubResource("LabelSettings_c6cty")
+vertical_alignment = 3
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="NameBox" type="TextEdit" parent="VBoxContainer/HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 29)
+layout_mode = 2
+size_flags_vertical = 3
+text = "Aaaa"
 metadata/WatchedField = "Name"
 metadata/PropertyToUpdate = "Text"
 
-[node name="Type" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/Type"]
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Type"
-label_settings = SubResource("LabelSettings_ofwf7")
-
-[node name="OptionButton" type="OptionButton" parent="VBoxContainer/Type"]
-layout_mode = 2
-size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 0
+theme_override_font_sizes/font_size = 10
 item_count = 3
 popup/item_0/text = "Box"
 popup/item_0/id = 1
@@ -85,54 +120,45 @@ popup/item_1/id = 0
 popup/item_2/id = 2
 metadata/WatchedField = "PartType"
 
-[node name="Size" type="HBoxContainer" parent="VBoxContainer"]
+[node name="Size" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxContainer/Size"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Size:"
-label_settings = SubResource("LabelSettings_c6cty")
-
-[node name="SizeX" type="SpinBox" parent="VBoxContainer/Size"]
+[node name="SizeX" type="SpinBox" parent="VBoxContainer/HBoxContainer/VBoxContainer2/Size"]
 layout_mode = 2
 size_flags_horizontal = 10
 metadata/WatchedField = "Size.X"
 
-[node name="SizeY" type="SpinBox" parent="VBoxContainer/Size"]
+[node name="SizeY" type="SpinBox" parent="VBoxContainer/HBoxContainer/VBoxContainer2/Size"]
 layout_mode = 2
 size_flags_horizontal = 10
 metadata/WatchedField = "Size.Y"
 
-[node name="SizeZ" type="SpinBox" parent="VBoxContainer/Size"]
+[node name="SizeZ" type="SpinBox" parent="VBoxContainer/HBoxContainer/VBoxContainer2/Size"]
 layout_mode = 2
 size_flags_horizontal = 10
 metadata/WatchedField = "Size.Z"
 
-[node name="Position" type="HBoxContainer" parent="VBoxContainer"]
+[node name="Position" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="VBoxContainer/Position"]
+[node name="PosX" type="SpinBox" parent="VBoxContainer/HBoxContainer/VBoxContainer2/Position"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Position"
-label_settings = SubResource("LabelSettings_c6cty")
-
-[node name="PosX" type="SpinBox" parent="VBoxContainer/Position"]
-layout_mode = 2
 allow_greater = true
 allow_lesser = true
 metadata/WatchedField = "Position.X"
 metadata/PropertyToUpdate = "Value"
 
-[node name="PosY" type="SpinBox" parent="VBoxContainer/Position"]
+[node name="PosY" type="SpinBox" parent="VBoxContainer/HBoxContainer/VBoxContainer2/Position"]
 layout_mode = 2
 size_flags_horizontal = 3
 allow_greater = true
 allow_lesser = true
 metadata/WatchedField = "Position.Y"
 
-[node name="PosZ" type="SpinBox" parent="VBoxContainer/Position"]
+[node name="PosZ" type="SpinBox" parent="VBoxContainer/HBoxContainer/VBoxContainer2/Position"]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = -1000.0
@@ -141,17 +167,12 @@ allow_greater = true
 allow_lesser = true
 metadata/WatchedField = "Position.Z"
 
-[node name="Rotation" type="HBoxContainer" parent="VBoxContainer"]
+[node name="Rotation" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer/Rotation"]
+[node name="PosX" type="SpinBox" parent="VBoxContainer/HBoxContainer/VBoxContainer2/Rotation"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Rotation"
-label_settings = SubResource("LabelSettings_c6cty")
-
-[node name="PosX" type="SpinBox" parent="VBoxContainer/Rotation"]
-layout_mode = 2
 min_value = -180.0
 max_value = 180.0
 allow_greater = true
@@ -159,13 +180,14 @@ allow_lesser = true
 metadata/WatchedField = "Rotation.X"
 metadata/PropertyToUpdate = "Value"
 
-[node name="PosY" type="SpinBox" parent="VBoxContainer/Rotation"]
+[node name="PosY" type="SpinBox" parent="VBoxContainer/HBoxContainer/VBoxContainer2/Rotation"]
 layout_mode = 2
+size_flags_horizontal = 3
 allow_greater = true
 allow_lesser = true
 metadata/WatchedField = "Rotation.Y"
 
-[node name="PosZ" type="SpinBox" parent="VBoxContainer/Rotation"]
+[node name="PosZ" type="SpinBox" parent="VBoxContainer/HBoxContainer/VBoxContainer2/Rotation"]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = -1000.0
@@ -173,6 +195,13 @@ max_value = 1000.0
 allow_greater = true
 allow_lesser = true
 metadata/WatchedField = "Rotation.Z"
+
+[node name="Name" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Type" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
 
 [node name="FoldableContainer" type="FoldableContainer" parent="VBoxContainer"]
 layout_mode = 2

@@ -44,7 +44,7 @@ public partial class ShapeEditTool3D : Tool3D
     public override void _PhysicsProcess(double delta)
     {
         PositionCorners();
-        this.Scale = this.Scale.Lerp(Vector3.One, (float)delta * 24.0f);
+        
     }
 
 

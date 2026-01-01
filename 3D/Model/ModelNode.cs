@@ -9,6 +9,7 @@ using PinkDogMM_Gd.Core.Actions.All.TheModel;
 using PinkDogMM_Gd.Core.Schema;
 using PinkDogMM_Gd.Render;
 using PinkDogMM_Gd.UI.Viewport;
+using Texture = Godot.Texture;
 
 namespace PinkDogMM_Gd.Scenes;
 
@@ -21,6 +22,14 @@ public partial class ModelNode : Node3D
 	private Part? _editedPart;
 	private Model model;
 
+	private Overrides _overrides;
+	
+	class Overrides
+	{
+		private Texture textureOverride;
+	}
+	
+	
 	public override void _PhysicsProcess(double delta)
 	{
 		
