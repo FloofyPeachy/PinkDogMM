@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace PinkDogMM_Gd.Core.Configuration;
@@ -7,6 +8,7 @@ public interface IKeybindSettings
     IEnumerable<IKeybind> Parts { get; }
 }
 
+[Flags]
 public enum KeyModifiers
 {
     None  = 0,

@@ -156,6 +156,11 @@ public partial class Model : Resource
         CollectionChanged?.Invoke(this, (true, item));
     }
 
+    public void AddToGroup(Renderable item, string group)
+    {
+        AddToGroup(item.Id, group);
+    }
+
     public List<Renderable> GetObjects(string? group = null)
     {
         if (group == null) return Items;
@@ -191,6 +196,7 @@ public partial class Model : Resource
         if (group == null) return;
         if (!Groups.ContainsKey(group)) Groups.Add(group, []);
         Groups[group].Add(id);
+        CollectionChanged?.Invoke(this, (true, null));
     }
 
     public void RemoveFromGroup(int id, string? group)

@@ -60,6 +60,8 @@ public class KeyCombo
         this.Key = combined & 0xFFFF;
         this.KeyModifiers = (KeyModifiers)(combined & ~0xFFFF);
     }
+
+    public int ToKeyModInt() => Key | (int)_keyModifiers;
     public static int KeyAndModifiers(int keyCode, KeyModifiers keyModifiers)
     {
         return keyCode | (int)keyModifiers;
@@ -67,10 +69,13 @@ public class KeyCombo
 
     public static KeyCombo FromInputKeyEvent(InputEventKey keyEvent)
     {
+        var mods = KeyModifiers.None;
+        if (keyEvent.AltPressed)  mods |= KeyModifiers.Alt;
+        if (keyEvent.CtrlPressed) mods |= KeyModifiers.Ctrl;
         return new KeyCombo()
         {
             Key = (int)keyEvent.Keycode,
-            KeyModifiers = keyEvent.AltPressed ? KeyModifiers.Alt : KeyModifiers.None,
+            KeyModifiers = mods,
             
         };
     }

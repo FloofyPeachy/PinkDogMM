@@ -45,7 +45,7 @@ public partial class MoveTool3D : Tool3D
                 newPos.Z = (pos.Z + size.Z) / 2;
             }
                     
-            positions.Add(renderable.Id, newPos);
+            positions.Add(renderable.Id, newPos.Round());
         }
         
         ActionRegistry.Tick(positions);

@@ -1,0 +1,64 @@
+[gd_scene load_steps=9 format=3 uid="uid://cbp2ghvqsvs5q"]
+
+[ext_resource type="Script" uid="uid://dd1bmxjknakfh" path="res://Scenes/Editor3dHost.cs" id="1_b238y"]
+[ext_resource type="Script" uid="uid://bx542mtyrvqb6" path="res://3D/Model/ModelNode.cs" id="2_b238y"]
+[ext_resource type="Script" uid="uid://d3gaebg0r4w50" path="res://3D/Editor/PivotXY2.cs" id="3_c6vkc"]
+[ext_resource type="Texture2D" uid="uid://beexsww2dvrfw" path="res://Assets/pdmmarrow-01.png" id="4_x1wam"]
+[ext_resource type="Shader" uid="uid://bw2mkq16g7676" path="res://grid_shader.gdshader" id="5_5smtg"]
+
+[sub_resource type="Environment" id="Environment_ngb8x"]
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vprs3"]
+render_priority = 0
+shader = ExtResource("5_5smtg")
+shader_parameter/line_width = 0.0170000008075
+shader_parameter/grid_size = 1.0000000475
+shader_parameter/line_color = Color(0.33989906, 0.29559326, 0.453125, 1)
+shader_parameter/fill_color = Color(0, 0, 0, 0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_o02ra"]
+material = SubResource("ShaderMaterial_vprs3")
+size = Vector3(500, 1, 500)
+
+[node name="SubViewport" type="SubViewport"]
+own_world_3d = true
+handle_input_locally = false
+physics_object_picking = true
+size = Vector2i(724, 644)
+render_target_update_mode = 4
+script = ExtResource("1_b238y")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ngb8x")
+
+[node name="WorldRoot" type="Node3D" parent="WorldEnvironment"]
+
+[node name="ModelNode" type="Node3D" parent="WorldEnvironment/WorldRoot"]
+script = ExtResource("2_b238y")
+
+[node name="PivotXY2" type="Node3D" parent="WorldEnvironment/WorldRoot"]
+visible = false
+script = ExtResource("3_c6vkc")
+
+[node name="PivotY" type="Node3D" parent="WorldEnvironment/WorldRoot/PivotXY2"]
+
+[node name="PivotX" type="Node3D" parent="WorldEnvironment/WorldRoot/PivotXY2/PivotY"]
+
+[node name="Camera3D" type="Camera3D" parent="WorldEnvironment/WorldRoot/PivotXY2/PivotY/PivotX"]
+rotation_order = 5
+keep_aspect = 0
+current = true
+fov = 85.5
+
+[node name="Arrow" type="Sprite3D" parent="WorldEnvironment/WorldRoot"]
+visible = false
+pixel_size = 0.02
+axis = 1
+texture = ExtResource("4_x1wam")
+
+[node name="Grid" type="MeshInstance3D" parent="WorldEnvironment/WorldRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03878951, -1.395234, -0.06745005)
+mesh = SubResource("BoxMesh_o02ra")
+skeleton = NodePath("../..")

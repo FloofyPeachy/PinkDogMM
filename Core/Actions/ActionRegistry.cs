@@ -232,10 +232,11 @@ public partial class ActionRegistry : Node
             if (action is { Keycode: Key.Z, CtrlPressed: true, Echo: false, ShiftPressed: true }) Redo();
         }
 
-
-        if (keys.ContainsKey((int)action.Keycode))
+        var combo = KeyCombo.FromInputKeyEvent(action);
+        var code = combo.ToKeyModInt();
+        
+        if (keys.TryGetValue(code, out var index))
         {
-            var index = keys[(int)action.Keycode];
             var appState = GetNode("/root/AppState") as AppState;
             
             Execute(actions.Keys.ToList()[index], new Godot.Collections.Dictionary() {{"model", appState.ActiveModel}, {"byKey" , "true"}});

@@ -1,0 +1,86 @@
+[gd_scene load_steps=9 format=3 uid="uid://b5ptv2yulljyj"]
+
+[ext_resource type="Script" uid="uid://crcqbl0gqmcvr" path="res://Scenes/TextureMap.cs" id="1_os4bq"]
+[ext_resource type="Script" uid="uid://b40jkmpkg2st4" path="res://UI/MArea/ActionButton.cs" id="2_46m7c"]
+[ext_resource type="Script" uid="uid://dhpebyx14jht8" path="res://addons/tnowe_extra_controls/elements/scroll_zoom_view.gd" id="2_oujij"]
+[ext_resource type="Texture2D" uid="uid://mccnkjiby70g" path="res://detexture222_finalone.png" id="2_y6e7q"]
+[ext_resource type="Script" uid="uid://cwcp8qeqdu3m3" path="res://Scenes/TextureOverlay.cs" id="3_e3xmy"]
+[ext_resource type="Shader" uid="uid://ed5vucx71ogs" path="res://Scenes/checkerboard.gdshader" id="4_du1ve"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6dj3i"]
+shader = ExtResource("4_du1ve")
+shader_parameter/grid_size = Vector2(512, 512)
+shader_parameter/color1 = Color(0.25490198, 0.20392157, 0.36862746, 1)
+shader_parameter/color2 = Color(0.16078432, 0.14901961, 0.2, 1)
+shader_parameter/aspect_ratio_vector = Vector2(1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_du1ve"]
+
+[node name="TextureMap" type="VBoxContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 34.0
+grow_horizontal = 2
+script = ExtResource("1_os4bq")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="PanelContainer"]
+layout_mode = 2
+color = Color(0.16078432, 0.14901961, 0.2, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "Open"
+
+[node name="ActionButton" type="Button" parent="PanelContainer/HBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_46m7c")
+ActionPath = "Tools/Textures/PencilTool"
+metadata/_custom_type_script = "uid://b40jkmpkg2st4"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="ScrollZoomView" type="MarginContainer" parent="MarginContainer"]
+clip_contents = true
+layout_mode = 2
+script = ExtResource("2_oujij")
+pan_button = 6
+metadata/_custom_type_script = "uid://dhpebyx14jht8"
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollZoomView"]
+layout_mode = 2
+
+[node name="TextureGrid" type="ColorRect" parent="MarginContainer/ScrollZoomView/MarginContainer"]
+material = SubResource("ShaderMaterial_6dj3i")
+layout_mode = 2
+color = Color(1, 1, 1, 0)
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/ScrollZoomView/MarginContainer"]
+texture_filter = 1
+layout_mode = 2
+texture = ExtResource("2_y6e7q")
+
+[node name="TextureOverlay" type="Control" parent="MarginContainer/ScrollZoomView/MarginContainer/TextureRect"]
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 512.0
+mouse_filter = 2
+script = ExtResource("3_e3xmy")
+
+[node name="Panel" type="PanelContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="Label" type="Label" parent="MarginContainer/Panel"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "256x256 (0,0)"
+label_settings = SubResource("LabelSettings_du1ve")
